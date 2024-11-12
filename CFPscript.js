@@ -6,7 +6,7 @@ const initialRankings = [
     { id: 4, name: 'Penn State', conference: 'Big Ten', logo: 'penn-state.png' },
     { id: 5, name: 'Indiana', conference: 'Big Ten', logo: 'indiana.png' },
     { id: 6, name: 'Tennessee', conference: 'SEC', logo: 'tennessee.png' },
-    { id: 7, name: 'BYU', conference: 'Big 12', logo: '/team-logos/byu.png' },
+    { id: 7, name: 'BYU', conference: 'Big 12', logo: 'team-logos/byu.png' },
     { id: 8, name: 'Notre Dame', conference: 'Independent', logo: 'notre-dame.png' },
     { id: 9, name: 'Alabama', conference: 'SEC', logo: 'alabama.png' },
     { id: 10, name: 'Ole Miss', conference: 'SEC', logo: 'ole-miss.png' },
