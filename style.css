@@ -1,0 +1,327 @@
+/* General Layout */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: #e0e0e0;
+    background-color: #1b1b1b;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding-top: 120px;
+}
+
+/* Header */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 1em 3em; /* Reduce padding slightly if needed */
+    background-color: #111; /* Slightly darker header for contrast */
+    color: #e0e0e0;
+    width: 100%;
+    text-align: center;
+    z-index: 1000; /* Keep header above other content */
+}
+
+/* Navigation Bar */
+/* Navigation Styles */
+nav {
+    flex-grow: 1; /* Allow nav to take remaining space */
+}
+
+nav ul {
+    display: flex;
+    
+    justify-content: center;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+nav ul li a {
+    color: #9FCBED; /* Baby blue accent color */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+nav ul li a:hover {
+    color: #e0e0e0; /* Light gray on hover */
+}
+
+/* Header Content */
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
+.profile-pic {
+    width: 100px; /* Adjust size as needed */
+    height: 100px;
+    border-radius: 50%;
+    margin-bottom: 1em;
+}
+
+.header-info h1 {
+    font-size: 1.8em;
+    margin: 0;
+    color: #89CFF0; /* Baby blue accent */
+}
+
+.header-info p {
+    font-size: 1em;
+    margin-top: 0.5em;
+    color: #ccc; /* Light gray for contrast */
+}
+
+/* Section Styles */
+section {
+    display: flex;
+    flex-direction: row; /* Create two columns */
+    justify-content: space-between; /* Space between left and right */
+    align-items: center; /* Vertically align content */
+    padding: 4em 3em;
+    border-bottom: 1px solid #333;
+    width: 100%;
+}
+
+/* Left Column Styles */
+.left-column {
+    flex: 1; /* Take up equal space as the right column */
+    text-align: center; /* Align content to the left */
+}
+
+/* Right Column Styles */
+.right-column {
+    flex: .75; /* Take up equal space as the left column */
+    text-align: left; /* Align content to the left */
+    padding-right: 2em;
+    padding-left: 2em; /* Add some space on the left for the right column */
+}
+
+h1, h2 {
+    color: #9FCBED; /* Baby blue for headers */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-family: 'Montserrat', sans-serif; /* Ensure headers also use Montserrat */
+}
+
+h2 {
+    margin-bottom: 1em;
+}
+
+/* Project Grid */
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    gap: 1.5em;
+    justify-items: center; /* Centers each item in the grid */
+    width: 100%;
+    max-width: 1200px; /* Optional: You can control the maximum width of the grid */
+    margin: 0 auto; /* Center the grid horizontally */
+}
+
+.project-card {
+    background-color: #2a2a2a; /* Slightly lighter dark gray for cards */
+    color: #e0e0e0;
+    padding: 1.5em;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+    width: 100%; /* Ensures cards are responsive */
+    max-width: 300px; /* Prevents cards from becoming too large */
+    text-align: center; /* Centers text within the card */
+}
+
+.project-card h3 {
+    margin-bottom: 0.5em;
+    color: #9FCBED; /* Baby blue for project titles */
+}
+
+.project-card p {
+    margin-bottom: 0;
+}
+
+.project-card a {
+    color: #9FCBED;
+    text-decoration: underline;
+}
+
+.project-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+/* Contact Section */
+#contact {
+    text-align: center;
+}
+
+#contact p {
+    font-size: 1.2em;
+    color: #89c9ff;
+}
+
+/* Interactive Hover and Focus States */
+a:hover {
+    color: #e0e0e0; /* Light gray on hover */
+    transition: color 0.2s;
+}
+button, .project-card:hover {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Skills Section */
+#skills {
+    padding: 2em 3em;
+    background-color: #2d2d2d; /* Dark background */
+    color: #f0f0f0;
+}
+
+.skills ul {
+    list-style-type: none;
+    padding-left: 1.5em; /* Indentation for the hierarchy */
+}
+
+.skills li {
+    margin-bottom: 1em;
+}
+
+.skills li ul {
+    margin-top: 0.5em;
+    padding-left: 1.5em; /* Indentation for sub-levels */
+}
+
+.skills li li {
+    font-size: 1em;
+    color: #ccc;
+}
+
+.skills li li li {
+    font-size: 0.9em;
+    color: #bbb; /* Lighter gray for further levels */
+}
+
+/* Adjust position of the typing text */
+.typing-container {
+    margin-bottom: 1em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 120px;
+}
+
+#code-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 3.5em;
+    color: #e0e0e0;
+    visibility: hidden;
+    margin-bottom: 1px;
+}
+
+#final-text {
+    font-size: 3.5em;
+    color: #e0e0e0;
+    display: none;
+}
+
+/* About Me Section Styles */
+.right-column h2 {
+    font-size: 2em;
+    color: #9FCBED; /* Baby blue accent */
+    font-weight: bold;
+
+}
+
+.right-column p {
+    font-size: 1.2em;
+    color: #ccc;
+}
+
+.highlight {
+    background-color: rgba(22, 163, 74, 0.2);
+    transition: background-color 0.6s;
+    padding: 0.2em 0.4em;  /* Add some padding for the highlight */
+    border-radius: 0.2em;
+}
+
+.print { color: #fef08a; }  /* pastel yellow */
+.paren { color: #9ca3af; }  /* grey */
+.name { color: #bfdbfe; }   /* light blue */
+
+/* Logo Video Styles */
+.logo {
+    width: 80px;
+    margin-right: .4em; /* Adjust as needed */
+}
+
+
+#signature-video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Header Layout */
+header {
+    display: flex;
+    justify-content: center; /* Centers the content */
+    align-items: center;
+    padding: 1em 3em;
+    background-color: #111;
+    width: 100%;
+}
+
+/* Add style for the 'Hello, my name is' text */
+#hello-name {
+    font-size: 1.5em; /* Slightly larger font size */
+    color: #e0e0e0; /* Light color for the text */
+    margin-top: 50px; /* Space between 'Hello, my name is' and the typing animation */
+    margin-bottom: -10px; /* Space between 'Hello, my name is' and the typing animation */
+
+    opacity: 0; /* Start hidden */
+    animation: fadeAndRise 1.5s ease-out forwards;
+    animation-delay: 1s; /* Delay the animation */
+}
+
+/* Adjust position of the typing text */
+#code-text {
+    font-family: 'Fira Code', monospace;
+    font-size: 3.5em;
+    color: #e0e0e0;
+    visibility: hidden;
+    margin-bottom: 1px; /* Space between typing text and 'Peyton Pope' */
+}
+
+#final-text {
+    font-size: 3.5em;
+    color: #e0e0e0;
+    display: none;
+    margin-top: 10px;
+    font-weight: bold; /* Make the final text bold */
+
+}
+
+@keyframes fadeAndRise {
+    0% {
+        opacity: 0;
+        transform: translateY(20px); /* Start 20px lower */
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0); /* End at normal position */
+    }
+}
