@@ -1,32 +1,58 @@
 const initialRankings = [
 
-    { id: 1, name: 'Oregon', conference: 'Big Ten', logo: 'oregon.png' },
-    { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: 'ohio-state.png' },
-    { id: 3, name: 'Texas', conference: 'SEC', logo: 'texas.png' },
-    { id: 4, name: 'Penn State', conference: 'Big Ten', logo: 'penn-state.png' },
-    { id: 5, name: 'Indiana', conference: 'Big Ten', logo: 'indiana.png' },
-    { id: 6, name: 'Tennessee', conference: 'SEC', logo: 'tennessee.png' },
-    { id: 7, name: 'BYU', conference: 'Big 12', logo: 'byu.png' },
-    { id: 8, name: 'Notre Dame', conference: 'Independent', logo: 'notre-dame.png' },
-    { id: 9, name: 'Alabama', conference: 'SEC', logo: 'alabama.png' },
-    { id: 10, name: 'Ole Miss', conference: 'SEC', logo: 'ole-miss.png' },
-    { id: 11, name: 'Georgia', conference: 'SEC', logo: 'georgia.png' },
-    { id: 12, name: 'Miami', conference: 'ACC', logo: 'miami.png' },
-    { id: 13, name: 'Boise State', conference: 'Mountain West', logo: 'boise-state.png' },
-    { id: 14, name: 'SMU', conference: 'ACC', logo: 'smu.png' },
-    { id: 15, name: 'Texas A&M', conference: 'SEC', logo: 'texas-am.png' },
-    { id: 16, name: 'Army', conference: 'Independent', logo: 'army.png' },
-    { id: 17, name: 'Clemson', conference: 'ACC', logo: 'clemson.png' },
-    { id: 18, name: 'Colorado', conference: 'Big 12', logo: 'colorado.png' },
-    { id: 19, name: 'Washington State', conference: 'Pac-12', logo: 'washington-state.png' },
-    { id: 20, name: 'Kansas State', conference: 'Big 12', logo: 'kansas-state.png' },
-    { id: 21, name: 'LSU', conference: 'SEC', logo: 'lsu.png' },
-    { id: 22, name: 'Louisville', conference: 'ACC', logo: 'louisville.png' },
-    { id: 23, name: 'South Carolina', conference: 'SEC', logo: 'south-carolina.png' },
-    { id: 24, name: 'Missouri', conference: 'SEC', logo: 'missouri.png' },
-    { id: 25, name: 'Tulane', conference: 'American', logo: 'tulane.png' },
+    /*Rank	Team
+1	Oregon
+2	Ohio State
+3	Texas
+4	Penn State
+5	Indiana
+6	BYU
+7	Tennessee
+8	Notre Dame
+9	Miami
+10	Alabama
+11	Mississippi
+12	Georgia
+13	Boise State
+14	SMU
+15	Texas A&M
+16	Kansas State
+17	Colorado
+18	Washington State
+19	Louisville
+20	Clemson
+21	South Carolina
+22	LSU
+23	Missouri
+24	Army
+25	Tulane
+*/
 
-
+    { id: 1, name: 'Oregon', conference: 'Big Ten', logo: '/team-logos/oregon.png' },
+    { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: '/team-logos/ohio-state.png' },
+    { id: 3, name: 'Texas', conference: 'SEC', logo: '/team-logos/texas.png' },
+    { id: 4, name: 'Penn State', conference: 'Big Ten', logo: '/team-logos/penn-state.png' },
+    { id: 5, name: 'Indiana', conference: 'Big Ten', logo: '/team-logos/indiana.png' },
+    { id: 6, name: 'BYU', conference: 'Big 12', logo: '/team-logos/byu.png' },
+    { id: 7, name: 'Tennessee', conference: 'SEC', logo: '/team-logos/tennessee.png' },
+    { id: 8, name: 'Notre Dame', conference: 'Independent', logo: '/team-logos/notre-dame.png' },
+    { id: 9, name: 'Miami', conference: 'ACC', logo: '/team-logos/miami.png' },
+    { id: 10, name: 'Alabama', conference: 'SEC', logo: '/team-logos/alabama.png' },
+    { id: 11, name: 'Ole Miss', conference: 'SEC', logo: '/team-logos/ole-miss.png' },
+    { id: 12, name: 'Georgia', conference: 'SEC', logo: '/team-logos/georgia.png' },
+    { id: 13, name: 'Boise State', conference: 'Mountain West', logo: '/team-logos/boise-state.png' },
+    { id: 14, name: 'SMU', conference: 'ACC', logo: '/team-logos/smu.png' },
+    { id: 15, name: 'Texas A&M', conference: 'SEC', logo: '/team-logos/texas-am.png' },
+    { id: 16, name: 'Kansas State', conference: 'Big 12', logo: '/team-logos/kansas-state.png' },
+    { id: 17, name: 'Colorado', conference: 'Big 12', logo: '/team-logos/colorado.png' },
+    { id: 18, name: 'Washington State', conference: 'Pac-12', logo: '/team-logos/washington-state.png' },
+    { id: 19, name: 'Louisville', conference: 'ACC', logo: '/team-logos/louisville.png' },
+    { id: 20, name: 'Clemson', conference: 'ACC', logo: '/team-logos/clemson.png' },
+    { id: 21, name: 'South Carolina', conference: 'SEC', logo: '/team-logos/south-carolina.png' },
+    { id: 22, name: 'LSU', conference: 'SEC', logo: '/team-logos/lsu.png' },
+    { id: 23, name: 'Missouri', conference: 'SEC', logo: '/team-logos/missouri.png' },
+    { id: 24, name: 'Army', conference: 'Independent', logo: '/team-logos/army.png' },
+    { id: 25, name: 'Tulane', conference: 'American', logo: '/team-logos/tulane.png' }
 
   ];
   
@@ -174,10 +200,16 @@ function calculateSeeds() {
 
         // Determine conference champion class
         let conferenceClass = '';
+        let trophy = '';
         if (teamSeed >= 0 && teamSeed < 4) {
-            conferenceClass = 'conference-champ';
+            //conferenceClass = 'conference-champ';
+            trophy = '/other-logos/goldtrophy.png';
+
         } else if (fifthConfChamp && team.id === fifthConfChamp.id) {
-            conferenceClass = 'conference-champ-fifth';
+            //conferenceClass = 'conference-champ-fifth';
+            trophy = '/other-logos/silvertrophy.png';
+        } else {
+            trophy = '/other-logos/notrophy.png';
         }
 
         teamCard.innerHTML = `
@@ -187,7 +219,10 @@ function calculateSeeds() {
             </div>
             <div class="team-info">
                 <div class="team-name">${team.name}</div>
-                <div class="team-conference ${conferenceClass}">${team.conference}</div>
+                <div class="conference-info"> 
+                    <div class="team-conference ${conferenceClass}">${team.conference}</div>
+                    <div class="trophy"><img src="${trophy}" alt="Trophy"></div>
+                </div>
             </div>
         `;
 
