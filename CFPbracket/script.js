@@ -44,17 +44,17 @@ const initialRankings = [
     { id: 13, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png' },
     { id: 14, name: 'BYU', conference: 'Big 12', logo: '/CFPbracket/team-logos/byu.png' },
     { id: 15, name: 'Texas A&M', conference: 'SEC', logo: '/CFPbracket/team-logos/texas-am.png' },
-    { id: 16, name: 'Colorado', conference: 'Pac-12', logo: '/CFPbracket/team-logos/colorado.png' },
+    { id: 16, name: 'Colorado', conference: 'Big 12', logo: '/CFPbracket/team-logos/colorado.png' },
     { id: 17, name: 'Clemson', conference: 'ACC', logo: '/CFPbracket/team-logos/clemson.png' },
     { id: 18, name: 'South Carolina', conference: 'SEC', logo: '/CFPbracket/team-logos/south-carolina.png' },
     { id: 19, name: 'Army', conference: 'Independent', logo: '/CFPbracket/team-logos/army.png' },
     { id: 20, name: 'Tulane', conference: 'American', logo: '/CFPbracket/team-logos/tulane.png' },
-    { id: 21, name: 'Arizona State', conference: 'Pac-12', logo: '/CFPbracket/team-logos/arizona-state.png' },
+    { id: 21, name: 'Arizona State', conference: 'Big 12', logo: '/CFPbracket/team-logos/arizona-state.png' },
     { id: 22, name: 'Iowa State', conference: 'Big 12', logo: '/CFPbracket/team-logos/iowa-state.png' },
     { id: 23, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png' },
     { id: 24, name: 'UNLV', conference: 'Mountain West', logo: '/CFPbracket/team-logos/unlv.png' },
     { id: 25, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png' },
-    { id: 26, name: 'Washington', conference: 'Pac-12', logo: '/CFPbracket/team-logos/washington.png' },
+    { id: 26, name: 'Washington', conference: 'Big Ten', logo: '/CFPbracket/team-logos/washington.png' },
 
   ];
   
