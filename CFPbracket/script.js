@@ -29,7 +29,7 @@ const initialRankings = [
 26 washington 
 */
 
-    { id: 1, name: 'Oregon', conference: 'Big Ten', logo: '/CFPbracket/team-logos/oregon.png' },
+    { id: 1, name: 'Oregon', conference: 'Big Ten', logo: '/CFPbracket/team-logos/oregon.png'},
     { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png' },
     { id: 3, name: 'Texas', conference: 'SEC', logo: '/CFPbracket/team-logos/texas.png' },
     { id: 4, name: 'Penn State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/penn-state.png' },
@@ -54,7 +54,7 @@ const initialRankings = [
     { id: 23, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png' },
     { id: 24, name: 'UNLV', conference: 'Mountain West', logo: '/CFPbracket/team-logos/unlv.png' },
     { id: 25, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png' },
-    { id: 26, name: 'Washington', conference: 'Big Ten', logo: '/CFPbracket/team-logos/washington.png' },
+    //{ id: 26, name: 'Washington', conference: 'Big Ten', logo: '/CFPbracket/team-logos/washington.png' },
 
   ];
   
