@@ -69,6 +69,12 @@ const initialRankings = [
       championship: null,
       champion: null
   };
+
+
+
+
+
+
   
   // Calculate seeds based on conference rules
 function calculateSeeds() {
@@ -238,6 +244,11 @@ function calculateSeeds() {
         teamCard.addEventListener('dragend', handleDragEnd);
         teamCard.addEventListener('dragover', handleDragOver);
         teamCard.addEventListener('drop', handleDrop);
+
+
+        //touch
+        
+
 
         rankingsList.appendChild(wrapper);
     });
@@ -464,6 +475,16 @@ function isWinner(round, index, team) {
       e.preventDefault();
   }
   
+
+
+
+
+
+
+
+
+
+
   function handleDrop(e) {
       e.preventDefault();
       const dropIndex = parseInt(e.target.closest('.team-card').dataset.index);
