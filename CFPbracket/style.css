@@ -5,6 +5,12 @@
     font-family: Arial, sans-serif;
 }
 
+a {
+    color: #c38d13;
+    text-decoration: none;
+}
+
+
 body {
     padding: 20px;
     background-color: #1a1a1a;
@@ -38,7 +44,20 @@ body {
     text-align: center;
 }
 
+.footer {
+    background-color: #333;
+    color: #c4c4c4;
+    font-size: 14px;
+    letter-spacing: .5px;
+    line-height: 25px;
+    text-align: center;
+    padding: 1em 0;
+    position: relative;
+    margin-top: 240px;
+    bottom: 0px;
 
+    
+}
 
 .team-card {
     display: flex;
@@ -85,21 +104,6 @@ body {
     font-style: italic;
 
 }
-
-
-
-
-.footer {
-    text-align: center;
-    padding: 20px;
-    background-color: #333;
-    color: #c4c4c4;
-    margin-top: 220px;
-    font-size: 14px;
-    letter-spacing: .5px;
-    line-height: 25px;
-}
-
 
 
 .team-info {

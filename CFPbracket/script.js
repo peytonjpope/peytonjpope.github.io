@@ -1,60 +1,59 @@
 const initialRankings = [
 
     /*Rank	Team
-1	Oregon
+1	Oregon 
 2	Ohio State
-3	Texas conf:SEC
+3	Texas
 4	Penn State
-5	Indiana
-6	Notre Dame
-7	Alabama
-8	Miami
-9	Mississippi
-10	Georgia
-11	Tennessee
-12	Boise State
-13	SMU ACC
-14	BYU big 12
-15	Texas A&M
-16	Colorado
-17	Clemson
-18	South Carolina
-19	Army
-20	Tulane
-21	Arizona State
-22	Iowa State
-23	Missouri
-24	UNLV
-25	Illinois
-26 washington 
+5	Notre Dame
+6	Miami
+7	Georgia
+8	Tennessee
+9	SMU
+10	Indiana
+11	Boise State
+12	Clemson
+13	Alabama
+14	Mississippi
+15	South Carolina
+16	Arizona State
+17	Tulane
+18	Iowa State
+19	BYU
+20	Texas A&M
+21	Missouri
+22	UNLV
+23	Illinois
+24	Kansas State
+25	Colorado
+
 */
 
     { id: 1, name: 'Oregon', conference: 'Big Ten', logo: '/CFPbracket/team-logos/oregon.png'},
-    { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png' },
-    { id: 3, name: 'Texas', conference: 'SEC', logo: '/CFPbracket/team-logos/texas.png' },
-    { id: 4, name: 'Penn State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/penn-state.png' },
-    { id: 5, name: 'Indiana', conference: 'Big Ten', logo: '/CFPbracket/team-logos/indiana.png' },
-    { id: 6, name: 'Notre Dame', conference: 'Independent', logo: '/CFPbracket/team-logos/notre-dame.png' },
-    { id: 7, name: 'Alabama', conference: 'SEC', logo: '/CFPbracket/team-logos/alabama.png' },
-    { id: 8, name: 'Miami', conference: 'ACC', logo: '/CFPbracket/team-logos/miami.png' },
-    { id: 9, name: 'Ole Miss', conference: 'SEC', logo: '/CFPbracket/team-logos/ole-miss.png' },
-    { id: 10, name: 'Georgia', conference: 'SEC', logo: '/CFPbracket/team-logos/georgia.png' },
-    { id: 11, name: 'Tennessee', conference: 'SEC', logo: '/CFPbracket/team-logos/tennessee.png' },
-    { id: 12, name: 'Boise State', conference: 'Mountain West', logo: '/CFPbracket/team-logos/boise-state.png' },
-    { id: 13, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png' },
-    { id: 14, name: 'BYU', conference: 'Big 12', logo: '/CFPbracket/team-logos/byu.png' },
-    { id: 15, name: 'Texas A&M', conference: 'SEC', logo: '/CFPbracket/team-logos/texas-am.png' },
-    { id: 16, name: 'Colorado', conference: 'Big 12', logo: '/CFPbracket/team-logos/colorado.png' },
-    { id: 17, name: 'Clemson', conference: 'ACC', logo: '/CFPbracket/team-logos/clemson.png' },
-    { id: 18, name: 'South Carolina', conference: 'SEC', logo: '/CFPbracket/team-logos/south-carolina.png' },
-    { id: 19, name: 'Army', conference: 'Independent', logo: '/CFPbracket/team-logos/army.png' },
-    { id: 20, name: 'Tulane', conference: 'American', logo: '/CFPbracket/team-logos/tulane.png' },
-    { id: 21, name: 'Arizona State', conference: 'Big 12', logo: '/CFPbracket/team-logos/arizona-state.png' },
-    { id: 22, name: 'Iowa State', conference: 'Big 12', logo: '/CFPbracket/team-logos/iowa-state.png' },
-    { id: 23, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png' },
-    { id: 24, name: 'UNLV', conference: 'Mountain West', logo: '/CFPbracket/team-logos/unlv.png' },
-    { id: 25, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png' },
-    //{ id: 26, name: 'Washington', conference: 'Big Ten', logo: '/CFPbracket/team-logos/washington.png' },
+    { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png'},
+    { id: 3, name: 'Texas', conference: 'SEC', logo: '/CFPbracket/team-logos/texas.png'},
+    { id: 4, name: 'Penn State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/penn-state.png'},
+    { id: 5, name: 'Notre Dame', conference: 'Independent', logo: '/CFPbracket/team-logos/notre-dame.png'},
+    { id: 6, name: 'Miami', conference: 'ACC', logo: '/CFPbracket/team-logos/miami.png'},
+    { id: 7, name: 'Georgia', conference: 'SEC', logo: '/CFPbracket/team-logos/georgia.png'},
+    { id: 8, name: 'Tennessee', conference: 'SEC', logo: '/CFPbracket/team-logos/tennessee.png'},
+    { id: 9, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png'},
+    { id: 10, name: 'Indiana', conference: 'Big Ten', logo: '/CFPbracket/team-logos/indiana.png'},
+    { id: 11, name: 'Boise State', conference: 'Mountain West', logo: '/CFPbracket/team-logos/boise-state.png'},
+    { id: 12, name: 'Clemson', conference: 'ACC', logo: '/CFPbracket/team-logos/clemson.png'},
+    { id: 13, name: 'Alabama', conference: 'SEC', logo: '/CFPbracket/team-logos/alabama.png'},
+    { id: 14, name: 'Ole Miss', conference: 'SEC', logo: '/CFPbracket/team-logos/ole-miss.png'},
+    { id: 15, name: 'South Carolina', conference: 'SEC', logo: '/CFPbracket/team-logos/south-carolina.png'},
+    { id: 16, name: 'Arizona State', conference: 'Big 12', logo: '/CFPbracket/team-logos/arizona-state.png'},
+    { id: 17, name: 'Tulane', conference: 'American', logo: '/CFPbracket/team-logos/tulane.png'},
+    { id: 18, name: 'Iowa State', conference: 'Big 12', logo: '/CFPbracket/team-logos/iowa-state.png'},
+    { id: 19, name: 'BYU', conference: 'Big 12', logo: '/CFPbracket/team-logos/byu.png'},
+    { id: 20, name: 'Texas A&M', conference: 'SEC', logo: '/CFPbracket/team-logos/texas-am.png'},
+    { id: 21, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png'},
+    { id: 22, name: 'UNLV', conference: 'Mountain West', logo: '/CFPbracket/team-logos/unlv.png'},
+    { id: 23, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png'},
+    { id: 24, name: 'Kansas State', conference: 'Big 12', logo: '/CFPbracket/team-logos/kansas-state.png'},
+    { id: 25, name: 'Colorado', conference: 'Big 12', logo: '/CFPbracket/team-logos/colorado.png'}
 
   ];
   
@@ -245,11 +244,6 @@ function calculateSeeds() {
         teamCard.addEventListener('dragover', handleDragOver);
         teamCard.addEventListener('drop', handleDrop);
 
-
-        //touch
-        
-
-
         rankingsList.appendChild(wrapper);
     });
 }
@@ -268,7 +262,7 @@ function calculateSeeds() {
             <div class="team-slot ${isWinner('firstRound', index, matchup.lower) ? 'winner' : ''}"
                  onclick="handleTeamSelect('firstRound', ${index}, 'lower')">
                 <img src="${matchup.lower.logo}" alt="" class="bracket-team-logo">
-                <span>${matchup.lower.seed} ${matchup.lower.name}</span>
+                <span>${matchup.lower.seed} ${matchup.lower.name} </span>
             </div>
         </div>
     `).join('');
