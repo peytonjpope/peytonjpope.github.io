@@ -10,6 +10,10 @@ a {
     text-decoration: none;
 }
 
+a:hover {
+    text-decoration: underline;
+}
+
 
 body {
     padding: 20px;
@@ -118,6 +122,7 @@ body {
 .team-conference {
     font-size: 0.8em;
     color: #999;
+    
 }
 
 .bracket {
@@ -251,6 +256,12 @@ body {
     gap: 5px;
 }
 
+
+.team-record {
+    font-size: 0.8em;
+    color: #999;
+    font-style: italic;
+}
 .team-logo {
     width: 30px;
     height: 30px;

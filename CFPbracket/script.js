@@ -1,59 +1,61 @@
 const initialRankings = [
 
     /*Rank	Team
-1	Oregon 
-2	Ohio State
-3	Texas
-4	Penn State
-5	Notre Dame
-6	Miami
-7	Georgia
-8	Tennessee
-9	SMU
-10	Indiana
-11	Boise State
-12	Clemson
-13	Alabama
-14	Mississippi
-15	South Carolina
-16	Arizona State
-17	Tulane
-18	Iowa State
-19	BYU
-20	Texas A&M
-21	Missouri
-22	UNLV
-23	Illinois
-24	Kansas State
-25	Colorado
+Rank	Logo	Team	Record
+1		Oregon	12-0
+2		Texas	11-1
+3	penn-state	Penn State	11-1
+4		Notre Dame	11-1
+5		Georgia	10-2
+6		Ohio State	10-2
+7		Tennessee	10-2
+8		SMU	11-1
+9		Indiana	11-1
+10		Boise State	11-1
+11		Alabama	9-3
+12		Miami	10-2
+13	ole-miss	Mississippi	9-3
+14		South Carolina	9-3
+15		Arizona State	10-2
+16		Iowa State	10-2
+17		Clemson	9-3
+18		BYU	10-2
+19		Missouri	9-3
+20		UNLV	10-2
+21		Illinois	9-3
+22		Syracuse	9-3
+23		Colorado	9-3
+24		Army	10-1
+25		Memphis	10-2
+
 
 */
 
-    { id: 1, name: 'Oregon', conference: 'Big Ten', logo: '/CFPbracket/team-logos/oregon.png'},
-    { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png'},
-    { id: 3, name: 'Texas', conference: 'SEC', logo: '/CFPbracket/team-logos/texas.png'},
-    { id: 4, name: 'Penn State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/penn-state.png'},
-    { id: 5, name: 'Notre Dame', conference: 'Independent', logo: '/CFPbracket/team-logos/notre-dame.png'},
-    { id: 6, name: 'Miami', conference: 'ACC', logo: '/CFPbracket/team-logos/miami.png'},
-    { id: 7, name: 'Georgia', conference: 'SEC', logo: '/CFPbracket/team-logos/georgia.png'},
-    { id: 8, name: 'Tennessee', conference: 'SEC', logo: '/CFPbracket/team-logos/tennessee.png'},
-    { id: 9, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png'},
-    { id: 10, name: 'Indiana', conference: 'Big Ten', logo: '/CFPbracket/team-logos/indiana.png'},
-    { id: 11, name: 'Boise State', conference: 'Mountain West', logo: '/CFPbracket/team-logos/boise-state.png'},
-    { id: 12, name: 'Clemson', conference: 'ACC', logo: '/CFPbracket/team-logos/clemson.png'},
-    { id: 13, name: 'Alabama', conference: 'SEC', logo: '/CFPbracket/team-logos/alabama.png'},
-    { id: 14, name: 'Ole Miss', conference: 'SEC', logo: '/CFPbracket/team-logos/ole-miss.png'},
-    { id: 15, name: 'South Carolina', conference: 'SEC', logo: '/CFPbracket/team-logos/south-carolina.png'},
-    { id: 16, name: 'Arizona State', conference: 'Big 12', logo: '/CFPbracket/team-logos/arizona-state.png'},
-    { id: 17, name: 'Tulane', conference: 'American', logo: '/CFPbracket/team-logos/tulane.png'},
-    { id: 18, name: 'Iowa State', conference: 'Big 12', logo: '/CFPbracket/team-logos/iowa-state.png'},
-    { id: 19, name: 'BYU', conference: 'Big 12', logo: '/CFPbracket/team-logos/byu.png'},
-    { id: 20, name: 'Texas A&M', conference: 'SEC', logo: '/CFPbracket/team-logos/texas-am.png'},
-    { id: 21, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png'},
-    { id: 22, name: 'UNLV', conference: 'Mountain West', logo: '/CFPbracket/team-logos/unlv.png'},
-    { id: 23, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png'},
-    { id: 24, name: 'Kansas State', conference: 'Big 12', logo: '/CFPbracket/team-logos/kansas-state.png'},
-    { id: 25, name: 'Colorado', conference: 'Big 12', logo: '/CFPbracket/team-logos/colorado.png'}
+    { id: 1, name: 'Oregon', conference: 'Big Ten', logo: '/CFPbracket/team-logos/oregon.png', record: '12-0'},
+    { id: 2, name: 'Texas', conference: 'SEC', logo: '/CFPbracket/team-logos/texas.png', record: '11-1'},
+    { id: 3, name: 'Penn State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/penn-state.png', record: '11-1'},
+    { id: 4, name: 'Notre Dame', conference: 'Ind', logo: '/CFPbracket/team-logos/notre-dame.png', record: '11-1'},
+    { id: 5, name: 'Georgia', conference: 'SEC', logo: '/CFPbracket/team-logos/georgia.png', record: '10-2'},
+    { id: 6, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png', record: '10-2'},
+    { id: 7, name: 'Tennessee', conference: 'SEC', logo: '/CFPbracket/team-logos/tennessee.png', record: '10-2'},
+    { id: 8, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png', record: '11-1'},
+    { id: 9, name: 'Indiana', conference: 'Big Ten', logo: '/CFPbracket/team-logos/indiana.png', record: '11-1'},
+    { id: 10, name: 'Boise State', conference: 'MWC', logo: '/CFPbracket/team-logos/boise-state.png', record: '11-1'},
+    { id: 11, name: 'Alabama', conference: 'SEC', logo: '/CFPbracket/team-logos/alabama.png', record: '9-3'},
+    { id: 12, name: 'Miami', conference: 'ACC', logo: '/CFPbracket/team-logos/miami.png', record: '10-2'},
+    { id: 13, name: 'Ole Miss', conference: 'SEC', logo: '/CFPbracket/team-logos/ole-miss.png', record: '9-3'},
+    { id: 14, name: 'South Carolina', conference: 'SEC', logo: '/CFPbracket/team-logos/south-carolina.png', record: '9-3'},
+    { id: 15, name: 'Arizona State', conference: 'ACC', logo: '/CFPbracket/team-logos/arizona-state.png', record: '10-2'},
+    { id: 16, name: 'Iowa State', conference: 'Big 12', logo: '/CFPbracket/team-logos/iowa-state.png', record: '10-2'},
+    { id: 17, name: 'Clemson', conference: 'ACC', logo: '/CFPbracket/team-logos/clemson.png', record: '9-3'},
+    { id: 18, name: 'BYU', conference: 'Big 12', logo: '/CFPbracket/team-logos/byu.png', record: '10-2'},
+    { id: 19, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png', record: '9-3'},
+    { id: 20, name: 'UNLV', conference: 'MWC', logo: '/CFPbracket/team-logos/unlv.png', record: '10-2'},
+    { id: 21, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png', record: '9-3'},
+    { id: 22, name: 'Syracuse', conference: 'ACC', logo: '/CFPbracket/team-logos/syracuse.png', record: '9-3'},
+    { id: 23, name: 'Colorado', conference: 'Big 12', logo: '/CFPbracket/team-logos/colorado.png', record: '9-3'},
+    { id: 24, name: 'Army', conference: 'Ind', logo: '/CFPbracket/team-logos/army.png', record: '10-1'},
+    { id: 25, name: 'Memphis', conference: 'American', logo: '/CFPbracket/team-logos/memphis.png', record: '10-2'},
 
   ];
   
@@ -84,7 +86,7 @@ function calculateSeeds() {
     // First pass: Assign seeds 1-4 (one per conference, highest ranked)
     let seedIndex = 0;
     rankings.forEach((team) => {
-        if (seedIndex < 4 && team.conference !== 'Independent' && team.conference !== 'Pac-12' && !usedConferences.has(team.conference)) {
+        if (seedIndex < 4 && team.conference !== 'Ind' && team.conference !== 'Pac-12' && !usedConferences.has(team.conference)) {
             seeds[seedIndex] = { ...team, seed: seedIndex + 1 };
             usedConferences.add(team.conference);
             assignedTeams.add(team.id);
@@ -98,7 +100,7 @@ function calculateSeeds() {
     
     rankings.forEach((team, index) => {
         if (!usedConferences.has(team.conference) && 
-            team.conference !== 'Independent' && 
+            team.conference !== 'Ind' && 
             team.conference !== 'Pac-12' &&
             fifthConfChamp === null) {
             fifthConfChamp = team;
@@ -183,7 +185,7 @@ function calculateSeeds() {
     // Find the next highest ranked conference champion not independent or pac 12
     for (let i = 4; i < 12; i++) {
         if (seeds[i] && !usedConferences.has(seeds[i].conference) && 
-            seeds[i].conference !== 'Independent' && seeds[i].conference !== 'Pac-12') {
+            seeds[i].conference !== 'Ind' && seeds[i].conference !== 'Pac-12') {
             fifthConfChamp = seeds[i];
             break;
         }
@@ -227,6 +229,7 @@ function calculateSeeds() {
             <div class="team-info">
                 <div class="team-name">${team.name}</div>
                 <div class="conference-info"> 
+                    <div class="team-record">(${team.record})</div>
                     <div class="team-conference ${conferenceClass}">${team.conference}</div>
                     <div class="trophy"><img src="${trophy}" alt="Trophy"></div>
                 </div>
