@@ -89,13 +89,25 @@ nav ul li a:hover {
 /* Section Styles */
 section {
     display: flex;
-    flex-direction: row; /* Create two columns */
-    justify-content: space-between; /* Space between left and right */
-    align-items: center; /* Vertically align content */
+    flex-direction: column; /* Stack content vertically */
+    justify-content: center; /* Center content horizontally */
+    align-items: center; /* Center content vertically */
     padding: 4em 3em;
     border-bottom: 1px solid #333;
     width: 100%;
 }
+
+/* Section Headers */
+section h2 {
+    text-align: center; /* Center the text */
+    margin-bottom: 1.5em; /* Add spacing below the header */
+    font-size: 2em; /* Adjust font size */
+    color: #9FCBED; /* Baby blue color */
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
 
 /* Left Column Styles */
 .left-column {
@@ -339,3 +351,4 @@ a {
     color: #9FCBED;
     text-decoration: underline;
 }
+
