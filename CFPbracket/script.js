@@ -35,24 +35,11 @@ const initialRankings = [
     { id: 5, name: 'Georgia', conference: 'SEC', logo: '/CFPbracket/team-logos/georgia.png', record: '11-2', champ: true},
     { id: 6, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png', record: '10-2', champ: false},
     { id: 7, name: 'Tennessee', conference: 'SEC', logo: '/CFPbracket/team-logos/tennessee.png', record: '10-2', champ: false},
-    { id: 8, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png', record: '11-2', champ: false},
     { id: 9, name: 'Indiana', conference: 'Big Ten', logo: '/CFPbracket/team-logos/indiana.png', record: '11-1', champ: false},
     { id: 10, name: 'Boise State', conference: 'MWC', logo: '/CFPbracket/team-logos/boise-state.png', record: '12-1', champ: true},
-    { id: 11, name: 'Alabama', conference: 'SEC', logo: '/CFPbracket/team-logos/alabama.png', record: '9-3', champ: false},
-    { id: 12, name: 'Miami', conference: 'ACC', logo: '/CFPbracket/team-logos/miami.png', record: '10-2', champ: false},
-    { id: 13, name: 'Ole Miss', conference: 'SEC', logo: '/CFPbracket/team-logos/ole-miss.png', record: '9-3', champ: false},
-    { id: 14, name: 'South Carolina', conference: 'SEC', logo: '/CFPbracket/team-logos/south-carolina.png', record: '9-3', champ: false},
+    { id: 8, name: 'SMU', conference: 'ACC', logo: '/CFPbracket/team-logos/smu.png', record: '11-2', champ: false},
     { id: 15, name: 'Arizona State', conference: 'Big 12', logo: '/CFPbracket/team-logos/arizona-state.png', record: '11-2', champ: true},
-    { id: 16, name: 'Iowa State', conference: 'Big 12', logo: '/CFPbracket/team-logos/iowa-state.png', record: '10-3', champ: false},
     { id: 17, name: 'Clemson', conference: 'ACC', logo: '/CFPbracket/team-logos/clemson.png', record: '10-3', champ: true},
-    { id: 18, name: 'BYU', conference: 'Big 12', logo: '/CFPbracket/team-logos/byu.png', record: '10-2', champ: false},
-    { id: 19, name: 'Missouri', conference: 'SEC', logo: '/CFPbracket/team-logos/missouri.png', record: '9-3', champ: false},
-    { id: 20, name: 'UNLV', conference: 'MWC', logo: '/CFPbracket/team-logos/unlv.png', record: '10-3', champ: false},
-    { id: 21, name: 'Illinois', conference: 'Big Ten', logo: '/CFPbracket/team-logos/illinois.png', record: '9-3', champ: false},
-    { id: 22, name: 'Syracuse', conference: 'ACC', logo: '/CFPbracket/team-logos/syracuse.png', record: '9-3', champ: false},
-    { id: 23, name: 'Colorado', conference: 'Big 12', logo: '/CFPbracket/team-logos/colorado.png', record: '9-3', champ: false},
-    { id: 24, name: 'Army', conference: 'American', logo: '/CFPbracket/team-logos/army.png', record: '10-1', champ: false},
-    { id: 25, name: 'Memphis', conference: 'American', logo: '/CFPbracket/team-logos/memphis.png', record: '10-2', champ: false}
 
 
   ];
