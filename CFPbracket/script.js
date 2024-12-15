@@ -286,6 +286,7 @@ function renderRankings() {
       const quarterfinals = document.getElementById('quarterfinals');
       quarterfinals.innerHTML = bracket.quarterfinals.map((matchup, index) => `
           <div class="matchup">
+          
               <div class="team-slot ${isWinner('quarterfinals', index, matchup.higher) ? 'winner' : ''}"
                    onclick="handleTeamSelect('quarterfinals', ${index}, 'higher')">
                   <img src="${matchup.higher.logo}" alt="" class="bracket-team-logo">
