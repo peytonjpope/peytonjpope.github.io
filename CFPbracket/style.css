@@ -391,15 +391,6 @@ body {
 
 
 
-/* New silver gradient for 5th conference champ */
-.conference-champ-fifth {
-    background: linear-gradient(45deg, #c38d13, #cea649, #c38d13);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-size: 200% auto;
-    animation: shine 3s linear infinite;
-}
-
 
 @keyframes shine {
     to {
