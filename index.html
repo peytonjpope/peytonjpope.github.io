@@ -14,11 +14,11 @@
 <body>
     <header>
         <div class="header-content">
-            <div class="logo">
+            <a href="index.html" class="logo">
                 <video id="signature-video" autoplay muted playsinline>
                     <source src="/media/Sig.webm" type="video/webm">
                 </video>
-            </div>
+            </a>
             <nav>
                 <ul>
                     <li><a href="#about">About Me</a></li>
@@ -80,37 +80,55 @@
             <h2>Featured Projects</h2>
         </div>
         <div class="project-grid">
-            <div class="project-card">
-                <img src="/media/CFPbracket.png" alt="Project Image">
+            <a href="/project1" class="project-card">
+                <img src="/media/bracketss.jpg" alt="Project Image">
                 <h3>Football Bracket Generator</h3>
-                <p>HTML, JavaScript, CSS, Game Logic, Photoshop. <a href="#">View More</a></p>
-            </div>
+                <p>Front-End Web Development (HTML, CSS, JavaScript)</p> 
+            </a>
             <div class="project-card">
                 <h3>Project Two</h3>
-                <p>Short description of the project. <a href="#">View More</a></p>
+                <p>Short description of the project.
             </div>
             <div class="project-card">
                 <h3>Project Three</h3>
-                <p>Short description of the project. <a href="#">View More</a></p>
+                <p>Short description of the project. 
+            </div>
+            <div class="project-card">
+                <h3>Project 4</h3>
+                <p>Short description of the project. 
             </div>
         </div>
     </section>
 
 
-    <!-- Contact Section -->
     <section id="more-info">
-        <h2>More Information</h2>
-        <p>Phone: 260-212-8788 | Email: peytonpope24@gmail.com 
-            | Handshake: <a href="https://liberty.joinhandshake.com/profiles/42824710">Peyton Pope</a></p>
-        <p>| LinkedIn: <a href="https://www.linkedin.com/in/peyton-pope-4b1b3b1b1/">Peyton Pope</a>
-            | GitHub: <a href="https://github.com/peytonjpope">peytonjpope</a> 
-            | Resume: <a href="https://docs.google.com/document/d/1tOrLOANcDGCsmyjruQTfsAaEVIhN2ftL/edit?usp=sharing&ouid=114663511265171641876&rtpof=true&sd=true">Resume</a></p>
+        <h2>More Info</h2>
+        <div class="detail-item">
+            <img src="/media/icons/college.png" alt="Icon">
+            <p>peytonpope24@gmail.com</p>
+            <img src="/media/icons/college.png" alt="Icon">
+            <p>(260) 260-212-8788</p>
+        </div>
+        <div class="info-grid">
+            <a href="resume.pdf" target="_blank" class="info-item">
+                <img src="icons/resume.png" alt="Resume">
+                <p>Resume</p>
+            </a>
+            <a href="https://www.linkedin.com/in/peyton-pope-75202b24a/" target="_blank" class="info-item">
+                <img src="icons/linkedin.png" alt="LinkedIn">
+                <p>LinkedIn</p>
+            </a>
+            <a href="https://github.com/peytonjpope" target="_blank" class="info-item">
+                <img src="icons/github.png" alt="GitHub">
+                <p>GitHub</p>
+            </a>
+        </div>
     </section>
-
-    </section>
+    
+  
 
     <footer>
-        <a href="https://peytonjpope.com/CFPbracket/">CFP Bracket</a>
+        <p>2025 Peyton Pope</p>
     </footer>
 
     <script src="script.js"></script>
