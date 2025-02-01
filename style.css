@@ -7,7 +7,14 @@
 body {
     font-family: 'Montserrat', sans-serif;
     color: #e0e0e0;
-    background-color: #1b1b1b;
+    background-color: hsl(0, 0%, 0%);
+    background-image: url('media/lubg.png'); /* Replace with your image path */
+    background-size: cover;  /* Covers the entire viewport */
+    background-position: center;  /* Centers the image */
+    background-attachment: fixed;  /* Makes the image stay in place */
+    background-repeat: no-repeat;  /* Prevents repetition */
+    background-position-y: px; /* Adjust vertical position */
+
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -26,7 +33,7 @@ header {
     justify-content: center;
     align-items: center;
     padding: 1em 3em; /* Reduce padding slightly if needed */
-    background-color: #111; /* Slightly darker header for contrast */
+    background-color: #000000; /* gradiant */
     color: #e0e0e0;
     width: 100%;
     text-align: center;
@@ -74,6 +81,11 @@ nav ul li a:hover {
     margin-bottom: 1em;
 }
 
+.intro-section {
+
+    margin-top: 40px; /* Add space between the image and text */
+}
+
 .header-info h1 {
     font-size: 1.8em;
     margin: 0;
@@ -86,6 +98,66 @@ nav ul li a:hover {
     color: #ccc; /* Light gray for contrast */
 }
 
+#about {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+
+    background-color: #1b1b1bda;
+    max-width: 90%;
+    margin-top: 300px;
+}
+
+.about-content {
+    display: flex;
+    align-items: center;
+
+    font-size: 20px;
+    max-width: 800px;
+}
+
+.about-text {
+    max-width: 700px;
+    margin-top: 30px;
+    font-style: italic;
+    color: #e6e6e6b5;
+    margin-bottom: 0px;
+}
+
+.profile-image img {
+    width: 200px; /* Adjust size as needed */
+    height: 200px;
+    object-fit: cover;
+    border-radius: 30px; /* Optional: Adds rounded corners */
+    display: block;
+}
+
+.profile-details {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.detail-item img {
+    width: 30px; /* Adjust size as needed */
+    height: 30px;
+}
+
+
+#gradient {
+    background: linear-gradient(180deg, #1b1b1bda 0%, #1b1b1b 100%);
+    max-width: 90%;
+    
+}
+
 /* Section Styles */
 section {
     display: flex;
@@ -93,7 +165,6 @@ section {
     justify-content: center; /* Center content horizontally */
     align-items: center; /* Center content vertically */
     padding: 4em 3em;
-    border-bottom: 1px solid #333;
     width: 100%;
 }
 
@@ -138,12 +209,13 @@ h2 {
 /* Project Grid */
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    grid-template-columns: repeat(2, 1fr); /* 3 columns per row */
     gap: 1.5em;
     justify-items: center; /* Centers each item in the grid */
     width: 100%;
-    max-width: 1200px; /* Optional: You can control the maximum width of the grid */
+    max-width: 800px; /* Optional: You can control the maximum width of the grid */
     margin: 0 auto; /* Center the grid horizontally */
+    
 }
 
 .project-card {
@@ -156,6 +228,23 @@ h2 {
     width: 100%; /* Ensures cards are responsive */
     max-width: 300px; /* Prevents cards from becoming too large */
     text-align: center; /* Centers text within the card */
+}
+
+.description {
+    align-content: center;
+    max-width: 620px;
+    line-height: 23px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #00000075; 
+    text-shadow: #000000;
+    margin-bottom: 100px;
+}
+
+#projects {
+    background-color: #1b1b1b;
+    max-width: 90%;
+
 }
 
 .project-card h3 {
@@ -199,7 +288,7 @@ button, .project-card:hover {
 /* Skills Section */
 #skills {
     padding: 2em 3em;
-    background-color: #2d2d2d; /* Dark background */
+    background-color: #1b1b1b;
     color: #f0f0f0;
 }
 
@@ -290,10 +379,11 @@ button, .project-card:hover {
 /* Header Layout */
 header {
     display: flex;
-    justify-content: center; /* Centers the content */
+    justify-content: center; 
     align-items: center;
     padding: 1em 3em;
-    background-color: #111;
+    /* gradiant */
+    background: linear-gradient(90deg, rgba(0,0,0,.1) 0%, rgba(0,0,0,1) 10%, rgba(0,0,0,1) 90%,rgba(0,0,0,.5) 100%);
     width: 100%;
 }
 
@@ -301,9 +391,10 @@ header {
 #hello-name {
     font-size: 1.5em; /* Slightly larger font size */
     color: #e0e0e0; /* Light color for the text */
-    margin-top: 50px; /* Space between 'Hello, my name is' and the typing animation */
-    margin-bottom: -10px; /* Space between 'Hello, my name is' and the typing animation */
-
+    margin-top: 75px; /* Space between 'Hello, my name is' and the typing animation */
+    margin-bottom: -20px; /* Space between 'Hello, my name is' and the typing animation */
+/* shadow text*/
+    text-shadow: 2px 2px 4px #000000;
     opacity: 0; /* Start hidden */
     animation: fadeAndRise 1.5s ease-out forwards;
     animation-delay: 1s; /* Delay the animation */
@@ -324,6 +415,7 @@ header {
     display: none;
     margin-top: 10px;
     font-weight: bold; /* Make the final text bold */
+    text-shadow: 2px 2px 4px #000000; /* Add a shadow to the text */
 
 }
 

@@ -27,7 +27,7 @@ const initialRankings = [
     Boise State
     Ole Miss
 
-    */ 
+    */
 
     { id: 1, name: 'Texas', conference: 'SEC', logo: '/CFPbracket/team-logos/texas.png', record: '0-0', champ: true },
     { id: 2, name: 'Ohio State', conference: 'Big Ten', logo: '/CFPbracket/team-logos/ohio-state.png', record: '0-0', champ: true },
