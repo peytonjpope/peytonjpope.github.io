@@ -361,7 +361,6 @@ a {
     gap: 20px;
     justify-content: space-between;
     margin-top: 20px;
-    margin-bottom: 200px;;
     max-width: 1000px;
 }
 
@@ -390,3 +389,19 @@ a {
     font-size: 22px;
 }
 
+.back-button {
+    background-color: #89c9ff;
+    width: 80%;
+    max-width: 1000px;
+    padding: 14px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #2a2a2a;
+    text-decoration: none;
+    margin-bottom: 100px;
+    
+    
+}
