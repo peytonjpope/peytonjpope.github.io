@@ -217,12 +217,10 @@ h2 {
     margin: 0 auto;
 }
 
-.h4 {
-    color: #9FCBED; /* Baby blue for headers */
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    font-family: 'Montserrat', sans-serif; /* Ensure headers also use Montserrat */
+.bottom-box2 h4 {
+    color: #89c9ff;
+    text-align: center;
+    font-size: 22px;
 }
 
 .info-item {
@@ -379,14 +377,14 @@ a {
 
 .bottom-box2 {
     background-color: #2a2a2a; /* Slightly lighter dark gray for cards */
-    color: #89c9ff;
-    text-align: center;
+    color: #e0e0e0;
+    text-align: left;
     border-radius: 5px;
     width: 100%; /* Ensures cards are responsive */
     text-decoration: none;  /* Removes the default underline */
-    height: 100%;
     padding: 20px;
-    font-size: 22px;
+    font-size: 18px;
+    line-height: 30px;
 }
 
 .back-button {
@@ -402,6 +400,9 @@ a {
     color: #2a2a2a;
     text-decoration: none;
     margin-bottom: 100px;
-    
-    
+}
+
+.back-button:hover {
+    transform: scale(1.01);
+    transition: transform 0.2s;
 }

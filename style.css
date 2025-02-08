@@ -4,6 +4,12 @@
     padding: 0;
     box-sizing: border-box;
 }
+
+html {
+    scroll-padding-top: 100px; /* Adjust based on your header height */
+  }
+  
+
 body {
     font-family: 'Montserrat', sans-serif;
     color: #e0e0e0;
@@ -86,6 +92,12 @@ nav ul li a:hover {
     margin-top: 40px; /* Add space between the image and text */
 }
 
+.center-column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .header-info h1 {
     font-size: 1.8em;
     margin: 0;
@@ -150,13 +162,35 @@ nav ul li a:hover {
 }
 
 .detail-item img {
-    width: 30px; /* Adjust size as needed */
+    width: auto; /* Adjust size as needed */
     height: 30px;
 }
 
 
+.detail-item2 {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 10px;
+    font-size: 18px;
+}
+
+.detail-item2 img {
+    width: auto; /* Adjust size as needed */
+    height: 25px;
+}
+
+
+
 #gradient {
     background: linear-gradient(180deg, #1b1b1bda 0%, #1b1b1b 50%);
+    width: 90%;
+    max-width: 1000px;
+    
+}
+
+#gradient2 {
+    background: linear-gradient(180deg, #1b1b1b 50%, #1b1b1b00 100%);
     width: 90%;
     max-width: 1000px;
     
@@ -186,20 +220,6 @@ section h2 {
 }
 
 
-/* Left Column Styles */
-.left-column {
-    flex: 1; /* Take up equal space as the right column */
-    text-align: center; /* Align content to the left */
-}
-
-/* Right Column Styles */
-.right-column {
-    flex: .75; /* Take up equal space as the left column */
-    text-align: left; /* Align content to the left */
-    padding-right: 2em;
-    padding-left: 2em; /* Add some space on the left for the right column */
-}
-
 h1, h2 {
     color: #9FCBED; /* Baby blue for headers */
     font-weight: bold;
@@ -221,7 +241,7 @@ h2 {
     width: 100%;
     max-width: 800px; /* Optional: You can control the maximum width of the grid */
     margin: 0 auto; /* Center the grid horizontally */
-    
+    margin-bottom: 150px;
 }
 
 .project-card {
@@ -285,22 +305,15 @@ h2 {
 }
 
 
-/* Contact Section */
-#contact {
-    text-align: center;
-}
-
-#contact p {
-    font-size: 1.2em;
-    color: #89c9ff;
-}
 
 /* Interactive Hover and Focus States */
 a:hover {
     color: #e0e0e0; /* Light gray on hover */
     transition: color 0.2s;
+    font-style: bold;
     
 }
+
 button, .project-card:hover {
     cursor: pointer;
     transition: all 0.3s ease;
@@ -312,41 +325,54 @@ button, .project-card:hover {
     background-color: #1b1b1b;
     width: 90%;
     max-width: 1000px;
+    margin-bottom: 100px;
 }
 
 .info-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 20px;
+    gap: 70px;
     justify-items: center;
     max-width: 600px;
     margin: 0 auto;
+    margin-top: 20px;
+    margin-bottom: 50px;
 }
+
+.info-grid2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 3 columns */
+    gap: 10px;
+    justify-items: center;
+    max-width: 600px;
+    margin: 10 auto;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
 
 .info-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-decoration: none;
-    color: black;
-    font-size: 16px;
-    transition: transform 0.2s ease-in-out;
 }
 
 .info-item img {
-    width: 80px; /* Adjust icon size */
-    height: 80px;
-    border-radius: 50%; /* Makes icons circular */
-    transition: transform 0.3s ease-in-out;
+    width: 90px; /* Adjust icon size */
+    height: 90px;
+    border-radius: 15%; /* Makes icons circular */
+    transition: filter 0.2s ease-in-out;
 }
 
 .info-item:hover img {
-    transform: scale(1.1);
+    filter: drop-shadow(0 0 4px #9FCBED); /* Adds a subtle shadow on hover */
 }
 
 .info-item p {
     margin-top: 8px;
-    font-weight: bold;
+    color: #e2e2e2;
+
 }
 
 
@@ -389,7 +415,7 @@ button, .project-card:hover {
 .highlight {
     background-color: rgba(22, 163, 74, 0.2);
     transition: background-color 0.6s;
-    padding: 0.2em 0.4em;  /* Add some padding for the highlight */
+    padding: 0em .1em;  /* Add some padding for the highlight */
     border-radius: 0.2em;
 }
 
