@@ -66,6 +66,15 @@ body {
 }
 
 .footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #999;
+    font-size: 0.8em;
+
+}
+
+
+.instructions {
     background-color: #333;
     color: #c4c4c4;
     font-size: 14px;
@@ -76,9 +85,9 @@ body {
     position: relative;
     margin-top: 240px;
     bottom: 0px;
-
     
 }
+
 
 .team-card {
     display: flex;

@@ -287,13 +287,12 @@ header {
 }
 
 footer {
-    background-color: #111;
     color: #737373;
     text-align: center;
     padding: 1em 0;
     width: 100%;
     bottom: 0;
-    font-size: 0.8em;
+    font-size: 1em;
     font-family:'Times New Roman', Times, serif
 }
 
