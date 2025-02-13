@@ -34,7 +34,7 @@
     <body>    
         <div class="container">
             <div class="info-section">
-                <h1>Bracket Generator</h1>
+                <h1>Churches in Va: Data Analysis & Visualization</h1>
                 <div class="info-box">As the new College Football Playoff neared, 
                     I scoured the internet to try and find a tool that would allow my friends and I to visualize our hypothetical discussions. 
                     To my disapointment, nothing of the sort existed. 
@@ -42,9 +42,16 @@
                     <b>Click the image to visit for yourself!</b></div>
             </div>
             <div class="img-container">
-                <a href="https://peytonjpope.com/CFPbracket/" target="_blank">
-                    <img src="media/bracket.gif" alt="bracket">
-                </a>
+                <div class="carousel">
+                    <div class="carousel-images">
+                        <img src="media/image1.jpg" class="carousel-item">
+                        <img src="media/image2.jpg" class="carousel-item">
+                        <img src="media/image3.jpg" class="carousel-item">
+                    </div>
+                    <button id="prev">❮</button>
+                    <button id="next">❯</button>
+                </div>
+                
             </div>
         </div>
     
@@ -82,9 +89,9 @@
             </div>
             <div class="bottom-box2">
                 <h4>Lessons Learned</h4>
-                <p>• Domain Hosting and Management though GitHub Pages
-                    <br>• Interactive Front-End Web Development 
-                    <br>• Backend Logic for Structual Design
+                <p>• Web-scraping for data
+                    <br>• Data frame manipulation via Pandas 
+                    <br>• Graphing with Matplotlib
                     <br>• Supporting array of image formats
                 </p>
             </div>
@@ -98,6 +105,6 @@
     <footer>
         <p>2025 Peyton Pope</p>
     </footer>
-
+<script src="script.js"></script>
 </body>
 </html>

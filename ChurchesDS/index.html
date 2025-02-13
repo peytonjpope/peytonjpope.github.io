@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Churches Data Science</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">US Churches by Denomination
+            <div class="subheader">Data Visualization</div>
+        </div>
+        
+        <div class="content">
+            <div class="map-container">
+                <img class="map-image" src="/ChurchesDS/graphs/dotmapAll.png" alt="Religious denomination map">
+            </div>
+
+            <div class="controls">
+                <ul class="denomination-list">
+                    <li class="denomination-item" data-name="All">
+                        <div class="dot" style="background-color: white;"></div>
+                        All <span class="count">(210,869)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Methodist">
+                        <div class="dot" style="background-color: #E63946;"></div>
+                        Methodist <span class="count">(15,678)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Baptist">
+                        <div class="dot" style="background-color: #2A9D8F;"></div>
+                        Baptist <span class="count">(34,604)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Episcopal">
+                        <div class="dot" style="background-color: #F4A261;"></div>
+                        Episcopal <span class="count">(3,469)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Presbyterian">
+                        <div class="dot" style="background-color: #A8DADC;"></div>
+                        Presbyterian <span class="count">(6,059)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Lutheran">
+                        <div class="dot" style="background-color: #1D3557;"></div>
+                        Lutheran <span class="count">(8,759)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Pentecostal">
+                        <div class="dot" style="background-color: #8D99AE;"></div>
+                        Pentecostal <span class="count">(1,707)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Catholic">
+                        <div class="dot" style="background-color: #FF6B6B;"></div>
+                        Catholic <span class="count">(6,850)</span>
+                    </li>
+                    <li class="denomination-item" data-name="LDS">
+                        <div class="dot" style="background-color: #4ECDC4;"></div>
+                        Latter Day Saints <span class="count">(1,306)</span>
+                    </li>
+                    <li class="denomination-item" data-name="Mennonite">
+                        <div class="dot" style="background-color: #F3722C;"></div>
+                        Mennonite <span class="count">(343)</span>
+                    </li>
+                </ul>
+
+                <div class="view-controls">
+                    <button class="view-button active" data-view="dot">Dot Plot</button>
+                    <button class="view-button" data-view="con">Contour Plot</button>
+                </div>
+            </div>
+        </div>
+        <div class="info">All data scraped from <a href="https://www.expertgps.com/">ExpertGPS.com</a></div>
+        <a href="https://github.com/peytonjpope" target="_blank" class="gh">
+            <img src="/media/icons/github.png" alt="GitHub">
+        </a>
+        <div class="footer">
+            <a href="https://peytonjpope.com/">peytonjpope.com</a>
+        </div>
+    </div>
+
+<script src="script.js"></script>
+</body>
+</html>
