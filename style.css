@@ -236,7 +236,7 @@ h2 {
 /* Project Grid */
 .project-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    grid-template-columns: repeat(2, 1fr); /* 3 columns per row */
     gap: 1.5em;
     justify-items: center; /* Centers each item in the grid */
     width: 100%;

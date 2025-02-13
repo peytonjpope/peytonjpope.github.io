@@ -19,15 +19,17 @@ body {
 
 /* Header styling */
 .header {
-    text-align: center;
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
     margin-top: 20px;
+    text-align: left; /* Left-align the text */
+    align-self: flex-start; /* Aligns the header to the start (left) of the container */
+    width: 100%; /* Ensure it takes full width */
 }
 
 .subheader {
-    text-align: center;
+    text-align: left; /* Left-align the text */
     font-size: 20px;
     color: rgb(255, 255, 255);
     font-style: italic;
@@ -54,7 +56,7 @@ body {
 }
 
 .controls {
-    margin-top: 30px;
+    margin-top: 40px;
     flex: 1; /* Takes up 1/3 of the space */
 }
 
@@ -144,14 +146,19 @@ body {
 .footer {
     text-align: center;
     position: absolute;
-    bottom: 0px;
-    background-color: white;
+    bottom: 2px;
     font-size: 14px;
     width: 100%;
     padding: 4px 0;
+    background-color: black;
+    border-top: 1px solid white;
 }
 
 .a {
     color: white;
     text-decoration: none;
+}
+
+a:visited {
+    color: white; /* Ensures visited links remain white */
 }

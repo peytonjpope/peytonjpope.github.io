@@ -34,24 +34,17 @@
     <body>    
         <div class="container">
             <div class="info-section">
-                <h1>Churches in Va: Data Analysis & Visualization</h1>
-                <div class="info-box">As the new College Football Playoff neared, 
-                    I scoured the internet to try and find a tool that would allow my friends and I to visualize our hypothetical discussions. 
-                    To my disapointment, nothing of the sort existed. 
-                    So, with no academic web-development intruction, I created it myself. 
-                    <b>Click the image to visit for yourself!</b></div>
+                <h1>US Churches: Data Science</h1>
+                <div class="info-box">After reading <i>Learn to Code with Basketball</i> by Nathan Braun, I felt ready to apply web-scraping and data manipulation.  
+                    I aimed to map as many US churches as possible, filtered by denomination. I found <a href="https://www.expertgps.com/" target="_blank">ExpertGPS.com</a>, which listed 200,000+ churches by state with coordinates.  
+                    Using BeautifulSoup and Pandas, I scraped and organized the data, assigning denominations based on names.  
+                    Finally, I used Matplotlib and Seaborn to create dot and contour plots over a US map.  
+                    <b>Click the image to see more!</b></div>                    
             </div>
             <div class="img-container">
-                <div class="carousel">
-                    <div class="carousel-images">
-                        <img src="media/image1.jpg" class="carousel-item">
-                        <img src="media/image2.jpg" class="carousel-item">
-                        <img src="media/image3.jpg" class="carousel-item">
-                    </div>
-                    <button id="prev">❮</button>
-                    <button id="next">❯</button>
-                </div>
-                
+                <a href="/ChurchesDS/" target="_blank">
+                    <img src="media/dotmapAll.png" alt="map">
+                </a>
             </div>
         </div>
     
@@ -60,39 +53,41 @@
                 <h4>Tools Used</h4>
                 <div class="info-grid">
                     <div class="info-item">
-                        <img src="media/html.png" alt="icon">
-                        <p>HTML</p>
+                        <img src="media/py.png" alt="icon">
+                        <p>Python</p>
                     </div>
                     <div class="info-item">
-                        <img src="media/css.png" alt="icon">
-                        <p>CSS</p>
+                        <img src="media/pd.png" alt="icon">
+                        <p>Pandas</p>
                     </div>
                     <div class="info-item">
-                        <img src="media/js.png" alt="icon">
-                        <p>JavaScript</p>
+                        <img src="media/ml.png" alt="icon">
+                        <p>Matplotlib</p>
                     </div>
                 </div>
                 <div class="info-grid">
                     <div class="info-item">
-                        <img src="media/gh.png" alt="icon">
-                        <p>GitHub Pages</p>
+                        <img src="media/ws.png" alt="icon">
+                        <p>Web-scraping (BFS)</p>
                     </div>
                     <div class="info-item">
-                        <img src="media/vscode.png" alt="icon">
-                        <p>VS Code MacOS</p>
+                        <img src="media/spy.png" alt="icon">
+                        <p>Spyder REPL</p>
                     </div>
                     <div class="info-item">
-                        <img src="media/ps.png" alt="icon">
-                        <p>Adobe Photoshop</p>
+                        <img src="media/sb.png" alt="icon">
+                        <p>Seaborn</p>
                     </div>
                 </div>
             </div>
             <div class="bottom-box2">
                 <h4>Lessons Learned</h4>
-                <p>• Web-scraping for data
-                    <br>• Data frame manipulation via Pandas 
-                    <br>• Graphing with Matplotlib
-                    <br>• Supporting array of image formats
+                <p>• Web-scraping for data using BeautifulSoup
+                    <br>• Dataframe manipulation via Pandas 
+                    <br>• Data cleaning and organization
+                    <br>• Graphing with Matplotlib and Seaborn
+                    <br>• Handling large datasets
+                    <br>
                 </p>
             </div>
         </div>
@@ -103,7 +98,7 @@
 
     </body>
     <footer>
-        <p>2025 Peyton Pope</p>
+        <p>© Pope 2025</p>
     </footer>
 <script src="script.js"></script>
 </body>
