@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#2196F3">
+    <title>Basketball Stat Tracker</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="apple-touch-icon" href="img/icons/icon-192x192.png">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="app-nav">
+            <div class="nav-header">
+                <h1>Basketball Advanced Stat Sheet</h1>
+                <button id="menu-toggle" aria-label="Menu">☰</button>
+            </div>
+            <div class="nav-menu" id="nav-menu">
+                <button data-screen="setup" class="nav-btn active">Setup</button>
+                <button data-screen="game" class="nav-btn">Game</button>
+                <button data-screen="boxscore" class="nav-btn">Box Score</button>
+                <button data-screen="dashboard" class="nav-btn">Dashboard</button>
+                <button data-screen="teams" class="nav-btn">Teams</button>
+            </div>
+        </nav>
+
+        <!-- Screens -->
+        <main id="screen-container">
+            <!-- Game Setup Screen -->
+            <section id="setup-screen" class="screen active">
+                <h2>Game Setup</h2>
+                <div class="setup-container">
+                    <!-- Home Team Setup -->
+                    <div class="team-setup">
+                        <h3>Home Team</h3>
+                        <div class="input-group">
+                            <label for="home-team">Team Name:</label>
+                            <input type="text" id="home-team" placeholder="Home Team">
+                        </div>
+                        <div class="input-group">
+                            <label>Team Selection:</label>
+                            <select id="home-team-select">
+                                <option value="">-- Select Saved Team --</option>
+                            </select>
+                        </div>
+                        <h4>Players</h4>
+                        <div id="home-players" class="player-list">
+                            <!-- Player entries will be added dynamically -->
+                            <div class="player-entry">
+                                <input type="number" placeholder="#" class="player-number">
+                                <input type="text" placeholder="Player Name" class="player-name">
+                            </div>
+                        </div>
+                        <button id="add-home-player" class="btn-secondary">+ Add Player</button>
+                    </div>
+
+                    <!-- Away Team Setup -->
+                    <div class="team-setup">
+                        <h3>Away Team</h3>
+                        <div class="input-group">
+                            <label for="away-team">Team Name:</label>
+                            <input type="text" id="away-team" placeholder="Away Team">
+                        </div>
+                        <div class="input-group">
+                            <label>Team Selection:</label>
+                            <select id="away-team-select">
+                                <option value="">-- Select Saved Team --</option>
+                            </select>
+                        </div>
+                        <h4>Players</h4>
+                        <div id="away-players" class="player-list">
+                            <!-- Player entries will be added dynamically -->
+                            <div class="player-entry">
+                                <input type="number" placeholder="#" class="player-number">
+                                <input type="text" placeholder="Player Name" class="player-name">
+                            </div>
+                        </div>
+                        <button id="add-away-player" class="btn-secondary">+ Add Player</button>
+                    </div>
+                </div>
+                <div class="game-meta">
+                    <h3>Game Details</h3>
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="game-date">Date:</label>
+                            <input type="date" id="game-date">
+                        </div>
+                        <div class="input-group">
+                            <label for="game-location">Location:</label>
+                            <input type="text" id="game-location" placeholder="Location">
+                        </div>
+                    </div>
+                </div>
+                <div class="button-row">
+                    <button id="save-teams" class="btn-secondary">Save Teams</button>
+                    <button id="start-game" class="btn-primary">Start Game</button>
+                </div>
+            </section>
+
+            <!-- Game Tracking Screen -->
+            <section id="game-screen" class="screen">
+                <div class="score-header">
+                    <div class="team home-team">
+                        <span class="team-name" id="game-home-team">Home</span>
+                        <span class="team-score" id="home-score">0</span>
+                    </div>
+                    <div class="game-status">
+                        <span id="game-period">1st</span>
+                    </div>
+                    <div class="team away-team">
+                        <span class="team-score" id="away-score">0</span>
+                        <span class="team-name" id="game-away-team">Away</span>
+                    </div>
+                </div>
+
+                <div class="game-container">
+                    <!-- Home Team Container -->
+                    <div class="team-container home-team-container">
+                        <!--<h3>Team: <span id="home-team-name">Home</span></h3> -->
+                        <div class="player-selection" id="home-active-players">
+                            <!-- Home players will be populated here -->
+                        </div>
+                        <div class="stat-buttons">
+                            <h4>Selected: <span id="home-selected-player">No player selected</span></h4>
+                            <div class="button-group">
+                                <button class="stat-btn home-stat-btn" data-stat="fgm">MADE 2</button>
+                                <button class="stat-btn home-stat-btn" data-stat="3pm">MADE 3</button>
+                                <button class="stat-btn home-stat-btn" data-stat="ftm">MADE FT</button>
+                            </div>
+                            <div class="button-group">
+                                <button class="stat-btn home-stat-btn" data-stat="fga">MISSED 2</button>
+                                <button class="stat-btn home-stat-btn" data-stat="3pa">MISSED 3</button>
+                                <button class="stat-btn home-stat-btn" data-stat="fta">MISSED FT</button>
+                            </div>
+                            <div class="button-group">
+                                <button class="stat-btn home-stat-btn" data-stat="oreb">O-BOARD</button>
+                                <button class="stat-btn home-stat-btn" data-stat="dreb">D-BOARD</button>
+                                <button class="stat-btn home-stat-btn" data-stat="ast">ASSIST</button>
+                            </div>
+                            <div class="button-group">
+                                <button class="stat-btn home-stat-btn" data-stat="stl">STEAL</button>
+                                <button class="stat-btn home-stat-btn" data-stat="blk">BLOCK</button>
+                                <button class="stat-btn home-stat-btn" data-stat="tov">TURNOVER</button>
+                                <button class="stat-btn home-stat-btn" data-stat="pf">FOUL</button>
+                            </div>
+                            <div class="button-group special">
+                                <button class="stat-btn home-stat-btn" data-stat="paint">PAINT TOUCH</button>
+                                <button class="stat-btn home-stat-btn" data-stat="undo">UNDO</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Away Team Container -->
+                    <div class="team-container away-team-container">
+                        <!-- <h3>Team: <span id="away-team-name">Away</span></h3> -->
+                        <div class="player-selection" id="away-active-players">
+                            <!-- Away players will be populated here -->
+                        </div>
+                        <div class="stat-buttons">
+                            <h4>Selected: <span id="away-selected-player">No player selected</span></h4>
+                            <div class="button-group">
+                                <button class="stat-btn away-stat-btn" data-stat="fgm">MADE 2</button>
+                                <button class="stat-btn away-stat-btn" data-stat="3pm">MADE 3</button>
+                                <button class="stat-btn away-stat-btn" data-stat="ftm">MADE FT</button>
+                            </div>
+                            <div class="button-group">
+                                <button class="stat-btn away-stat-btn" data-stat="fga">MISSED 2</button>
+                                <button class="stat-btn away-stat-btn" data-stat="3pa">MISSED 3</button>
+                                <button class="stat-btn away-stat-btn" data-stat="fta">MISSED FT</button>
+                            </div>
+                            <div class="button-group">
+                                <button class="stat-btn away-stat-btn" data-stat="oreb">O-BOARD</button>
+                                <button class="stat-btn away-stat-btn" data-stat="dreb">D-BOARD</button>
+                                <button class="stat-btn away-stat-btn" data-stat="ast">ASSIST</button>
+                            </div>
+                            <div class="button-group">
+                                <button class="stat-btn away-stat-btn" data-stat="stl">STEAL</button>
+                                <button class="stat-btn away-stat-btn" data-stat="blk">BLOCK</button>
+                                <button class="stat-btn away-stat-btn" data-stat="tov">TURNOVER</button>
+                                <button class="stat-btn away-stat-btn" data-stat="pf">FOUL</button>
+                            </div>
+                            <div class="button-group special">
+                                <button class="stat-btn away-stat-btn" data-stat="paint">PAINT TOUCH</button>
+                                <button class="stat-btn away-stat-btn" data-stat="undo">UNDO</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <!-- Actions Log -->
+                    <div class="action-log">
+                        <h3>Game Log</h3>
+                        <div id="log-entries" class="log-container">
+                            <!-- Log entries will be added here -->
+                        </div>
+                    </div>
+                    <button id="end-period" class="btn-secondary">End Period</button>
+                    <button id="end-game" class="btn-primary">End Game</button>
+                </div>
+            </section>
+
+            <!-- Box Score Screen -->
+            <section id="boxscore-screen" class="screen">
+                <h2>Box Score</h2>
+                
+                <div class="box-score-controls">
+                    <div class="team-toggle">
+                        <button class="toggle-btn active" data-team="home">Home</button>
+                        <button class="toggle-btn" data-team="away">Away</button>
+                    </div>
+                </div>
+                
+                <div class="box-score-container">
+                    <table id="box-score-table" class="stats-table">
+                        <thead>
+                            <tr>
+                                <th class="player-col">Player</th>
+                                <th>MIN</th>
+                                <th>PTS</th>
+                                <th>FG</th>
+                                <th>3PT</th>
+                                <th>FT</th>
+                                <th>OREB</th>
+                                <th>DREB</th>
+                                <th>REB</th>
+                                <th>AST</th>
+                                <th>STL</th>
+                                <th>BLK</th>
+                                <th>TO</th>
+                                <th>PF</th>
+                                <th>+/-</th>
+                            </tr>
+                        </thead>
+                        <tbody id="box-score-body">
+                            <!-- Box score data will be inserted here -->
+                        </tbody>
+                        <tfoot id="box-score-totals">
+                            <!-- Team totals will go here -->
+                        </tfoot>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Dashboard Screen -->
+            <section id="dashboard-screen" class="screen">
+                <h2>Statistics Dashboard</h2>
+                
+                <div class="dashboard-container">
+                    <div class="dashboard-section team-comparison">
+                        <h3>Team Comparison</h3>
+                        <div class="stat-comparison">
+                            <div class="team-stat" id="home-team-stats">
+                                <!-- Home team stats summary -->
+                            </div>
+                            <div class="team-stat" id="away-team-stats">
+                                <!-- Away team stats summary -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-section advanced-stats">
+                        <h3>Advanced Statistics</h3>
+                        <div class="advanced-container" id="advanced-stats-container">
+                            <!-- Advanced stats will go here -->
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container" id="visualizations">
+                        <!-- Charts and visualizations -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Teams Management Screen -->
+            <section id="teams-screen" class="screen">
+                <h2>Teams Management</h2>
+                
+                <div class="teams-container">
+                    <div class="saved-teams" id="saved-teams-list">
+                        <!-- Saved teams will be listed here -->
+                    </div>
+                    
+                    <div class="team-actions">
+                        <button id="export-data" class="btn-secondary">Export All Data</button>
+                        <button id="import-data" class="btn-secondary">Import Data</button>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- JavaScript Files -->
+    <script src="js/db.js"></script>
+    <script src="js/stats.js"></script>
+    <script src="js/game.js"></script>
+    <script src="js/export.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(reg => console.log('Service Worker registered'))
+                .catch(err => console.log('Service Worker registration failed:', err));
+        }
+    </script>
+</body>
+</html>
