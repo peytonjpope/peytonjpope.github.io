@@ -383,16 +383,42 @@ const GameTracker = {
         const isMake = shotType === 'fgm' || shotType === '3pm';
         const is3pt = shotType === '3pa' || shotType === '3pm';
         
-        // Create the modal for shot details
+        // Create the modal with different court areas based on shot type
         const modal = document.createElement('div');
         modal.className = 'shot-modal';
+        
+        // Different HTML content for 2-point vs 3-point shots
+        let courtAreasHTML = '';
+        
+        if (is3pt) {
+            courtAreasHTML = `
+
+                <div class="court-area" data-location="3pt-left-corner">Left Corner</div>
+                <div class="blank-court-area"></div>
+                <div class="court-area" data-location="3pt-right-corner">Right Corner</div>
+                <div class="court-area" data-location="3pt-left-wing">Left Wing</div>
+                <div class="court-area" data-location="3pt-top">Top Key</div>
+                <div class="court-area" data-location="3pt-right-wing">Right Wing</div>
+
+
+            `;
+        } else {
+            courtAreasHTML = `
+                <div class="court-area" data-location="midrange-left">Mid-Left</div>
+                <div class="court-area" data-location="rim">Rim</div>
+                <div class="court-area" data-location="midrange-right">Mid-Right</div>
+                <div class="court-area" data-location="paint-far">Paint Far</div>
+            `;
+        }
+        
+        // Create the full modal content
         modal.innerHTML = `
             <div class="shot-modal-content">
                 <h3>${isMake ? 'Made' : 'Missed'} ${is3pt ? '3PT' : '2PT'} Shot Details</h3>
                 <p>#${player.number} ${player.name} - ${teamType === 'home' ? this.currentGame.homeTeam.name : this.currentGame.awayTeam.name}</p>
                 
                 <div class="shot-quality-section">
-                    <h4>Shot Quality (1-10)</h4>
+                    <h4>Estimated Shot Quality</h4>
                     <div class="shot-quality-buttons">
                         ${Array.from({length: 10}, (_, i) => `<button class="quality-btn" data-quality="${i+1}">${i+1}</button>`).join('')}
                     </div>
@@ -403,16 +429,7 @@ const GameTracker = {
                     <div class="court-diagram">
                         <!-- Basketball court diagram will be here -->
                         <div class="court-container">
-                            <div class="court-area" data-location="rim">Rim</div>
-                            <div class="court-area" data-location="paint-far">Paint</div>
-                            <div class="court-area" data-location="midrange-right">MR-Right</div>
-                            <div class="court-area" data-location="midrange-center">MR-Center</div>
-                            <div class="court-area" data-location="midrange-left">MR-Left</div>
-                            <div class="court-area" data-location="3pt-right-corner">3PT-RC</div>
-                            <div class="court-area" data-location="3pt-right-wing">3PT-RW</div>
-                            <div class="court-area" data-location="3pt-top">3PT-Top</div>
-                            <div class="court-area" data-location="3pt-left-wing">3PT-LW</div>
-                            <div class="court-area" data-location="3pt-left-corner">3PT-LC</div>
+                            ${courtAreasHTML}
                         </div>
                     </div>
                 </div>
@@ -600,6 +617,17 @@ const GameTracker = {
         this.renderAwayPlayerSelection();
         this.updateHomePlayerSelection();
         this.updateAwayPlayerSelection();
+        // Make sure player selected indicator shows correct text
+        // Make sure player selected indicator shows correct text
+        if (!this.homeSelectedPlayer && !this.awaySelectedPlayer) {
+            const playerSelectedIndicator = document.getElementById('player-selected-indicator');
+            if (playerSelectedIndicator) {
+                playerSelectedIndicator.textContent = 'No player selected';
+                playerSelectedIndicator.style.backgroundColor = '#ececec'; // Neutral color
+                playerSelectedIndicator.style.color = 'black';
+            }
+        }
+        
     },
     
     /**
@@ -693,7 +721,7 @@ const GameTracker = {
                 // Update player selected indicator
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
                 if (playerSelectedIndicator) {
-                    playerSelectedIndicator.textContent = `Home: #${this.homeSelectedPlayer.number} ${this.homeSelectedPlayer.name}`;
+                    playerSelectedIndicator.textContent = `#${this.homeSelectedPlayer.number} ${this.homeSelectedPlayer.name}`;
                     playerSelectedIndicator.classList.add('visible');
                     playerSelectedIndicator.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--home-color');
                     playerSelectedIndicator.style.color = 'white';
@@ -710,7 +738,9 @@ const GameTracker = {
                 // Update player selected indicator
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
                 if (playerSelectedIndicator) {
-                    playerSelectedIndicator.classList.remove('visible');
+                    playerSelectedIndicator.textContent = 'No player selected';
+                    playerSelectedIndicator.style.backgroundColor = '#ececec'; // Neutral color
+                    playerSelectedIndicator.style.color = 'black';
                 }
                 
                 // Update hidden span for JS references
@@ -755,7 +785,7 @@ const GameTracker = {
                 // Update player selected indicator
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
                 if (playerSelectedIndicator) {
-                    playerSelectedIndicator.textContent = `Away: #${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
+                    playerSelectedIndicator.textContent = `#${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
                     playerSelectedIndicator.classList.add('visible');
                     playerSelectedIndicator.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--away-color');
                     playerSelectedIndicator.style.color = 'white';
@@ -767,16 +797,18 @@ const GameTracker = {
                     selectedPlayerDisplay.textContent = `#${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
                 }
             } else {
-                statButtonsContainer.classList.remove('away-active');
+                statButtonsContainer.classList.remove('home-active');
                 
                 // Update player selected indicator
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
                 if (playerSelectedIndicator) {
-                    playerSelectedIndicator.classList.remove('visible');
+                    playerSelectedIndicator.textContent = 'No player selected';
+                    playerSelectedIndicator.style.backgroundColor = '#ececec'; // Neutral color
+                    playerSelectedIndicator.style.color = 'black';
                 }
                 
                 // Update hidden span for JS references
-                const selectedPlayerDisplay = document.getElementById('away-selected-player');
+                const selectedPlayerDisplay = document.getElementById('home-selected-player');
                 if (selectedPlayerDisplay) {
                     selectedPlayerDisplay.textContent = 'None';
                 }

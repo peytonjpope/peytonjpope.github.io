@@ -290,7 +290,7 @@
 .stat-btn[data-stat="pf"] {
     background-color: var(--danger-color);
     color: white;
-    border-color: var(--away-color);
+    border-color: var(--away-team);
 }
 
 .stat-btn[data-stat="to"]:hover,
@@ -339,6 +339,7 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
+
 }
 
 .action-log h3 {
