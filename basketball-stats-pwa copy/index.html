@@ -13,13 +13,9 @@
     <div id="app">
         <!-- Navigation -->
         <nav class="app-nav">
-            <div class="nav-header">
-                <h1>Basketball Advanced Stat Sheet</h1>
-                <button id="menu-toggle" aria-label="Menu">☰</button>
-            </div>
             <div class="nav-menu" id="nav-menu">
                 <button data-screen="setup" class="nav-btn active">Setup</button>
-                <button data-screen="game" class="nav-btn">Game</button>
+                <button data-screen="game" class="nav-btn">Game Tracker</button>
                 <button data-screen="boxscore" class="nav-btn">Box Score</button>
                 <button data-screen="dashboard" class="nav-btn">Dashboard</button>
                 <button data-screen="teams" class="nav-btn">Teams</button>
@@ -54,6 +50,21 @@
                             </div>
                         </div>
                         <button id="add-home-player" class="btn-secondary">+ Add Player</button>
+                        <div class="input-group">
+                            <label for="home-team-color">Team Color:</label>
+                            <select id="home-team-color" class="color-dropdown">
+                                <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy Blue</option>
+                                <option value="#B72025" style="background-color: #B72025; color: white;">Red</option>
+                                <option value="#006B3C" style="background-color: #006B3C; color: white;">Green</option>
+                                <option value="#552583" style="background-color: #552583; color: white;">Purple</option>
+                                <option value="#CE1141" style="background-color: #CE1141; color: white;">Crimson</option>
+                                <option value="#000000" style="background-color: #000000; color: white;">Black</option>
+                                <option value="#F58426" style="background-color: #F58426; color: black;">Orange</option>
+                                <option value="#FDBB30" style="background-color: #FDBB30; color: black;">Yellow</option>
+                                <option value="#5D76A9" style="background-color: #5D76A9; color: white;">Light Blue</option>
+                                <option value="#1D1160" style="background-color: #1D1160; color: white;">Dark Purple</option>
+                            </select>
+                        </div>
                     </div>
 
                     <!-- Away Team Setup -->
@@ -78,6 +89,22 @@
                             </div>
                         </div>
                         <button id="add-away-player" class="btn-secondary">+ Add Player</button>
+                        <!-- For Away Team -->
+                        <div class="input-group">
+                            <label for="away-team-color">Team Color:</label>
+                            <select id="away-team-color" class="color-dropdown">
+                                <option value="#75ACD8" style="background-color: #75ACD8; color: black;">Light Blue</option>
+                                <option value="#B72025" style="background-color: #B72025; color: white;">Red</option>
+                                <option value="#006B3C" style="background-color: #006B3C; color: white;">Green</option>
+                                <option value="#552583" style="background-color: #552583; color: white;">Purple</option>
+                                <option value="#CE1141" style="background-color: #CE1141; color: white;">Crimson</option>
+                                <option value="#000000" style="background-color: #000000; color: white;">Black</option>
+                                <option value="#F58426" style="background-color: #F58426; color: black;">Orange</option>
+                                <option value="#FDBB30" style="background-color: #FDBB30; color: black;">Yellow</option>
+                                <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy Blue</option>
+                                <option value="#1D1160" style="background-color: #1D1160; color: white;">Dark Purple</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="game-meta">
@@ -99,7 +126,7 @@
                 </div>
             </section>
 
-            <!-- Game Tracking Screen -->
+            <!-- Game Tracking Screen - Simplified Version -->
             <section id="game-screen" class="screen">
                 <div class="score-header">
                     <div class="team home-team">
@@ -107,7 +134,7 @@
                         <span class="team-score" id="home-score">0</span>
                     </div>
                     <div class="game-status">
-                        <span id="game-period">1st</span>
+                        <span id="game-period">1st Half</span>
                     </div>
                     <div class="team away-team">
                         <span class="team-score" id="away-score">0</span>
@@ -116,89 +143,78 @@
                 </div>
 
                 <div class="game-container">
-                    <!-- Home Team Container -->
-                    <div class="team-container home-team-container">
-                        <!--<h3>Team: <span id="home-team-name">Home</span></h3> -->
-                        <div class="player-selection" id="home-active-players">
-                            <!-- Home players will be populated here -->
+                    <!-- Left Side: Players and Game Log -->
+                    <div class="left-panel">
+                        <div class="players-section">
+                            <div class="home-players-container">
+                                <h3>Home Team</h3>
+                                <div class="player-selection" id="home-active-players">
+                                    <!-- Home players will be populated here -->
+                                </div>
+                            </div>
+                            
+                            <div class="away-players-container">
+                                <h3>Away Team</h3>
+                                <div class="player-selection" id="away-active-players">
+                                    <!-- Away players will be populated here -->
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-buttons">
-                            <h4>Selected: <span id="home-selected-player">No player selected</span></h4>
-                            <div class="button-group">
-                                <button class="stat-btn home-stat-btn" data-stat="fgm">MADE 2</button>
-                                <button class="stat-btn home-stat-btn" data-stat="3pm">MADE 3</button>
-                                <button class="stat-btn home-stat-btn" data-stat="ftm">MADE FT</button>
-                            </div>
-                            <div class="button-group">
-                                <button class="stat-btn home-stat-btn" data-stat="fga">MISSED 2</button>
-                                <button class="stat-btn home-stat-btn" data-stat="3pa">MISSED 3</button>
-                                <button class="stat-btn home-stat-btn" data-stat="fta">MISSED FT</button>
-                            </div>
-                            <div class="button-group">
-                                <button class="stat-btn home-stat-btn" data-stat="oreb">O-BOARD</button>
-                                <button class="stat-btn home-stat-btn" data-stat="dreb">D-BOARD</button>
-                                <button class="stat-btn home-stat-btn" data-stat="ast">ASSIST</button>
-                            </div>
-                            <div class="button-group">
-                                <button class="stat-btn home-stat-btn" data-stat="stl">STEAL</button>
-                                <button class="stat-btn home-stat-btn" data-stat="blk">BLOCK</button>
-                                <button class="stat-btn home-stat-btn" data-stat="tov">TURNOVER</button>
-                                <button class="stat-btn home-stat-btn" data-stat="pf">FOUL</button>
-                            </div>
-                            <div class="button-group special">
-                                <button class="stat-btn home-stat-btn" data-stat="paint">PAINT TOUCH</button>
-                                <button class="stat-btn home-stat-btn" data-stat="undo">UNDO</button>
+                        
+                        <!-- Game Log -->
+                        <div class="action-log">
+                            <h3>Game Log</h3>
+                            <div id="log-entries" class="log-container">
+                                <!-- Log entries will be added here -->
                             </div>
                         </div>
                     </div>
                     
-                    <!-- Away Team Container -->
-                    <div class="team-container away-team-container">
-                        <!-- <h3>Team: <span id="away-team-name">Away</span></h3> -->
-                        <div class="player-selection" id="away-active-players">
-                            <!-- Away players will be populated here -->
+                    <!-- Right Side: Action Buttons (Simplified) -->
+                    <div class="right-panel">
+                        <div id="stat-buttons-container" class="stat-buttons-container">
+                            <div id="player-selected-indicator" class="player-selected-indicator">No player selected</div>
+                            <div class="stat-buttons">
+                                <div class="button-group">
+                                    <button class="stat-btn" data-stat="fgm">MADE 2</button>
+                                    <button class="stat-btn" data-stat="3pm">MADE 3</button>
+                                    <button class="stat-btn" data-stat="ftm">MADE FT</button>
+                                </div>
+                                <div class="button-group">
+                                    <button class="stat-btn" data-stat="fga">MISSED 2</button>
+                                    <button class="stat-btn" data-stat="3pa">MISSED 3</button>
+                                    <button class="stat-btn" data-stat="fta">MISSED FT</button>
+                                </div>
+                                <div class="button-group">
+                                    <button class="stat-btn" data-stat="oreb">O-BOARD</button>
+                                    <button class="stat-btn" data-stat="dreb">D-BOARD</button>
+                                    <button class="stat-btn" data-stat="ast">ASSIST</button>
+                                </div>
+                                <div class="button-group">
+                                    <button class="stat-btn" data-stat="stl">STEAL</button>
+                                    <button class="stat-btn" data-stat="blk">BLOCK</button>
+                                    <button class="stat-btn" data-stat="tov">TURNOVER</button>
+                                    <button class="stat-btn" data-stat="pf">FOUL</button>
+                                </div>
+                                <div class="button-group special">
+                                    <button class="stat-btn" data-stat="paint">PAINT TOUCH</button>
+                                    <button class="stat-btn" data-stat="endPossession">END POSS</button>
+                                    <button class="stat-btn" data-stat="undo">UNDO</button>
+                                </div>
+                            </div>
                         </div>
-                        <div class="stat-buttons">
-                            <h4>Selected: <span id="away-selected-player">No player selected</span></h4>
-                            <div class="button-group">
-                                <button class="stat-btn away-stat-btn" data-stat="fgm">MADE 2</button>
-                                <button class="stat-btn away-stat-btn" data-stat="3pm">MADE 3</button>
-                                <button class="stat-btn away-stat-btn" data-stat="ftm">MADE FT</button>
-                            </div>
-                            <div class="button-group">
-                                <button class="stat-btn away-stat-btn" data-stat="fga">MISSED 2</button>
-                                <button class="stat-btn away-stat-btn" data-stat="3pa">MISSED 3</button>
-                                <button class="stat-btn away-stat-btn" data-stat="fta">MISSED FT</button>
-                            </div>
-                            <div class="button-group">
-                                <button class="stat-btn away-stat-btn" data-stat="oreb">O-BOARD</button>
-                                <button class="stat-btn away-stat-btn" data-stat="dreb">D-BOARD</button>
-                                <button class="stat-btn away-stat-btn" data-stat="ast">ASSIST</button>
-                            </div>
-                            <div class="button-group">
-                                <button class="stat-btn away-stat-btn" data-stat="stl">STEAL</button>
-                                <button class="stat-btn away-stat-btn" data-stat="blk">BLOCK</button>
-                                <button class="stat-btn away-stat-btn" data-stat="tov">TURNOVER</button>
-                                <button class="stat-btn away-stat-btn" data-stat="pf">FOUL</button>
-                            </div>
-                            <div class="button-group special">
-                                <button class="stat-btn away-stat-btn" data-stat="paint">PAINT TOUCH</button>
-                                <button class="stat-btn away-stat-btn" data-stat="undo">UNDO</button>
-                            </div>
+                        
+                        <div class="game-controls">
+                            <button id="end-period" class="btn-secondary">End Period</button>
+                            <button id="end-game" class="btn-primary">End Game</button>
                         </div>
                     </div>
                 </div>
 
-                <div class="controls">
-                    <!-- Actions Log -->
-                    <div class="action-log">
-                        <h3>Game Log</h3>
-                        <div id="log-entries" class="log-container">
-                            <!-- Log entries will be added here -->
-                        </div>
-                    </div>
-                    <button id="end-period" class="btn-secondary">End Period</button>
-                    <button id="end-game" class="btn-primary">End Game</button>
+                <!-- Hidden elements for player selection state (for JS) -->
+                <div style="display: none;">
+                    <span id="home-selected-player">None</span>
+                    <span id="away-selected-player">None</span>
                 </div>
             </section>
 
@@ -218,7 +234,6 @@
                         <thead>
                             <tr>
                                 <th class="player-col">Player</th>
-                                <th>MIN</th>
                                 <th>PTS</th>
                                 <th>FG</th>
                                 <th>3PT</th>
@@ -231,7 +246,6 @@
                                 <th>BLK</th>
                                 <th>TO</th>
                                 <th>PF</th>
-                                <th>+/-</th>
                             </tr>
                         </thead>
                         <tbody id="box-score-body">
@@ -267,9 +281,46 @@
                             <!-- Advanced stats will go here -->
                         </div>
                     </div>
+
+                    <!-- Possession Statistics Section -->
+                    <div class="dashboard-section possession-stats">
+                        <h3>Possession Statistics</h3>
+                        <div class="possession-summary">
+                            <div class="stat-item">
+                                <div class="stat-value" id="total-possessions">0</div>
+                                <div class="stat-label">Total Possessions</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="home-possessions">0</div>
+                                <div class="stat-label">Home Team Possessions</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="away-possessions">0</div>
+                                <div class="stat-label">Away Team Possessions</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="avg-possession-time">0</div>
+                                <div class="stat-label">Avg Possession Length (sec)</div>
+                            </div>
+                        </div>
+                    </div>
                     
-                    <div class="chart-container" id="visualizations">
-                        <!-- Charts and visualizations -->
+                    <!-- Shot Chart Section -->
+                    <div class="dashboard-section shot-charts">
+                        <h3>Shot Charts</h3>
+                        <div class="team-toggle">
+                            <button class="toggle-btn active" data-team="home">Home</button>
+                            <button class="toggle-btn" data-team="away">Away</button>
+                            <button class="toggle-btn" data-team="all">All</button>
+                        </div>
+                        <div class="shot-chart-filter">
+                            <button class="filter-btn active" data-filter="all">All Shots</button>
+                            <button class="filter-btn" data-filter="makes">Makes</button>
+                            <button class="filter-btn" data-filter="misses">Misses</button>
+                        </div>
+                        <div class="shot-chart-container" id="shot-chart">
+                            <!-- Shot chart will be rendered here -->
+                        </div>
                     </div>
                 </div>
             </section>
