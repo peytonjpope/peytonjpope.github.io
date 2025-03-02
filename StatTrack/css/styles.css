@@ -89,8 +89,13 @@ body {
     transition: background-color 0.2s;
 }
 
-.nav-btn:hover, .nav-btn.active {
-    background-color: rgba(0, 0, 0, 0.3);
+.nav-btn:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: white;
+}
+
+.nav-btn.active {
+    background-color: rgba(0, 0, 0, 0.4);
     color: white;
 }
 
@@ -221,6 +226,7 @@ input:focus, select:focus, textarea:focus {
 
 /* Game Screen */
 .score-header {
+    /*background: linear-gradient(135deg, var(--home-color) 0% 30%, var(--away-color) 70% 100%);*/
     background-color: var(--primary-color);
     color: white;
     border-radius: 8px;
@@ -497,7 +503,7 @@ input:focus, select:focus, textarea:focus {
 .stat-btn[data-stat="fgm"]:hover,
 .stat-btn[data-stat="3pm"]:hover,
 .stat-btn[data-stat="ftm"]:hover {
-    background-color: #3d8b40;
+    background-color: var(--success-color);
 }
 
 .stat-btn[data-stat="to"],
@@ -622,20 +628,24 @@ input:focus, select:focus, textarea:focus {
 
 /* Box Score Screen */
 .box-score-controls {
-    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center;
 }
 
 .team-toggle {
     display: flex;
-    gap: 0.5rem;
+    width: 100%;
 }
 
 .toggle-btn {
     padding: 0.5rem 1rem;
     background-color: var(--background-color);
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border: 2px solid var(--border-color);
     cursor: pointer;
+    width: 100%;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
 }
 
 .toggle-btn.active {
@@ -643,6 +653,20 @@ input:focus, select:focus, textarea:focus {
     color: white;
     border-color: var(--primary-color);
 }
+
+.chart-team-toggle {
+    display: flex;
+    gap: .5rem;
+}
+
+.chart-toggle-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    border-radius: 4px;
+}
+
 
 .stats-table {
     width: 100%;
@@ -830,7 +854,7 @@ input:focus, select:focus, textarea:focus {
 
 .shot-chart-container {
     margin-top: 1rem;
-    height: 300px;
+    margin-bottom: 20px;
     background-color: white;
     border-radius: 8px;
     border: 1px solid var(--border-color);
@@ -1091,6 +1115,83 @@ input:focus, select:focus, textarea:focus {
     display: flex;
     gap: 1rem;
 }
+
+/* Shot Chart Styles */
+.shot-chart-toggle {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.chart-toggle-btn {
+    padding: 0.5rem 1rem;
+    background-color: var(--background-color);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.chart-toggle-btn.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.courts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    justify-content: center;
+}
+
+.court-wrapper {
+    flex: 1;
+    min-width: 300px;
+    max-width: 500px;
+    text-align: center;
+}
+
+.basketball-halfcourt {
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: #f8f8f8;
+}
+
+.basketball-court {
+    width: 100%;
+    height: auto;
+}
+
+.court-zone path {
+    transition: opacity 0.3s ease;
+}
+
+.court-zone path:hover {
+    opacity: 0.8;
+}
+
+@media (max-width: 768px) {
+    .courts-container {
+        flex-direction: column;
+    }
+    
+    .court-wrapper {
+        max-width: 100%;
+    }
+}
+@media (max-width: 768px) {
+    .courts-container {
+        flex-direction: column;
+    }
+    
+    .court-wrapper {
+        max-width: 100%;
+    }
+}
+
 
 /* Responsive Design */
 @media (max-width: 768px) {

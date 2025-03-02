@@ -58,6 +58,7 @@ function checkForSavedGame() {
  * Navigate to a specific screen
  * @param {String} screenId - ID of the screen to show
  */
+// In navigateToScreen function
 function navigateToScreen(screenId) {
     // Hide all screens
     document.querySelectorAll('.screen').forEach(screen => {
@@ -68,6 +69,19 @@ function navigateToScreen(screenId) {
     const targetScreen = document.getElementById(screenId + '-screen');
     if (targetScreen) {
         targetScreen.classList.add('active');
+        
+        // Auto-load home team box score
+        if (screenId === 'boxscore') {
+            renderBoxScore('home');
+            
+            // Update toggle buttons
+            document.querySelectorAll('.team-toggle .toggle-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.team === 'home') {
+                    btn.classList.add('active');
+                }
+            });
+        }
     }
     
     // Update active navigation button
@@ -95,11 +109,19 @@ function loadScreenCSS(screenId) {
 /**
  * Set up navigation event listeners
  */
+// In the setupNavigation function
 function setupNavigation() {
     document.querySelectorAll('.nav-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             const screenId = btn.dataset.screen;
             navigateToScreen(screenId);
+            
+            // Load screen-specific data
+            if (screenId === 'dashboard') {
+                renderDashboard();
+            } else if (screenId === 'boxscore') {
+                renderBoxScore('home'); // Default to home team
+            }
         });
     });
 }
@@ -349,7 +371,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const statButtonsContainer = document.getElementById('stat-buttons-container');
     
     if (statButtonsContainer) {
-        //const indicator = document.createElement('div');
+        const indicator = document.createElement('div');
         indicator.id = 'player-selected-indicator';
         indicator.className = 'player-selected-indicator';
         indicator.textContent = 'No player selected';

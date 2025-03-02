@@ -392,22 +392,22 @@ const GameTracker = {
         
         if (is3pt) {
             courtAreasHTML = `
-
                 <div class="court-area" data-location="3pt-left-corner">Left Corner</div>
                 <div class="blank-court-area"></div>
                 <div class="court-area" data-location="3pt-right-corner">Right Corner</div>
                 <div class="court-area" data-location="3pt-left-wing">Left Wing</div>
                 <div class="court-area" data-location="3pt-top">Top Key</div>
                 <div class="court-area" data-location="3pt-right-wing">Right Wing</div>
-
-
             `;
         } else {
             courtAreasHTML = `
-                <div class="court-area" data-location="midrange-left">Mid-Left</div>
+                <div class="court-area" data-location="midrange-left-corner">Left Corner</div>
                 <div class="court-area" data-location="rim">Rim</div>
-                <div class="court-area" data-location="midrange-right">Mid-Right</div>
+                <div class="court-area" data-location="midrange-right-corner">Right Corner</div>
+                <div class="court-area" data-location="midrange-left">Left Wing</div>
                 <div class="court-area" data-location="paint-far">Paint Far</div>
+                <div class="court-area" data-location="midrange-right">Right Wing</div>
+                <div class="court-area" data-location="midrange-top">Top Key</div>
             `;
         }
         
@@ -418,7 +418,7 @@ const GameTracker = {
                 <p>#${player.number} ${player.name} - ${teamType === 'home' ? this.currentGame.homeTeam.name : this.currentGame.awayTeam.name}</p>
                 
                 <div class="shot-quality-section">
-                    <h4>Estimated Shot Quality</h4>
+                    <h4>Shot Quality (1-10)</h4>
                     <div class="shot-quality-buttons">
                         ${Array.from({length: 10}, (_, i) => `<button class="quality-btn" data-quality="${i+1}">${i+1}</button>`).join('')}
                     </div>
@@ -427,16 +427,10 @@ const GameTracker = {
                 <div class="shot-location-section">
                     <h4>Shot Location</h4>
                     <div class="court-diagram">
-                        <!-- Basketball court diagram will be here -->
                         <div class="court-container">
                             ${courtAreasHTML}
                         </div>
                     </div>
-                </div>
-                
-                <div class="shot-modal-buttons">
-                    <button class="shot-modal-cancel">Cancel</button>
-                    <button class="shot-modal-save" disabled>Save Shot Details</button>
                 </div>
             </div>
         `;
@@ -448,69 +442,64 @@ const GameTracker = {
         let selectedQuality = null;
         let selectedLocation = null;
         
-        // Update the Save button state
-        const updateSaveButton = () => {
-            const saveButton = modal.querySelector('.shot-modal-save');
-            saveButton.disabled = !(selectedQuality && selectedLocation);
+        // Function to save shot details
+        const saveShot = () => {
+            if (selectedQuality && selectedLocation) {
+                const shotDetails = {
+                    quality: selectedQuality,
+                    location: selectedLocation,
+                    timestamp: Date.now(),
+                    player: player.id,
+                    team: teamType,
+                    shotType: shotType,
+                    isMake: isMake,
+                    is3pt: is3pt
+                };
+                
+                if (!GameTracker.currentGame.shotData) {
+                    GameTracker.currentGame.shotData = [];
+                }
+                GameTracker.currentGame.shotData.push(shotDetails);
+                GameTracker.saveGameState();
+                document.body.removeChild(modal);
+            }
         };
         
-        // Add event listeners
-        // Quality buttons
+        // Click outside to cancel
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                document.body.removeChild(modal);
+            }
+        });
+        
+        // Add event listeners for quality buttons
         const qualityButtons = modal.querySelectorAll('.quality-btn');
         qualityButtons.forEach(btn => {
             btn.addEventListener('click', function() {
-                // Remove active class from all buttons
                 qualityButtons.forEach(b => b.classList.remove('active'));
-                // Add active class to clicked button
                 this.classList.add('active');
                 selectedQuality = parseInt(this.dataset.quality, 10);
-                updateSaveButton();
+                
+                // Auto-save if both selections are made
+                if (selectedQuality && selectedLocation) {
+                    saveShot();
+                }
             });
         });
         
-        // Location areas
+        // Add event listeners for location areas
         const locationAreas = modal.querySelectorAll('.court-area');
         locationAreas.forEach(area => {
             area.addEventListener('click', function() {
-                // Remove active class from all areas
                 locationAreas.forEach(a => a.classList.remove('active'));
-                // Add active class to clicked area
                 this.classList.add('active');
                 selectedLocation = this.dataset.location;
-                updateSaveButton();
+                
+                // Auto-save if both selections are made
+                if (selectedQuality && selectedLocation) {
+                    saveShot();
+                }
             });
-        });
-        
-        // Cancel button
-        modal.querySelector('.shot-modal-cancel').addEventListener('click', function() {
-            document.body.removeChild(modal);
-        });
-        
-        // Save button
-        modal.querySelector('.shot-modal-save').addEventListener('click', function() {
-            // Save shot details to the player's most recent shot
-            const shotDetails = {
-                quality: selectedQuality,
-                location: selectedLocation,
-                timestamp: Date.now(),
-                player: player.id,
-                team: teamType,
-                shotType: shotType,
-                isMake: isMake,
-                is3pt: is3pt
-            };
-            
-            // Add to shot tracking
-            if (!GameTracker.currentGame.shotData) {
-                GameTracker.currentGame.shotData = [];
-            }
-            GameTracker.currentGame.shotData.push(shotDetails);
-            
-            // Save to game state
-            GameTracker.saveGameState();
-            
-            // Close the modal
-            document.body.removeChild(modal);
         });
     },
     
@@ -948,8 +937,8 @@ const GameTracker = {
         
         const shotData = this.currentGame.shotData;
         const locations = [
-            'rim', 'paint-far', 
-            'midrange-right', 'midrange-center', 'midrange-left',
+            'rim', 'paint-far',
+            'midrange-right', 'midrange-right-corner', 'midrange-left', 'midrange-left-corner', 'midrange-top',
             '3pt-right-corner', '3pt-right-wing', '3pt-top', '3pt-left-wing', '3pt-left-corner'
         ];
         
@@ -1119,231 +1108,7 @@ const GameTracker = {
     }
 };
 
-/**
- * Shot Chart Visualization Component
- * Renders a basketball court with shot data visualization
- */
-function renderShotChart(shotData, team = 'all', filter = 'all') {
-    const shotChartContainer = document.getElementById('shot-chart');
-    if (!shotChartContainer) return;
-    
-    // Clear existing content
-    shotChartContainer.innerHTML = '';
-    
-    // Create the court diagram
-    const courtDiv = document.createElement('div');
-    courtDiv.className = 'dashboard-court';
-    
-    // Create the SVG for the basketball court
-    courtDiv.innerHTML = `
-        <svg viewBox="0 0 500 470" class="basketball-court">
-            <!-- Court outline -->
-            <rect x="0" y="0" width="500" height="470" fill="#f8f8f8" stroke="#666" stroke-width="2" />
-            
-            <!-- Half court line -->
-            <line x1="0" y1="235" x2="500" y2="235" stroke="#666" stroke-width="2" />
-            
-            <!-- Center circle -->
-            <circle cx="250" cy="235" r="60" fill="none" stroke="#666" stroke-width="2" />
-            
-            <!-- Free throw circles and lines -->
-            <circle cx="250" cy="155" r="60" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5" />
-            <circle cx="250" cy="315" r="60" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5" />
-            
-            <!-- Baskets -->
-            <circle cx="250" cy="30" r="7.5" fill="none" stroke="#666" stroke-width="2" />
-            <circle cx="250" cy="440" r="7.5" fill="none" stroke="#666" stroke-width="2" />
-            
-            <!-- Free throw lanes -->
-            <rect x="180" y="30" width="140" height="125" fill="none" stroke="#666" stroke-width="2" />
-            <rect x="180" y="315" width="140" height="125" fill="none" stroke="#666" stroke-width="2" />
-            
-            <!-- Three point lines -->
-            <path d="M 30,30 A 220,220 0 0 1 470,30" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5" />
-            <path d="M 30,440 A 220,220 0 0 0 470,440" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5" />
-            
-            <!-- Shot zones (invisible for reference) -->
-            <!-- Rim area -->
-            <circle cx="250" cy="30" r="40" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="rim" />
-            <circle cx="250" cy="440" r="40" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="rim" />
-            
-            <!-- Paint area -->
-            <rect x="180" y="30" width="140" height="125" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="paint-far" />
-            <rect x="180" y="315" width="140" height="125" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="paint-far" />
-            
-            <!-- Mid-range areas -->
-            <path d="M 100,30 L 180,30 L 180,155 L 100,155 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="midrange-left" />
-            <path d="M 320,30 L 400,30 L 400,155 L 320,155 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="midrange-right" />
-            <path d="M 180,155 L 320,155 L 320,235 L 180,235 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="midrange-center" />
-            
-            <path d="M 100,315 L 180,315 L 180,440 L 100,440 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="midrange-left" />
-            <path d="M 320,315 L 400,315 L 400,440 L 320,440 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="midrange-right" />
-            <path d="M 180,235 L 320,235 L 320,315 L 180,315 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="midrange-center" />
-            
-            <!-- 3-point areas -->
-            <path d="M 30,30 L 100,30 L 100,155 L 30,155 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-left-corner" />
-            <path d="M 400,30 L 470,30 L 470,155 L 400,155 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-right-corner" />
-            <path d="M 30,155 L 100,155 L 100,235 L 30,235 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-left-wing" />
-            <path d="M 400,155 L 470,155 L 470,235 L 400,235 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-right-wing" />
-            
-            <path d="M 30,235 L 180,235 L 180,315 L 30,315 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-top" />
-            <path d="M 320,235 L 470,235 L 470,315 L 320,315 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-top" />
-            
-            <path d="M 30,315 L 100,315 L 100,440 L 30,440 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-left-corner" />
-            <path d="M 400,315 L 470,315 L 470,440 L 400,440 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-right-corner" />
-            
-            <path d="M 100,315 L 180,315 L 180,440 L 100,440 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-left-wing" />
-            <path d="M 400,315 L 470,315 L 470,440 L 400,440 Z" fill="rgba(0,0,0,0.05)" stroke="none" class="shot-zone" data-zone="3pt-right-wing" />
-        </svg>
-    `;
-    
-    shotChartContainer.appendChild(courtDiv);
-    
-    // If no shot data, show a message
-    if (!shotData || (!shotData.home.total && !shotData.away.total)) {
-        const noDataMsg = document.createElement('div');
-        noDataMsg.className = 'no-data-message';
-        noDataMsg.textContent = 'No shot data available';
-        shotChartContainer.appendChild(noDataMsg);
-        return;
-    }
-    
-    // Add shot markers to the court
-    const svg = courtDiv.querySelector('svg');
-    
-    // Prepare the data based on filters
-    let dataToShow = [];
-    
-    if (team === 'home' || team === 'all') {
-        // Add home team shots
-        Object.keys(shotData.home.makes).forEach(location => {
-            if (filter === 'all' || filter === 'makes') {
-                dataToShow.push({
-                    team: 'home',
-                    location: location,
-                    count: shotData.home.makes[location],
-                    type: 'make'
-                });
-            }
-        });
-        
-        Object.keys(shotData.home.misses).forEach(location => {
-            if (filter === 'all' || filter === 'misses') {
-                dataToShow.push({
-                    team: 'home',
-                    location: location,
-                    count: shotData.home.misses[location],
-                    type: 'miss'
-                });
-            }
-        });
-    }
-    
-    if (team === 'away' || team === 'all') {
-        // Add away team shots
-        Object.keys(shotData.away.makes).forEach(location => {
-            if (filter === 'all' || filter === 'makes') {
-                dataToShow.push({
-                    team: 'away',
-                    location: location,
-                    count: shotData.away.makes[location],
-                    type: 'make'
-                });
-            }
-        });
-        
-        Object.keys(shotData.away.misses).forEach(location => {
-            if (filter === 'all' || filter === 'misses') {
-                dataToShow.push({
-                    team: 'away',
-                    location: location,
-                    count: shotData.away.misses[location],
-                    type: 'miss'
-                });
-            }
-        });
-    }
-    
-    // Add markers for each shot zone
-    dataToShow.forEach(data => {
-        if (data.count === 0) return;
-        
-        // Find the corresponding zone element
-        const zoneElements = svg.querySelectorAll(`.shot-zone[data-zone="${data.location}"]`);
-        
-        zoneElements.forEach(zoneElement => {
-            // Get the center of the zone
-            const bbox = zoneElement.getBBox();
-            const centerX = bbox.x + bbox.width / 2;
-            const centerY = bbox.y + bbox.height / 2;
-            
-            // Create marker
-            const marker = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-            marker.classList.add('shot-marker');
-            
-            // Determine color based on team and shot type
-            let markerColor;
-            let markerStroke;
-            
-            if (data.team === 'home') {
-                markerColor = data.type === 'make' ? getComputedStyle(document.documentElement).getPropertyValue('--home-color') : 'white';
-                markerStroke = data.type === 'make' ? 'white' : getComputedStyle(document.documentElement).getPropertyValue('--home-color');
-            } else {
-                markerColor = data.type === 'make' ? getComputedStyle(document.documentElement).getPropertyValue('--away-color') : 'white';
-                markerStroke = data.type === 'make' ? 'white' : getComputedStyle(document.documentElement).getPropertyValue('--away-color');
-            }
-            
-            // Create the marker shape
-            const markerShape = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-            markerShape.setAttribute('cx', centerX);
-            markerShape.setAttribute('cy', centerY);
-            markerShape.setAttribute('r', Math.min(25, 10 + data.count * 3)); // Size based on count
-            markerShape.setAttribute('fill', markerColor);
-            markerShape.setAttribute('stroke', markerStroke);
-            markerShape.setAttribute('stroke-width', '2');
-            markerShape.setAttribute('opacity', '0.7');
-            
-            // Create the text label
-            const markerText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            markerText.setAttribute('x', centerX);
-            markerText.setAttribute('y', centerY);
-            markerText.setAttribute('text-anchor', 'middle');
-            markerText.setAttribute('dominant-baseline', 'middle');
-            markerText.setAttribute('fill', data.type === 'make' ? 'white' : markerColor);
-            markerText.setAttribute('font-size', '14');
-            markerText.setAttribute('font-weight', 'bold');
-            markerText.textContent = data.count;
-            
-            marker.appendChild(markerShape);
-            marker.appendChild(markerText);
-            svg.appendChild(marker);
-        });
-    });
-    
-    // Add legend
-    const legend = document.createElement('div');
-    legend.className = 'shot-chart-legend';
-    legend.innerHTML = `
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: var(--home-color);"></span>
-            <span class="legend-label">Home Makes</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: white; border: 2px solid var(--home-color);"></span>
-            <span class="legend-label">Home Misses</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: var(--away-color);"></span>
-            <span class="legend-label">Away Makes</span>
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background-color: white; border: 2px solid var(--away-color);"></span>
-            <span class="legend-label">Away Misses</span>
-        </div>
-    `;
-    
-    shotChartContainer.appendChild(legend);
-}
+
 
 /**
  * Update Dashboard Function
@@ -1677,3 +1442,345 @@ function loadTeamColors() {
     const awayDropdown = document.getElementById('away-team-color');
     if (awayDropdown) awayDropdown.value = savedAwayColor;
 }
+
+/**
+ * Enhanced Basketball Shot Chart
+ * Creates accurate half-court visualizations for basketball shooting data
+ * with proper zones, toggleable views, and team-colored heat mapping
+ */
+
+/**
+ * Renders a basketball shot chart with side-by-side half courts for each team
+ * @param {Object} shotData - Shot data with makes/misses by location
+ * @param {String} teamFilter - Team filter ('home', 'away', or 'all')
+ * @param {String} shotFilter - Shot filter ('all', 'makes', or 'misses')
+ */
+function renderShotChart(shotData, teamFilter = 'all', shotFilter = 'all') {
+    const shotChartContainer = document.getElementById('shot-chart');
+    if (!shotChartContainer) {
+        console.error("Shot chart container not found!");
+        return;
+    }
+    
+    // Clear existing content
+    shotChartContainer.innerHTML = '';
+    
+    // Add toggle buttons for frequency vs percentage
+    const toggleContainer = document.createElement('div');
+    toggleContainer.className = 'shot-chart-toggle';
+    toggleContainer.innerHTML = `
+        <button class="chart-toggle-btn" data-view="percentage">Shooting %</button>
+        <button class="chart-toggle-btn active" data-view="frequency">Frequency</button>
+    `;
+    shotChartContainer.appendChild(toggleContainer);
+    
+    // Create container for side-by-side courts
+    const courtsContainer = document.createElement('div');
+    courtsContainer.className = 'courts-container';
+    
+    // Get team names and colors
+    const homeTeamName = GameTracker.currentGame ? GameTracker.currentGame.homeTeam.name : 'Home';
+    const awayTeamName = GameTracker.currentGame ? GameTracker.currentGame.awayTeam.name : 'Away';
+    const homeColor = getComputedStyle(document.documentElement).getPropertyValue('--home-color').trim();
+    const awayColor = getComputedStyle(document.documentElement).getPropertyValue('--away-color').trim();
+    
+    // Create the two court containers
+    courtsContainer.innerHTML = `
+        <div class="court-wrapper">
+            <h4>${homeTeamName}</h4>
+            <div id="home-court" class="basketball-halfcourt" data-team="home"></div>
+        </div>
+        <div class="court-wrapper">
+            <h4>${awayTeamName}</h4>
+            <div id="away-court" class="basketball-halfcourt" data-team="away"></div>
+        </div>
+    `;
+    shotChartContainer.appendChild(courtsContainer);
+    
+    // Process shot data for both teams
+    const homeShotData = processShotData(shotData.home);
+    const awayShotData = processShotData(shotData.away);
+    
+    // Render each court
+    renderHalfCourt('home-court', homeShotData, homeColor, 'frequency');
+    renderHalfCourt('away-court', awayShotData, awayColor, 'frequency');
+    
+    // Add event listeners for toggle buttons
+    const viewToggleButtons = document.querySelectorAll('.chart-toggle-btn');
+    viewToggleButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const view = this.dataset.view;
+            viewToggleButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Re-render courts with new view
+            renderHalfCourt('home-court', homeShotData, homeColor, view);
+            renderHalfCourt('away-court', awayShotData, awayColor, view);
+        });
+    });
+}
+
+/**
+ * Process shot data for visualization
+ * @param {Object} teamData - Team shot data
+ * @returns {Object} Processed shot data by zone
+ */
+function processShotData(teamData) {
+    // Define all 12 zones
+    const zones = [
+        'rim', 'paint-far',
+        'midrange-left', 'midrange-right', 'midrange-left-corner', 'midrange-right-corner', 'midrange-top',
+        '3pt-left-corner', '3pt-right-corner', '3pt-left-wing', '3pt-right-wing', '3pt-top'
+    ];
+    
+    // Initialize result with all zones
+    const result = {};
+    zones.forEach(zone => {
+        const makes = teamData.makes[zone] || 0;
+        const misses = teamData.misses[zone] || 0;
+        const total = makes + misses;
+        
+        result[zone] = {
+            makes: makes,
+            misses: misses,
+            total: total,
+            percentage: total > 0 ? (makes / total * 100).toFixed(1) : 0
+        };
+    });
+    
+    return result;
+}
+
+/**
+ * Render a half court with shot data
+ * @param {String} containerId - ID of container element
+ * @param {Object} shotData - Processed shot data
+ * @param {String} teamColor - Base color for the team
+ * @param {String} view - View type ('frequency' or 'percentage')
+ */
+function renderHalfCourt(containerId, shotData, teamColor, view = 'frequency') {
+    const courtContainer = document.getElementById(containerId);
+    if (!courtContainer) {
+        console.error(`Court container "${containerId}" not found!`);
+        return;
+    }
+    
+    // Clear existing content
+    courtContainer.innerHTML = '';
+    
+    // Create SVG for the court
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    svg.setAttribute('viewBox', '0 0 500 470');
+    svg.setAttribute('class', 'basketball-court');
+    courtContainer.appendChild(svg);
+    
+    // Add court background
+    const courtBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    courtBackground.setAttribute('x', '0');
+    courtBackground.setAttribute('y', '0');
+    courtBackground.setAttribute('width', '500');
+    courtBackground.setAttribute('height', '470');
+    courtBackground.setAttribute('fill', '#f8f8f8');
+    courtBackground.setAttribute('stroke', '#666');
+    courtBackground.setAttribute('stroke-width', '2');
+    svg.appendChild(courtBackground);
+    
+    // Add three-point line
+    const threePointLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    threePointLine.setAttribute('d', 'M 30,30 A 220,220 0 0 1 470,30');
+    threePointLine.setAttribute('fill', 'none');
+    threePointLine.setAttribute('stroke', '#666');
+    threePointLine.setAttribute('stroke-width', '2');
+    threePointLine.setAttribute('stroke-dasharray', '5,5');
+    svg.appendChild(threePointLine);
+    
+    // Add free throw lane
+    const freethrowLane = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    freethrowLane.setAttribute('x', '180');
+    freethrowLane.setAttribute('y', '30');
+    freethrowLane.setAttribute('width', '140');
+    freethrowLane.setAttribute('height', '125');
+    freethrowLane.setAttribute('fill', 'none');
+    freethrowLane.setAttribute('stroke', '#666');
+    freethrowLane.setAttribute('stroke-width', '2');
+    svg.appendChild(freethrowLane);
+    
+    // Add free throw circle
+    const freethrowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    freethrowCircle.setAttribute('cx', '250');
+    freethrowCircle.setAttribute('cy', '155');
+    freethrowCircle.setAttribute('r', '60');
+    freethrowCircle.setAttribute('fill', 'none');
+    freethrowCircle.setAttribute('stroke', '#666');
+    freethrowCircle.setAttribute('stroke-width', '2');
+    freethrowCircle.setAttribute('stroke-dasharray', '5,5');
+    svg.appendChild(freethrowCircle);
+    
+    // Add basket
+    const basket = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    basket.setAttribute('cx', '250');
+    basket.setAttribute('cy', '30');
+    basket.setAttribute('r', '7.5');
+    basket.setAttribute('fill', 'none');
+    basket.setAttribute('stroke', '#666');
+    basket.setAttribute('stroke-width', '2');
+    svg.appendChild(basket);
+    
+    // Define zone paths with text positions
+    const zonePaths = {
+        // Inside the arc zones
+        'rim': {
+            path: 'M250,60 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0',
+            textPos: {x: 250, y: 60},
+            description: 'Restricted Area'
+        },
+        'paint-far': {
+            path: 'M180,100 L320,100 L320,155 L180,155 Z',
+            textPos: {x: 250, y: 127},
+            description: 'Paint (Non-RA)'
+        },
+        'midrange-left': {
+            path: 'M100,155 L180,155 L180,300 L100,300 Z',
+            textPos: {x: 140, y: 227},
+            description: 'Mid-Range Left'
+        },
+        'midrange-right': {
+            path: 'M320,155 L400,155 L400,300 L320,300 Z',
+            textPos: {x: 360, y: 227},
+            description: 'Mid-Range Right'
+        },
+        'midrange-left-corner': {
+            path: 'M100,300 L180,300 L180,400 L100,400 Z',
+            textPos: {x: 140, y: 350},
+            description: 'Mid-Range Left Corner'
+        },
+        'midrange-right-corner': {
+            path: 'M320,300 L400,300 L400,400 L320,400 Z',
+            textPos: {x: 360, y: 350},
+            description: 'Mid-Range Right Corner'
+        },
+        'midrange-top': {
+            path: 'M180,155 L320,155 L320,300 L180,300 Z',
+            textPos: {x: 250, y: 225},
+            description: 'Mid-Range Top'
+        },
+        
+        // Outside the arc zones
+        '3pt-left-corner': {
+            path: 'M30,400 L100,400 L100,300 L30,300 Z',
+            textPos: {x: 65, y: 350},
+            description: '3PT Left Corner'
+        },
+        '3pt-right-corner': {
+            path: 'M400,400 L470,400 L470,300 L400,300 Z',
+            textPos: {x: 435, y: 350},
+            description: '3PT Right Corner'
+        },
+        '3pt-left-wing': {
+            path: 'M30,300 L100,300 L100,155 L30,155 Z',
+            textPos: {x: 65, y: 227},
+            description: '3PT Left Wing'
+        },
+        '3pt-right-wing': {
+            path: 'M400,300 L470,300 L470,155 L400,155 Z',
+            textPos: {x: 435, y: 227},
+            description: '3PT Right Wing'
+        },
+        '3pt-top': {
+            path: 'M30,155 L100,155 L100,30 L180,30 L320,30 L400,30 L400,155 L470,155 L470,30 L30,30 Z',
+            textPos: {x: 250, y: 90},
+            description: '3PT Top'
+        }
+    };
+    
+    // Get max values for color scaling
+    let maxFrequency = 0;
+    Object.values(shotData).forEach(zone => {
+        if (zone.total > maxFrequency) maxFrequency = zone.total;
+    });
+    
+    // If no shots, set a minimum
+    maxFrequency = Math.max(maxFrequency, 1);
+    
+    // Add each zone to the SVG
+    Object.keys(zonePaths).forEach(zone => {
+        if (!shotData[zone]) return;
+        
+        // Create a group for the zone
+        const zoneGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        zoneGroup.classList.add('court-zone');
+        zoneGroup.setAttribute('data-zone', zone);
+        
+        // Create the zone path element
+        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathElement.setAttribute('d', zonePaths[zone].path);
+        
+        // Calculate color intensity based on view type
+        let intensity = 0;
+        let displayText = '';
+        
+        if (view === 'frequency') {
+            intensity = shotData[zone].total > 0 ? (shotData[zone].total / maxFrequency) : 0;
+            displayText = shotData[zone].total.toString();
+        } else { // percentage view
+            intensity = shotData[zone].makes > 0 ? (shotData[zone].percentage / 100) : 0;
+            displayText = shotData[zone].total > 0 ? shotData[zone].percentage + '%' : '';
+        }
+        
+        // Create color with alpha based on intensity
+        const baseColor = hexToRGB(teamColor);
+        const fillColor = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${Math.max(0.1, intensity)})`;
+        
+        // Set attributes for the path
+        pathElement.setAttribute('fill', fillColor);
+        pathElement.setAttribute('stroke', '#666');
+        pathElement.setAttribute('stroke-width', '1');
+        
+        // Add path to group
+        zoneGroup.appendChild(pathElement);
+        
+        // Add text for zone data
+        if (shotData[zone].total > 0) {
+            const textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            textElement.setAttribute('x', zonePaths[zone].textPos.x);
+            textElement.setAttribute('y', zonePaths[zone].textPos.y);
+            textElement.setAttribute('text-anchor', 'middle');
+            textElement.setAttribute('dominant-baseline', 'middle');
+            textElement.setAttribute('fill', intensity > 0.5 ? '#fff' : '#000');
+            textElement.setAttribute('font-size', '14');
+            textElement.setAttribute('font-weight', 'bold');
+            textElement.textContent = displayText;
+            
+            zoneGroup.appendChild(textElement);
+        }
+        
+        // Add the group to the SVG
+        svg.appendChild(zoneGroup);
+    });
+}
+
+/**
+ * Convert hex color to RGB object
+ * @param {String} hex - Hex color code
+ * @returns {Object} RGB values
+ */
+function hexToRGB(hex) {
+    // Remove # if present
+    hex = hex.replace('#', '');
+    
+    // Handle shorthand hex
+    if (hex.length === 3) {
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+    }
+    
+    // Parse hex to RGB
+    const r = parseInt(hex.substring(0, 2), 16);
+    const g = parseInt(hex.substring(2, 4), 16);
+    const b = parseInt(hex.substring(4, 6), 16);
+    
+    return { r, g, b };
+}
+/**
+ * Add this function to the global scope to replace the existing renderShotChart function
+ */
+window.renderShotChart = renderShotChart;

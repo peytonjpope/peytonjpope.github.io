@@ -53,16 +53,15 @@
                         <div class="input-group">
                             <label for="home-team-color">Team Color:</label>
                             <select id="home-team-color" class="color-dropdown">
-                                <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy Blue</option>
-                                <option value="#B72025" style="background-color: #B72025; color: white;">Red</option>
+                                <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy</option>
+                                <option value="#dc0007" style="background-color: #dc0007; color: white;">Red</option>
+                                <option value="#560000" style="background-color: #560000; color: white;">Crimson</option>
                                 <option value="#006B3C" style="background-color: #006B3C; color: white;">Green</option>
-                                <option value="#552583" style="background-color: #552583; color: white;">Purple</option>
-                                <option value="#CE1141" style="background-color: #CE1141; color: white;">Crimson</option>
+                                <option value="#421b66" style="background-color: #421b66; color: white;">Purple</option>
                                 <option value="#000000" style="background-color: #000000; color: white;">Black</option>
                                 <option value="#F58426" style="background-color: #F58426; color: black;">Orange</option>
-                                <option value="#FDBB30" style="background-color: #FDBB30; color: black;">Yellow</option>
-                                <option value="#5D76A9" style="background-color: #5D76A9; color: white;">Light Blue</option>
-                                <option value="#1D1160" style="background-color: #1D1160; color: white;">Dark Purple</option>
+                                <option value="#f7a900" style="background-color: #f7a900; color: black;">Yellow</option>
+                                <option value="#4169E1" style="background-color: #4169E1; color: white;">Blue</option>                            
                             </select>
                         </div>
                     </div>
@@ -93,16 +92,15 @@
                         <div class="input-group">
                             <label for="away-team-color">Team Color:</label>
                             <select id="away-team-color" class="color-dropdown">
-                                <option value="#75ACD8" style="background-color: #75ACD8; color: black;">Light Blue</option>
-                                <option value="#B72025" style="background-color: #B72025; color: white;">Red</option>
+                                <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy</option>
+                                <option value="#dc0007" style="background-color: #dc0007; color: white;">Red</option>
+                                <option value="#560000" style="background-color: #560000; color: white;">Crimson</option>
                                 <option value="#006B3C" style="background-color: #006B3C; color: white;">Green</option>
-                                <option value="#552583" style="background-color: #552583; color: white;">Purple</option>
-                                <option value="#CE1141" style="background-color: #CE1141; color: white;">Crimson</option>
+                                <option value="#421b66" style="background-color: #421b66; color: white;">Purple</option>
                                 <option value="#000000" style="background-color: #000000; color: white;">Black</option>
                                 <option value="#F58426" style="background-color: #F58426; color: black;">Orange</option>
-                                <option value="#FDBB30" style="background-color: #FDBB30; color: black;">Yellow</option>
-                                <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy Blue</option>
-                                <option value="#1D1160" style="background-color: #1D1160; color: white;">Dark Purple</option>
+                                <option value="#f7a900" style="background-color: #f7a900; color: black;">Yellow</option>
+                                <option value="#4169E1" style="background-color: #4169E1; color: white;">Blue</option>  
                             </select>
                         </div>
                     </div>
@@ -173,7 +171,6 @@
                     <!-- Right Side: Action Buttons (Simplified) -->
                     <div class="right-panel">
                         <div id="stat-buttons-container" class="stat-buttons-container">
-                            <div id="player-selected-indicator" class="player-selected-indicator" style="display: block; background-color: #ececec; color: black;">No player selected</div>
                             <div class="stat-buttons">
                                 <div class="button-group">
                                     <button class="stat-btn" data-stat="fgm">MADE 2</button>
@@ -198,7 +195,6 @@
                                 </div>
                                 <div class="button-group special">
                                     <button class="stat-btn" data-stat="paint">PAINT TOUCH</button>
-                                    <button class="stat-btn" data-stat="endPossession">END POSS</button>
                                     <button class="stat-btn" data-stat="undo">UNDO</button>
                                 </div>
                             </div>
@@ -219,9 +215,7 @@
             </section>
 
             <!-- Box Score Screen -->
-            <section id="boxscore-screen" class="screen">
-                <h2>Box Score</h2>
-                
+            <section id="boxscore-screen" class="screen">                
                 <div class="box-score-controls">
                     <div class="team-toggle">
                         <button class="toggle-btn active" data-team="home">Home</button>
@@ -308,10 +302,10 @@
                     <!-- Shot Chart Section -->
                     <div class="dashboard-section shot-charts">
                         <h3>Shot Charts</h3>
-                        <div class="team-toggle">
-                            <button class="toggle-btn active" data-team="home">Home</button>
-                            <button class="toggle-btn" data-team="away">Away</button>
-                            <button class="toggle-btn" data-team="all">All</button>
+                        <div class="chart-team-toggle">
+                            <button class="chart-toggle-btn active" data-team="home">Home</button>
+                            <button class="chart-toggle-btn" data-team="away">Away</button>
+                            <button class="chart-toggle-btn" data-team="all">All</button>
                         </div>
                         <div class="shot-chart-filter">
                             <button class="filter-btn active" data-filter="all">All Shots</button>
