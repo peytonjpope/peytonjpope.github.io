@@ -883,6 +883,7 @@ const GameTracker = {
      */
     generateDashboardData: function() {
         if (!this.currentGame) return null;
+
         
         const homeStats = StatsCalculator.calculateTeamStats(this.currentGame.homeTeam.players);
         const awayStats = StatsCalculator.calculateTeamStats(this.currentGame.awayTeam.players);
@@ -899,7 +900,7 @@ const GameTracker = {
         const awayAdvanced = StatsCalculator.calculateAdvancedStats(awayStats, homeStats, possessions);
         
         // Process shot data
-        const shotData = this.processShotData();
+        const shotData = this.processShotDataForDashboard();
         
         return {
             teams: {
@@ -919,6 +920,7 @@ const GameTracker = {
             possessions: possessions.toFixed(1),
             actualPossessions: this.currentGame.possessions ? this.currentGame.possessions.length : 0,
             shotData: shotData
+        
         };
     },
     
@@ -1105,14 +1107,140 @@ const GameTracker = {
         this.updateGameUI();
         
         return true;
+    },
+
+    
+    /**
+ * Add this to your GameTracker object to correctly process shot data for the dashboard
+ */
+
+/**
+ * Process shot data for the dashboard
+ * This function will create the shot statistics needed for the dashboard
+ * @returns {Object} Processed shot data
+ */
+processShotDataForDashboard: function() {
+    if (!this.currentGame || !this.currentGame.shotData) {
+        return {
+            home: { makes: {}, misses: {}, total: {} },
+            away: { makes: {}, misses: {}, total: {} }
+        };
     }
+    
+    console.log("Processing shot data for dashboard");
+    console.log("Raw shot data:", this.currentGame.shotData);
+    
+    // Initialize result structure
+    const result = {
+        home: { 
+            makes: { rim: 0, paint: 0 },
+            misses: { rim: 0, paint: 0 },
+            total: { rim: 0, paint: 0 }
+        },
+        away: { 
+            makes: { rim: 0, paint: 0 },
+            misses: { rim: 0, paint: 0 },
+            total: { rim: 0, paint: 0 }
+        }
+    };
+    
+    // Process each shot in the data
+    this.currentGame.shotData.forEach(shot => {
+        const team = shot.team; // 'home' or 'away'
+        const location = shot.location;
+        const isMake = shot.isMake;
+        const is3pt = shot.is3pt;
+        
+        // Skip if the team isn't valid
+        if (team !== 'home' && team !== 'away') return;
+        
+        // Categorize the shot
+        let category = '';
+        
+        // Determine the category based on location
+        if (location === 'rim' || location === 'restricted-area') {
+            category = 'rim';
+        } else if (location === 'paint-far' || location === 'paint') {
+            category = 'paint';
+        } else if (location.includes('3pt')) {
+            category = '3pt';
+        } else {
+            category = 'midrange';
+        }
+        
+        // Create the category if it doesn't exist
+        if (!result[team].makes[category]) {
+            result[team].makes[category] = 0;
+            result[team].misses[category] = 0;
+            result[team].total[category] = 0;
+        }
+        
+        // Update the counts
+        if (isMake) {
+            result[team].makes[category]++;
+        } else {
+            result[team].misses[category]++;
+        }
+        result[team].total[category]++;
+        
+        // Also track in the original location for detailed analysis
+        if (!result[team].makes[location]) {
+            result[team].makes[location] = 0;
+            result[team].misses[location] = 0;
+            result[team].total[location] = 0;
+        }
+        
+        if (isMake) {
+            result[team].makes[location]++;
+        } else {
+            result[team].misses[location]++;
+        }
+        result[team].total[location]++;
+    });
+    
+    // Calculate aggregated 3-point and midrange totals
+    ['home', 'away'].forEach(team => {
+        // Calculate 3-point totals
+        result[team].makes['3pts_total'] = 0;
+        result[team].misses['3pts_total'] = 0;
+        result[team].total['3pts_total'] = 0;
+        
+        // Calculate midrange totals for 'OTHER' category
+        result[team].makes['other_total'] = 0;
+        result[team].misses['other_total'] = 0;
+        result[team].total['other_total'] = 0;
+        
+        Object.keys(result[team].total).forEach(key => {
+            if (key.includes('3pt')) {
+                result[team].makes['3pts_total'] += result[team].makes[key];
+                result[team].misses['3pts_total'] += result[team].misses[key];
+                result[team].total['3pts_total'] += result[team].total[key];
+            } else if (key.includes('midrange') || key === 'paint') {
+                result[team].makes['other_total'] += result[team].makes[key];
+                result[team].misses['other_total'] += result[team].misses[key];
+                result[team].total['other_total'] += result[team].total[key];
+            }
+        });
+    });
+    
+    console.log("Processed shot data:", result);
+    return result;
+}
+
 };
 
 
 
 /**
- * Update Dashboard Function
- * Enhanced to include possession stats and shot visualization
+ * Completely redesigned dashboard based on the provided template
+ * Replaces shot charts with shooting zone tables and game stats
+ */
+
+/**
+ * Render the dashboard with stats and zone shooting tables
+ */
+/**
+ * Updated renderDashboard function that correctly displays zone shooting and ESQ data
  */
 function renderDashboard() {
     if (!GameTracker.currentGame) {
@@ -1121,220 +1249,477 @@ function renderDashboard() {
         if (games.length > 0) {
             GameTracker.currentGame = games[games.length - 1];
         } else {
-            const homeTeamStats = document.getElementById('home-team-stats');
-            const awayTeamStats = document.getElementById('away-team-stats');
-            
-            if (homeTeamStats) homeTeamStats.innerHTML = '<p>No game data available</p>';
-            if (awayTeamStats) awayTeamStats.innerHTML = '<p>No game data available</p>';
+            document.getElementById('dashboard-container').innerHTML = '<p>No game data available</p>';
             return;
         }
     }
     
+    // Get dashboard data
     const dashboardData = GameTracker.generateDashboardData();
-    
     if (!dashboardData) {
-        const homeTeamStats = document.getElementById('home-team-stats');
-        const awayTeamStats = document.getElementById('away-team-stats');
-        
-        if (homeTeamStats) homeTeamStats.innerHTML = '<p>No dashboard data available</p>';
-        if (awayTeamStats) awayTeamStats.innerHTML = '<p>No dashboard data available</p>';
+        document.getElementById('dashboard-container').innerHTML = '<p>No dashboard data available</p>';
         return;
     }
     
-    // Render home team stats
-    const homeTeamStats = document.getElementById('home-team-stats');
-    if (homeTeamStats) {
-        homeTeamStats.innerHTML = `
-            <h4>${dashboardData.teams.home.name}</h4>
-            <div class="stat-grid">
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.stats.totals.pts}</div>
-                    <div class="stat-label">Points</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.stats.percentages.fg}%</div>
-                    <div class="stat-label">FG%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.stats.percentages.tp}%</div>
-                    <div class="stat-label">3P%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.stats.percentages.ft}%</div>
-                    <div class="stat-label">FT%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.stats.percentages.efg}%</div>
-                    <div class="stat-label">EFG%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.ortg}</div>
-                    <div class="stat-label">ORTG</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.drtg}</div>
-                    <div class="stat-label">DRTG</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.netrtg}</div>
-                    <div class="stat-label">NET RTG</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.astRatio}%</div>
-                    <div class="stat-label">AST%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.rebPct}%</div>
-                    <div class="stat-label">REB%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.tovRatio}%</div>
-                    <div class="stat-label">TOV%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.home.advanced.paintPct}%</div>
-                    <div class="stat-label">PAINT%</div>
-                </div>
-            </div>
-        `;
+    console.log("Dashboard data:", dashboardData);
+    
+    // Force initialization of shot data if missing
+    if (!dashboardData.shotData) {
+        dashboardData.shotData = { home: {}, away: {} };
+    }
+    if (!dashboardData.teams.home.shotStats) {
+        dashboardData.teams.home.shotStats = { makes: {}, misses: {}, total: {} };
+    }
+    if (!dashboardData.teams.away.shotStats) {
+        dashboardData.teams.away.shotStats = { makes: {}, misses: {}, total: {} };
     }
     
-    // Render away team stats
-    const awayTeamStats = document.getElementById('away-team-stats');
-    if (awayTeamStats) {
-        awayTeamStats.innerHTML = `
-            <h4>${dashboardData.teams.away.name}</h4>
-            <div class="stat-grid">
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.stats.totals.pts}</div>
-                    <div class="stat-label">Points</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.stats.percentages.fg}%</div>
-                    <div class="stat-label">FG%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.stats.percentages.tp}%</div>
-                    <div class="stat-label">3P%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.stats.percentages.ft}%</div>
-                    <div class="stat-label">FT%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.stats.percentages.efg}%</div>
-                    <div class="stat-label">EFG%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.ortg}</div>
-                    <div class="stat-label">ORTG</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.drtg}</div>
-                    <div class="stat-label">DRTG</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.netrtg}</div>
-                    <div class="stat-label">NET RTG</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.astRatio}%</div>
-                    <div class="stat-label">AST%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.rebPct}%</div>
-                    <div class="stat-label">REB%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.tovRatio}%</div>
-                    <div class="stat-label">TOV%</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">${dashboardData.teams.away.advanced.paintPct}%</div>
-                    <div class="stat-label">PAINT%</div>
-                </div>
-            </div>
-        `;
+    // Get team names
+    const homeTeamName = GameTracker.currentGame.homeTeam.name;
+    const awayTeamName = GameTracker.currentGame.awayTeam.name;
+    
+    // Format each stat safely to avoid errors
+    function safeStat(stat, defaultValue = '0') {
+        return (stat !== undefined && stat !== null) ? stat : defaultValue;
     }
+    
+    // Get rim shot data
+    const homeRimMakes = dashboardData.teams.home.shotStats.makes.rim || 0;
+    const homeRimTotal = dashboardData.teams.home.shotStats.total.rim || 0;
+    const awayRimMakes = dashboardData.teams.away.shotStats.makes.rim || 0;
+    const awayRimTotal = dashboardData.teams.away.shotStats.total.rim || 0;
+    
+    // Get 3pt shot data
+    const home3ptMakes = dashboardData.teams.home.shotStats.makes['3pts_total'] || 0;
+    const home3ptTotal = dashboardData.teams.home.shotStats.total['3pts_total'] || 0;
+    const away3ptMakes = dashboardData.teams.away.shotStats.makes['3pts_total'] || 0;
+    const away3ptTotal = dashboardData.teams.away.shotStats.total['3pts_total'] || 0;
+    
+    // Get other shot data
+    const homeOtherMakes = dashboardData.teams.home.shotStats.makes['other_total'] || 0;
+    const homeOtherTotal = dashboardData.teams.home.shotStats.total['other_total'] || 0;
+    const awayOtherMakes = dashboardData.teams.away.shotStats.makes['other_total'] || 0;
+    const awayOtherTotal = dashboardData.teams.away.shotStats.total['other_total'] || 0;
+    
+    // Format shooting stats
+    function formatStat(makes, total) {
+        if (total === 0) return "0/0 (0.0%)";
+        const percentage = (makes / total * 100).toFixed(1);
+        return `${makes}/${total} (${percentage}%)`;
+    }
+    
+    // Calculate total shots for frequency
+    const homeTotalShots = homeRimTotal + home3ptTotal + homeOtherTotal || 1; // Avoid division by zero
+    const awayTotalShots = awayRimTotal + away3ptTotal + awayOtherTotal || 1; // Avoid division by zero
+    
+    // Format frequency stats
+    function formatFrequency(count, total) {
+        if (total === 0) return "0/0 (0.0%)";
+        const percentage = (count / total * 100).toFixed(1);
+        return `${count}/${total} (${percentage}%)`;
+    }
+    
+    // Calculate ESQ (Effective Shot Quality)
+    function getAverageESQ(team) {
+        if (!GameTracker.currentGame || !GameTracker.currentGame.shotData) return "0.0";
+        
+        const teamShots = GameTracker.currentGame.shotData.filter(shot => shot.team === team && shot.quality);
+        if (teamShots.length === 0) return "0.0";
+        
+        const totalQuality = teamShots.reduce((sum, shot) => sum + shot.quality, 0);
+        return (totalQuality / teamShots.length).toFixed(1);
+    }
+    
+    // Create dashboard HTML
+    const dashboardHTML = `
 
-    // Render advanced stats section
-    const advancedStatsContainer = document.getElementById('advanced-stats-container');
-    if (advancedStatsContainer) {
-        advancedStatsContainer.innerHTML = `
-            <div class="advanced-stats-grid">
-                <div class="advanced-stat">
-                    <h5>Possessions</h5>
-                    <div class="stat-value">${dashboardData.possessions}</div>
-                    <p class="stat-desc">Estimated number of possessions in the game</p>
+    <div class="dashboard-section">
+            <div class="stats-table-container">
+                <div class="stats-header yellow-header">
+                    <h3>GAME STATS</h3>
                 </div>
-                <div class="advanced-stat">
-                    <h5>Pace</h5>
-                    <div class="stat-value">${(dashboardData.possessions / 2 * 40).toFixed(1)}</div>
-                    <p class="stat-desc">Possessions per 40 minutes (2 halves)</p>
-                </div>
-                <div class="advanced-stat">
-                    <h5>Team Comparison</h5>
-                    <div class="comparison-bar">
-                        <div class="home-bar" style="width: ${dashboardData.teams.home.stats.totals.pts / (dashboardData.teams.home.stats.totals.pts + dashboardData.teams.away.stats.totals.pts) * 100}%;">${dashboardData.teams.home.name}</div>
-                        <div class="away-bar" style="width: ${dashboardData.teams.away.stats.totals.pts / (dashboardData.teams.home.stats.totals.pts + dashboardData.teams.away.stats.totals.pts) * 100}%;">${dashboardData.teams.away.name}</div>
-                    </div>
-                    <p class="stat-desc">Points scored ratio</p>
-                </div>
+                <table class="stats-table stats-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="team-header home-header">${homeTeamName}</th>
+                            <th class="team-header away-header">${awayTeamName}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="stat-label">PAINT%</td>
+                            <td>${safeStat(dashboardData.teams.home.advanced.paintPct)}%</td>
+                            <td>${safeStat(dashboardData.teams.away.advanced.paintPct)}%</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">EFG%</td>
+                            <td>${safeStat(dashboardData.teams.home.stats.percentages.efg)}%</td>
+                            <td>${safeStat(dashboardData.teams.away.stats.percentages.efg)}%</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">ORB%</td>
+                            <td>${safeStat(dashboardData.teams.home.advanced.orebPct)}%</td>
+                            <td>${safeStat(dashboardData.teams.away.advanced.orebPct)}%</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">TOV%</td>
+                            <td>${safeStat(dashboardData.teams.home.advanced.tovRatio)}%</td>
+                            <td>${safeStat(dashboardData.teams.away.advanced.tovRatio)}%</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">AST RATE</td>
+                            <td>${safeStat(dashboardData.teams.home.advanced.astRatio)}%</td>
+                            <td>${safeStat(dashboardData.teams.away.advanced.astRatio)}%</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">AVG ESQ</td>
+                            <td>${getAverageESQ('home')}</td>
+                            <td>${getAverageESQ('away')}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-        `;
+            <div class="stats-table-container">
+                <div class="stats-header yellow-header">
+                    <h3>MARGINS</h3>
+                </div>
+                <table class="stats-table stats-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="team-header home-header">${homeTeamName}</th>
+                            <th class="team-header away-header">${awayTeamName}</th>
+                            <th class="team-header">NET</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="stat-label">2FG</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">3FG</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">TOVs</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">OREBs</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">FTs</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                        <tr>
+                            <td class="stat-label">TOTAL</td>
+                            <td>-</td>
+                            <td>-</td>
+                            <td>-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="dashboard-section">
+            <div class="stats-table-container">
+                <div class="stats-header yellow-header">
+                    <h3>SHOOTING BY ZONE</h3>
+                </div>
+                <table class="stats-table zone-table">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="team-header home-header">${homeTeamName}</th>
+                            <th class="team-header away-header">${awayTeamName}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="zone-label">RIM</td>
+                            <td>${formatStat(homeRimMakes, homeRimTotal)}</td>
+                            <td>${formatStat(awayRimMakes, awayRimTotal)}</td>
+                        </tr>
+                        <tr>
+                            <td class="zone-label">3'S</td>
+                            <td>${formatStat(home3ptMakes, home3ptTotal)}</td>
+                            <td>${formatStat(away3ptMakes, away3ptTotal)}</td>
+                        </tr>
+                        <tr>
+                            <td class="zone-label">OTHER</td>
+                            <td>${formatStat(homeOtherMakes, homeOtherTotal)}</td>
+                            <td>${formatStat(awayOtherMakes, awayOtherTotal)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="stats-table-container">
+            <div class="stats-header yellow-header">
+                <h3>FREQUENCY BY ZONE</h3>
+            </div>
+            <table class="stats-table zone-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="team-header home-header">${homeTeamName}</th>
+                        <th class="team-header away-header">${awayTeamName}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="zone-label">RIM</td>
+                        <td>${formatFrequency(homeRimTotal, homeTotalShots)}</td>
+                        <td>${formatFrequency(awayRimTotal, awayTotalShots)}</td>
+                    </tr>
+                    <tr>
+                        <td class="zone-label">3'S</td>
+                        <td>${formatFrequency(home3ptTotal, homeTotalShots)}</td>
+                        <td>${formatFrequency(away3ptTotal, awayTotalShots)}</td>
+                    </tr>
+                    <tr>
+                        <td class="zone-label">OTHER</td>
+                        <td>${formatFrequency(homeOtherTotal, homeTotalShots)}</td>
+                        <td>${formatFrequency(awayOtherTotal, awayTotalShots)}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+
+        </div>
+        
+        <div class="dashboard-section">
+
+        </div>
+        
+        
+    `;
+    
+    // Update dashboard container
+    const dashboardContainer = document.getElementById('dashboard-container');
+    if (dashboardContainer) {
+        dashboardContainer.innerHTML = dashboardHTML;
     }
     
-    // Render possession stats
-    const totalPossessions = dashboardData.actualPossessions || 0;
-    let homePossessions = 0;
-    let awayPossessions = 0;
-    let totalDuration = 0;
+    // Update possession stats (keeping this part from the original)
+    document.getElementById('total-possessions').textContent = dashboardData.actualPossessions;
     
-    // Count actual possessions by team
-    if (GameTracker.currentGame && GameTracker.currentGame.possessions) {
-        GameTracker.currentGame.possessions.forEach(possession => {
-            if (possession.team === 'home') homePossessions++;
-            else if (possession.team === 'away') awayPossessions++;
-            
-            totalDuration += possession.duration || 0;
-        });
-    }
-    
-    // Calculate average possession duration in seconds
-    const avgDuration = totalPossessions > 0 ? (totalDuration / totalPossessions / 1000).toFixed(1) : 0;
-    
-    // Update possession stats in the UI
-    document.getElementById('total-possessions').textContent = totalPossessions;
+    const homePossessions = GameTracker.currentGame.possessions 
+        ? GameTracker.currentGame.possessions.filter(p => p.team === 'home').length 
+        : 0;
     document.getElementById('home-possessions').textContent = homePossessions;
+    
+    const awayPossessions = GameTracker.currentGame.possessions 
+        ? GameTracker.currentGame.possessions.filter(p => p.team === 'away').length 
+        : 0;
     document.getElementById('away-possessions').textContent = awayPossessions;
+    
+    // Calculate average possession time
+    let totalDuration = 0;
+    if (GameTracker.currentGame.possessions) {
+        GameTracker.currentGame.possessions.forEach(p => {
+            totalDuration += p.duration || 0;
+        });
+    }
+    const avgDuration = dashboardData.actualPossessions > 0 
+        ? (totalDuration / dashboardData.actualPossessions / 1000).toFixed(1) 
+        : "0.0";
     document.getElementById('avg-possession-time').textContent = avgDuration;
-    
-    // Render shot chart
-    renderShotChart(dashboardData.shotData, 'all', 'all');
-    
-    // Add event listeners for shot chart filters
-    const teamToggleButtons = document.querySelectorAll('.team-toggle .toggle-btn');
-    teamToggleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            teamToggleButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            const filterButtons = document.querySelectorAll('.shot-chart-filter .filter-btn');
-            const activeFilter = Array.from(filterButtons).find(btn => btn.classList.contains('active'));
-            renderShotChart(dashboardData.shotData, this.dataset.team, activeFilter ? activeFilter.dataset.filter : 'all');
-        });
-    });
-    
-    const filterButtons = document.querySelectorAll('.shot-chart-filter .filter-btn');
-    filterButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            filterButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            const teamButtons = document.querySelectorAll('.team-toggle .toggle-btn');
-            const activeTeam = Array.from(teamButtons).find(btn => btn.classList.contains('active'));
-            renderShotChart(dashboardData.shotData, activeTeam ? activeTeam.dataset.team : 'all', this.dataset.filter);
-        });
-    });
 }
+
+/**
+ * Helper function to format shot stats in the form "makes/attempts (percentage%)"
+ * @param {Number} makes - Number of makes
+ * @param {Number} attempts - Number of attempts
+ * @returns {String} Formatted stat
+ */
+function formatShotStat(makes, attempts) {
+    // Handle cases where parameters might be undefined
+    makes = makes || 0;
+    attempts = attempts || 0;
+    
+    // Avoid division by zero
+    if (!attempts) return "0/0 (0.0%)";
+    
+    const percentage = (makes / attempts * 100).toFixed(1);
+    return `${makes}/${attempts} (${percentage}%)`;
+}
+
+/**
+ * Helper function to format frequency stats in the form "attempts/total (percentage%)"
+ * @param {Number} attempts - Number of attempts in zone
+ * @param {Number} total - Total shot attempts
+ * @returns {String} Formatted stat
+ */
+function formatFrequencyStat(attempts, total) {
+    if (!total) return "0/0 (0.0%)";
+    const percentage = (attempts / total * 100).toFixed(1);
+    return `${attempts}/${total} (${percentage}%)`;
+}
+
+/**
+ * Helper function to get total three-point attempts
+ * @param {Object} shotStats - Shot statistics object
+ * @returns {Number} Total three-point attempts
+ */
+function getThreePointAttempts(shotStats) {
+    return (
+        (shotStats.total['3pt-left-corner'] || 0) +
+        (shotStats.total['3pt-left-wing'] || 0) +
+        (shotStats.total['3pt-top'] || 0) +
+        (shotStats.total['3pt-right-wing'] || 0) +
+        (shotStats.total['3pt-right-corner'] || 0)
+    );
+}
+
+/**
+ * Helper function to get total three-point makes
+ * @param {Object} shotStats - Shot statistics object
+ * @returns {Number} Total three-point makes
+ */
+function getThreePointMakes(shotStats) {
+    return (
+        (shotStats.makes['3pt-left-corner'] || 0) +
+        (shotStats.makes['3pt-left-wing'] || 0) +
+        (shotStats.makes['3pt-top'] || 0) +
+        (shotStats.makes['3pt-right-wing'] || 0) +
+        (shotStats.makes['3pt-right-corner'] || 0)
+    );
+}
+
+/**
+ * Helper function to get "other" attempts (mid-range, not rim or 3pt)
+ * @param {Object} shotStats - Shot statistics object
+ * @returns {Number} Total "other" attempts
+ */
+function getOtherAttempts(shotStats) {
+    return (
+        (shotStats.total['paint-far'] || 0) +
+        (shotStats.total['midrange-left'] || 0) +
+        (shotStats.total['midrange-right'] || 0) +
+        (shotStats.total['midrange-left-corner'] || 0) +
+        (shotStats.total['midrange-right-corner'] || 0) +
+        (shotStats.total['midrange-top'] || 0)
+    );
+}
+
+/**
+ * Helper function to get "other" makes (mid-range, not rim or 3pt)
+ * @param {Object} shotStats - Shot statistics object
+ * @returns {Number} Total "other" makes
+ */
+function getOtherMakes(shotStats) {
+    return (
+        (shotStats.makes['paint-far'] || 0) +
+        (shotStats.makes['midrange-left'] || 0) +
+        (shotStats.makes['midrange-right'] || 0) +
+        (shotStats.makes['midrange-left-corner'] || 0) +
+        (shotStats.makes['midrange-right-corner'] || 0) +
+        (shotStats.makes['midrange-top'] || 0)
+    );
+}
+
+/**
+ * Helper function to get total shot attempts
+ * @param {Object} shotStats - Shot statistics object
+ * @returns {Number} Total shot attempts
+ */
+function getTotalShots(shotStats) {
+    return getThreePointAttempts(shotStats) + getOtherAttempts(shotStats) + (shotStats.total['rim'] || 0);
+}
+
+/**
+ * Calculate the average Effective Shot Quality (ESQ) from shot data
+ * @param {Object} shotData - Team shot data
+ * @returns {Number} Average shot quality (1-10 scale)
+ */
+/**
+ * Improved ESQ calculation to handle your specific data structure
+ */
+function calculateAverageESQ(shotData) {
+    // Handle cases where shotData is undefined
+    if (!shotData) return 0;
+    
+    console.log("Calculating ESQ for", shotData);
+    
+    // First try using the current game's shotData array if it exists
+    if (GameTracker.currentGame && GameTracker.currentGame.shotData && Array.isArray(GameTracker.currentGame.shotData)) {
+        console.log("Using current game shotData array");
+        let totalQuality = 0;
+        let totalShots = 0;
+        
+        // Filter shots by the team if we can determine which team
+        const teamShotData = GameTracker.currentGame.shotData.filter(shot => {
+            // Try to match by team name or use all shots if we can't determine
+            return true; // Just use all shots for now to debug
+        });
+        
+        if (teamShotData.length > 0) {
+            console.log("Found shot data:", teamShotData);
+            teamShotData.forEach(shot => {
+                if (shot.quality) {
+                    totalQuality += shot.quality;
+                    totalShots++;
+                }
+            });
+            
+            return totalShots > 0 ? totalQuality / totalShots : 0;
+        }
+    }
+    
+    // If we get here, we couldn't calculate using the expected structure
+    console.log("Could not calculate ESQ using expected structure");
+    return 0;
+}
+
+
+
+/**
+ * Improved function to get rim shots in case the structure is different
+ */
+function getRimShots(shotStats) {
+    if (!shotStats) return { makes: 0, attempts: 0 };
+    
+    // Try different possible locations for rim shots based on your data structure
+    let makes = 0;
+    let attempts = 0;
+    
+    // Check if rim or restricted-area data exists
+    if (shotStats.makes && shotStats.makes.rim) {
+        makes = shotStats.makes.rim;
+    } else if (shotStats.makes && shotStats.makes['restricted-area']) {
+        makes = shotStats.makes['restricted-area'];
+    }
+    
+    if (shotStats.total && shotStats.total.rim) {
+        attempts = shotStats.total.rim;
+    } else if (shotStats.total && shotStats.total['restricted-area']) {
+        attempts = shotStats.total['restricted-area'];
+    } else if (shotStats.misses && shotStats.misses.rim) {
+        // If we have makes and misses, but not total
+        attempts = makes + shotStats.misses.rim;
+    }
+    
+    return { makes, attempts };
+}
+
+
+
 
 /**
  * Update renderBoxScore function to remove minutes and plus-minus columns
@@ -1443,344 +1828,21 @@ function loadTeamColors() {
     if (awayDropdown) awayDropdown.value = savedAwayColor;
 }
 
-/**
- * Enhanced Basketball Shot Chart
- * Creates accurate half-court visualizations for basketball shooting data
- * with proper zones, toggleable views, and team-colored heat mapping
- */
 
 /**
- * Renders a basketball shot chart with side-by-side half courts for each team
- * @param {Object} shotData - Shot data with makes/misses by location
- * @param {String} teamFilter - Team filter ('home', 'away', or 'all')
- * @param {String} shotFilter - Shot filter ('all', 'makes', or 'misses')
+ * Add debug logging to see the actual shotStats structure
+ * Place this at the start of the renderDashboard function
  */
-function renderShotChart(shotData, teamFilter = 'all', shotFilter = 'all') {
-    const shotChartContainer = document.getElementById('shot-chart');
-    if (!shotChartContainer) {
-        console.error("Shot chart container not found!");
-        return;
+function logShotData(dashboardData) {
+    console.log("Dashboard data:", dashboardData);
+    
+    // Log shot data structure
+    if (dashboardData.shotData) {
+        console.log("Shot data structure:", dashboardData.shotData);
     }
     
-    // Clear existing content
-    shotChartContainer.innerHTML = '';
-    
-    // Add toggle buttons for frequency vs percentage
-    const toggleContainer = document.createElement('div');
-    toggleContainer.className = 'shot-chart-toggle';
-    toggleContainer.innerHTML = `
-        <button class="chart-toggle-btn" data-view="percentage">Shooting %</button>
-        <button class="chart-toggle-btn active" data-view="frequency">Frequency</button>
-    `;
-    shotChartContainer.appendChild(toggleContainer);
-    
-    // Create container for side-by-side courts
-    const courtsContainer = document.createElement('div');
-    courtsContainer.className = 'courts-container';
-    
-    // Get team names and colors
-    const homeTeamName = GameTracker.currentGame ? GameTracker.currentGame.homeTeam.name : 'Home';
-    const awayTeamName = GameTracker.currentGame ? GameTracker.currentGame.awayTeam.name : 'Away';
-    const homeColor = getComputedStyle(document.documentElement).getPropertyValue('--home-color').trim();
-    const awayColor = getComputedStyle(document.documentElement).getPropertyValue('--away-color').trim();
-    
-    // Create the two court containers
-    courtsContainer.innerHTML = `
-        <div class="court-wrapper">
-            <h4>${homeTeamName}</h4>
-            <div id="home-court" class="basketball-halfcourt" data-team="home"></div>
-        </div>
-        <div class="court-wrapper">
-            <h4>${awayTeamName}</h4>
-            <div id="away-court" class="basketball-halfcourt" data-team="away"></div>
-        </div>
-    `;
-    shotChartContainer.appendChild(courtsContainer);
-    
-    // Process shot data for both teams
-    const homeShotData = processShotData(shotData.home);
-    const awayShotData = processShotData(shotData.away);
-    
-    // Render each court
-    renderHalfCourt('home-court', homeShotData, homeColor, 'frequency');
-    renderHalfCourt('away-court', awayShotData, awayColor, 'frequency');
-    
-    // Add event listeners for toggle buttons
-    const viewToggleButtons = document.querySelectorAll('.chart-toggle-btn');
-    viewToggleButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const view = this.dataset.view;
-            viewToggleButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            
-            // Re-render courts with new view
-            renderHalfCourt('home-court', homeShotData, homeColor, view);
-            renderHalfCourt('away-court', awayShotData, awayColor, view);
-        });
-    });
-}
-
-/**
- * Process shot data for visualization
- * @param {Object} teamData - Team shot data
- * @returns {Object} Processed shot data by zone
- */
-function processShotData(teamData) {
-    // Define all 12 zones
-    const zones = [
-        'rim', 'paint-far',
-        'midrange-left', 'midrange-right', 'midrange-left-corner', 'midrange-right-corner', 'midrange-top',
-        '3pt-left-corner', '3pt-right-corner', '3pt-left-wing', '3pt-right-wing', '3pt-top'
-    ];
-    
-    // Initialize result with all zones
-    const result = {};
-    zones.forEach(zone => {
-        const makes = teamData.makes[zone] || 0;
-        const misses = teamData.misses[zone] || 0;
-        const total = makes + misses;
-        
-        result[zone] = {
-            makes: makes,
-            misses: misses,
-            total: total,
-            percentage: total > 0 ? (makes / total * 100).toFixed(1) : 0
-        };
-    });
-    
-    return result;
-}
-
-/**
- * Render a half court with shot data
- * @param {String} containerId - ID of container element
- * @param {Object} shotData - Processed shot data
- * @param {String} teamColor - Base color for the team
- * @param {String} view - View type ('frequency' or 'percentage')
- */
-function renderHalfCourt(containerId, shotData, teamColor, view = 'frequency') {
-    const courtContainer = document.getElementById(containerId);
-    if (!courtContainer) {
-        console.error(`Court container "${containerId}" not found!`);
-        return;
+    // Log home team shot stats
+    if (dashboardData.teams && dashboardData.teams.home && dashboardData.teams.home.shotStats) {
+        console.log("Home team shot stats:", dashboardData.teams.home.shotStats);
     }
-    
-    // Clear existing content
-    courtContainer.innerHTML = '';
-    
-    // Create SVG for the court
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.setAttribute('viewBox', '0 0 500 470');
-    svg.setAttribute('class', 'basketball-court');
-    courtContainer.appendChild(svg);
-    
-    // Add court background
-    const courtBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    courtBackground.setAttribute('x', '0');
-    courtBackground.setAttribute('y', '0');
-    courtBackground.setAttribute('width', '500');
-    courtBackground.setAttribute('height', '470');
-    courtBackground.setAttribute('fill', '#f8f8f8');
-    courtBackground.setAttribute('stroke', '#666');
-    courtBackground.setAttribute('stroke-width', '2');
-    svg.appendChild(courtBackground);
-    
-    // Add three-point line
-    const threePointLine = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    threePointLine.setAttribute('d', 'M 30,30 A 220,220 0 0 1 470,30');
-    threePointLine.setAttribute('fill', 'none');
-    threePointLine.setAttribute('stroke', '#666');
-    threePointLine.setAttribute('stroke-width', '2');
-    threePointLine.setAttribute('stroke-dasharray', '5,5');
-    svg.appendChild(threePointLine);
-    
-    // Add free throw lane
-    const freethrowLane = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-    freethrowLane.setAttribute('x', '180');
-    freethrowLane.setAttribute('y', '30');
-    freethrowLane.setAttribute('width', '140');
-    freethrowLane.setAttribute('height', '125');
-    freethrowLane.setAttribute('fill', 'none');
-    freethrowLane.setAttribute('stroke', '#666');
-    freethrowLane.setAttribute('stroke-width', '2');
-    svg.appendChild(freethrowLane);
-    
-    // Add free throw circle
-    const freethrowCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    freethrowCircle.setAttribute('cx', '250');
-    freethrowCircle.setAttribute('cy', '155');
-    freethrowCircle.setAttribute('r', '60');
-    freethrowCircle.setAttribute('fill', 'none');
-    freethrowCircle.setAttribute('stroke', '#666');
-    freethrowCircle.setAttribute('stroke-width', '2');
-    freethrowCircle.setAttribute('stroke-dasharray', '5,5');
-    svg.appendChild(freethrowCircle);
-    
-    // Add basket
-    const basket = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-    basket.setAttribute('cx', '250');
-    basket.setAttribute('cy', '30');
-    basket.setAttribute('r', '7.5');
-    basket.setAttribute('fill', 'none');
-    basket.setAttribute('stroke', '#666');
-    basket.setAttribute('stroke-width', '2');
-    svg.appendChild(basket);
-    
-    // Define zone paths with text positions
-    const zonePaths = {
-        // Inside the arc zones
-        'rim': {
-            path: 'M250,60 m-40,0 a40,40 0 1,0 80,0 a40,40 0 1,0 -80,0',
-            textPos: {x: 250, y: 60},
-            description: 'Restricted Area'
-        },
-        'paint-far': {
-            path: 'M180,100 L320,100 L320,155 L180,155 Z',
-            textPos: {x: 250, y: 127},
-            description: 'Paint (Non-RA)'
-        },
-        'midrange-left': {
-            path: 'M100,155 L180,155 L180,300 L100,300 Z',
-            textPos: {x: 140, y: 227},
-            description: 'Mid-Range Left'
-        },
-        'midrange-right': {
-            path: 'M320,155 L400,155 L400,300 L320,300 Z',
-            textPos: {x: 360, y: 227},
-            description: 'Mid-Range Right'
-        },
-        'midrange-left-corner': {
-            path: 'M100,300 L180,300 L180,400 L100,400 Z',
-            textPos: {x: 140, y: 350},
-            description: 'Mid-Range Left Corner'
-        },
-        'midrange-right-corner': {
-            path: 'M320,300 L400,300 L400,400 L320,400 Z',
-            textPos: {x: 360, y: 350},
-            description: 'Mid-Range Right Corner'
-        },
-        'midrange-top': {
-            path: 'M180,155 L320,155 L320,300 L180,300 Z',
-            textPos: {x: 250, y: 225},
-            description: 'Mid-Range Top'
-        },
-        
-        // Outside the arc zones
-        '3pt-left-corner': {
-            path: 'M30,400 L100,400 L100,300 L30,300 Z',
-            textPos: {x: 65, y: 350},
-            description: '3PT Left Corner'
-        },
-        '3pt-right-corner': {
-            path: 'M400,400 L470,400 L470,300 L400,300 Z',
-            textPos: {x: 435, y: 350},
-            description: '3PT Right Corner'
-        },
-        '3pt-left-wing': {
-            path: 'M30,300 L100,300 L100,155 L30,155 Z',
-            textPos: {x: 65, y: 227},
-            description: '3PT Left Wing'
-        },
-        '3pt-right-wing': {
-            path: 'M400,300 L470,300 L470,155 L400,155 Z',
-            textPos: {x: 435, y: 227},
-            description: '3PT Right Wing'
-        },
-        '3pt-top': {
-            path: 'M30,155 L100,155 L100,30 L180,30 L320,30 L400,30 L400,155 L470,155 L470,30 L30,30 Z',
-            textPos: {x: 250, y: 90},
-            description: '3PT Top'
-        }
-    };
-    
-    // Get max values for color scaling
-    let maxFrequency = 0;
-    Object.values(shotData).forEach(zone => {
-        if (zone.total > maxFrequency) maxFrequency = zone.total;
-    });
-    
-    // If no shots, set a minimum
-    maxFrequency = Math.max(maxFrequency, 1);
-    
-    // Add each zone to the SVG
-    Object.keys(zonePaths).forEach(zone => {
-        if (!shotData[zone]) return;
-        
-        // Create a group for the zone
-        const zoneGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        zoneGroup.classList.add('court-zone');
-        zoneGroup.setAttribute('data-zone', zone);
-        
-        // Create the zone path element
-        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathElement.setAttribute('d', zonePaths[zone].path);
-        
-        // Calculate color intensity based on view type
-        let intensity = 0;
-        let displayText = '';
-        
-        if (view === 'frequency') {
-            intensity = shotData[zone].total > 0 ? (shotData[zone].total / maxFrequency) : 0;
-            displayText = shotData[zone].total.toString();
-        } else { // percentage view
-            intensity = shotData[zone].makes > 0 ? (shotData[zone].percentage / 100) : 0;
-            displayText = shotData[zone].total > 0 ? shotData[zone].percentage + '%' : '';
-        }
-        
-        // Create color with alpha based on intensity
-        const baseColor = hexToRGB(teamColor);
-        const fillColor = `rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, ${Math.max(0.1, intensity)})`;
-        
-        // Set attributes for the path
-        pathElement.setAttribute('fill', fillColor);
-        pathElement.setAttribute('stroke', '#666');
-        pathElement.setAttribute('stroke-width', '1');
-        
-        // Add path to group
-        zoneGroup.appendChild(pathElement);
-        
-        // Add text for zone data
-        if (shotData[zone].total > 0) {
-            const textElement = document.createElementNS('http://www.w3.org/2000/svg', 'text');
-            textElement.setAttribute('x', zonePaths[zone].textPos.x);
-            textElement.setAttribute('y', zonePaths[zone].textPos.y);
-            textElement.setAttribute('text-anchor', 'middle');
-            textElement.setAttribute('dominant-baseline', 'middle');
-            textElement.setAttribute('fill', intensity > 0.5 ? '#fff' : '#000');
-            textElement.setAttribute('font-size', '14');
-            textElement.setAttribute('font-weight', 'bold');
-            textElement.textContent = displayText;
-            
-            zoneGroup.appendChild(textElement);
-        }
-        
-        // Add the group to the SVG
-        svg.appendChild(zoneGroup);
-    });
 }
-
-/**
- * Convert hex color to RGB object
- * @param {String} hex - Hex color code
- * @returns {Object} RGB values
- */
-function hexToRGB(hex) {
-    // Remove # if present
-    hex = hex.replace('#', '');
-    
-    // Handle shorthand hex
-    if (hex.length === 3) {
-        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-    }
-    
-    // Parse hex to RGB
-    const r = parseInt(hex.substring(0, 2), 16);
-    const g = parseInt(hex.substring(2, 4), 16);
-    const b = parseInt(hex.substring(4, 6), 16);
-    
-    return { r, g, b };
-}
-/**
- * Add this function to the global scope to replace the existing renderShotChart function
- */
-window.renderShotChart = renderShotChart;

@@ -673,7 +673,7 @@ input:focus, select:focus, textarea:focus {
     border-collapse: collapse;
     background-color: var(--card-color);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    margin-bottom: 1.5rem;
+    margin-bottom: .1rem;
 }
 
 .stats-table th, .stats-table td {
@@ -694,18 +694,122 @@ input:focus, select:focus, textarea:focus {
     text-align: left;
 }
 
-/* Dashboard Screen */
+/**
+ * CSS for the redesigned dashboard with shooting zone tables and game stats
+ * Add these styles to your styles.css file
+ */
+
+/* Dashboard Container */
 .dashboard-container {
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
 }
 
+/* Dashboard Section */
 .dashboard-section {
-    background-color: var(--card-color);
-    padding: 1.5rem;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Stats Table Container */
+.stats-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+}
+
+/* Stats Header */
+.stats-header {
+    padding: 0.8rem;
+    text-align: center;
+    color: white;
+}
+
+.yellow-header {
+    background-color: var(--primary-color);
+}
+
+.stats-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+/* Stats Table */
+.stats-table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+    table-layout: fixed;
+}
+
+.stats-table th,
+.stats-table td {
+    padding: 0.7rem;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.stats-table th:first-child,
+.stats-table td:first-child {
+    min-width: 100px;
+    width: 20%;
+}
+
+.stats-table th {
+    background-color: #f8f8f8;
+    font-weight: 600;
+}
+
+/* Team Header in Tables */
+.team-header {
+    color: white;
+    font-weight: 600;
+    padding: 0.5rem;
+}
+
+.home-header {
+    background-color: var(--home-color, #0A254E);
+}
+
+.away-header {
+    background-color: var(--away-color, #75ACD8);
+}
+
+/* Zone and Stat Labels */
+.zone-label,
+.stat-label {
+    font-weight: 600;
+    text-align: left !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .stats-table th,
+    .stats-table td {
+        padding: 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .stats-header h3 {
+        font-size: 1rem;
+    }
+}
+
+/* For smaller screens */
+@media (max-width: 480px) {
+    .stats-table th,
+    .stats-table td {
+        padding: 0.4rem;
+        font-size: 0.8rem;
+    }
+    
+    .stats-header h3 {
+        font-size: 0.9rem;
+    }
 }
 
 .stat-comparison {
@@ -736,8 +840,9 @@ input:focus, select:focus, textarea:focus {
 }
 
 .stat-label {
-    font-size: 0.8rem;
-    color: var(--light-text);
+    font-size: .9rem;
+    color: var(--text-color);
+    font-weight: 700;
 }
 
 .advanced-stats-grid {

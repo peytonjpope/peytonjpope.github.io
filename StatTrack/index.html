@@ -55,7 +55,7 @@
                             <select id="home-team-color" class="color-dropdown">
                                 <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy</option>
                                 <option value="#dc0007" style="background-color: #dc0007; color: white;">Red</option>
-                                <option value="#560000" style="background-color: #560000; color: white;">Crimson</option>
+                                <option value="#990000" style="background-color: #990000; color: white;">Crimson</option>
                                 <option value="#006B3C" style="background-color: #006B3C; color: white;">Green</option>
                                 <option value="#421b66" style="background-color: #421b66; color: white;">Purple</option>
                                 <option value="#000000" style="background-color: #000000; color: white;">Black</option>
@@ -94,7 +94,7 @@
                             <select id="away-team-color" class="color-dropdown">
                                 <option value="#0A254E" style="background-color: #0A254E; color: white;">Navy</option>
                                 <option value="#dc0007" style="background-color: #dc0007; color: white;">Red</option>
-                                <option value="#560000" style="background-color: #560000; color: white;">Crimson</option>
+                                <option value="#990000" style="background-color: #990000; color: white;">Crimson</option>
                                 <option value="#006B3C" style="background-color: #006B3C; color: white;">Green</option>
                                 <option value="#421b66" style="background-color: #421b66; color: white;">Purple</option>
                                 <option value="#000000" style="background-color: #000000; color: white;">Black</option>
@@ -252,70 +252,19 @@
                 </div>
             </section>
 
-            <!-- Dashboard Screen -->
-            <section id="dashboard-screen" class="screen">
-                <h2>Statistics Dashboard</h2>
-                
-                <div class="dashboard-container">
-                    <div class="dashboard-section team-comparison">
-                        <h3>Team Comparison</h3>
-                        <div class="stat-comparison">
-                            <div class="team-stat" id="home-team-stats">
-                                <!-- Home team stats summary -->
-                            </div>
-                            <div class="team-stat" id="away-team-stats">
-                                <!-- Away team stats summary -->
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="dashboard-section advanced-stats">
-                        <h3>Advanced Statistics</h3>
-                        <div class="advanced-container" id="advanced-stats-container">
-                            <!-- Advanced stats will go here -->
-                        </div>
-                    </div>
+            <!-- 
+    Replace the current dashboard screen section in your index.html file
+    with this updated version that removes shot charts and adds
+    the new table-based layout
+-->
 
-                    <!-- Possession Statistics Section -->
-                    <div class="dashboard-section possession-stats">
-                        <h3>Possession Statistics</h3>
-                        <div class="possession-summary">
-                            <div class="stat-item">
-                                <div class="stat-value" id="total-possessions">0</div>
-                                <div class="stat-label">Total Possessions</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="home-possessions">0</div>
-                                <div class="stat-label">Home Team Possessions</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="away-possessions">0</div>
-                                <div class="stat-label">Away Team Possessions</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="avg-possession-time">0</div>
-                                <div class="stat-label">Avg Possession Length (sec)</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Shot Chart Section -->
-                    <div class="dashboard-section shot-charts">
-                        <h3>Shot Charts</h3>
-                        <div class="chart-team-toggle">
-                            <button class="chart-toggle-btn active" data-team="home">Home</button>
-                            <button class="chart-toggle-btn" data-team="away">Away</button>
-                            <button class="chart-toggle-btn" data-team="all">All</button>
-                        </div>
-                        <div class="shot-chart-filter">
-                            <button class="filter-btn active" data-filter="all">All Shots</button>
-                            <button class="filter-btn" data-filter="makes">Makes</button>
-                            <button class="filter-btn" data-filter="misses">Misses</button>
-                        </div>
-                        <div class="shot-chart-container" id="shot-chart">
-                            <!-- Shot chart will be rendered here -->
-                        </div>
-                    </div>
+            <section id="dashboard-screen" class="screen">
+                <div id="dashboard-container" class="dashboard-container">
+                    <!-- Dashboard content will be inserted here by JavaScript -->
+                </div>
+                
+                <!-- Possession Statistics Section - Keep this if you still want it -->
+                <div class="dashboard-section possession-stats">
                 </div>
             </section>
 
