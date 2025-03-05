@@ -374,134 +374,236 @@ const GameTracker = {
     },
     
     /**
-     * Prompt for shot details (quality and location)
-     * @param {String} shotType - Type of shot (fga, fgm, 3pa, 3pm)
-     * @param {Object} player - Player who took the shot
-     * @param {String} teamType - 'home' or 'away'
-     */
-    promptShotDetails: function(shotType, player, teamType) {
-        const isMake = shotType === 'fgm' || shotType === '3pm';
-        const is3pt = shotType === '3pa' || shotType === '3pm';
-        
-        // Create the modal with different court areas based on shot type
-        const modal = document.createElement('div');
-        modal.className = 'shot-modal';
-        
-        // Different HTML content for 2-point vs 3-point shots
-        let courtAreasHTML = '';
-        
-        if (is3pt) {
-            courtAreasHTML = `
-                <div class="court-area" data-location="3pt-left-corner">Left Corner</div>
-                <div class="blank-court-area"></div>
-                <div class="court-area" data-location="3pt-right-corner">Right Corner</div>
-                <div class="court-area" data-location="3pt-left-wing">Left Wing</div>
-                <div class="court-area" data-location="3pt-top">Top Key</div>
-                <div class="court-area" data-location="3pt-right-wing">Right Wing</div>
-            `;
-        } else {
-            courtAreasHTML = `
-                <div class="court-area" data-location="midrange-left-corner">Left Corner</div>
-                <div class="court-area" data-location="rim">Rim</div>
-                <div class="court-area" data-location="midrange-right-corner">Right Corner</div>
-                <div class="court-area" data-location="midrange-left">Left Wing</div>
-                <div class="court-area" data-location="paint-far">Paint Far</div>
-                <div class="court-area" data-location="midrange-right">Right Wing</div>
-                <div class="court-area" data-location="midrange-top">Top Key</div>
-            `;
-        }
-        
-        // Create the full modal content
-        modal.innerHTML = `
-            <div class="shot-modal-content">
-                <h3>${isMake ? 'Made' : 'Missed'} ${is3pt ? '3PT' : '2PT'} Shot Details</h3>
-                <p>#${player.number} ${player.name} - ${teamType === 'home' ? this.currentGame.homeTeam.name : this.currentGame.awayTeam.name}</p>
-                
-                <div class="shot-quality-section">
-                    <h4>Shot Quality (1-10)</h4>
-                    <div class="shot-quality-buttons">
-                        ${Array.from({length: 10}, (_, i) => `<button class="quality-btn" data-quality="${i+1}">${i+1}</button>`).join('')}
-                    </div>
+ * Prompt for shot details (quality and location) and assist selection
+ * @param {String} shotType - Type of shot (fga, fgm, 3pa, 3pm)
+ * @param {Object} player - Player who took the shot
+ * @param {String} teamType - 'home' or 'away'
+ */
+promptShotDetails: function(shotType, player, teamType) {
+    const isMake = shotType === 'fgm' || shotType === '3pm';
+    const is3pt = shotType === '3pa' || shotType === '3pm';
+    
+    // Create the modal with different court areas based on shot type
+    const modal = document.createElement('div');
+    modal.className = 'shot-modal';
+    
+    // Different HTML content for 2-point vs 3-point shots
+    let courtAreasHTML = '';
+    
+    if (is3pt) {
+        courtAreasHTML = `
+            <div class="court-area" data-location="3pt-left-corner">Left Corner</div>
+            <div class="blank-court-area"></div>
+            <div class="court-area" data-location="3pt-right-corner">Right Corner</div>
+            <div class="court-area" data-location="3pt-left-wing">Left Wing</div>
+            <div class="court-area" data-location="3pt-top">Top Key</div>
+            <div class="court-area" data-location="3pt-right-wing">Right Wing</div>
+        `;
+    } else {
+        courtAreasHTML = `
+            <div class="court-area" data-location="midrange-left-corner">Left Corner</div>
+            <div class="court-area" data-location="rim">Rim</div>
+            <div class="court-area" data-location="midrange-right-corner">Right Corner</div>
+            <div class="court-area" data-location="midrange-left">Left Wing</div>
+            <div class="court-area" data-location="paint-far">Paint Far</div>
+            <div class="court-area" data-location="midrange-right">Right Wing</div>
+            <div class="court-area" data-location="midrange-top">Top Key</div>
+        `;
+    }
+    
+    // Create the full modal content
+    modal.innerHTML = `
+        <div class="shot-modal-content">
+            <h3>${isMake ? 'Made' : 'Missed'} ${is3pt ? '3PT' : '2PT'} Shot Details</h3>
+            <p>#${player.number} ${player.name} - ${teamType === 'home' ? this.currentGame.homeTeam.name : this.currentGame.awayTeam.name}</p>
+            
+            <div class="shot-quality-section">
+                <h4>Shot Quality (1-10)</h4>
+                <div class="shot-quality-buttons">
+                    ${Array.from({length: 10}, (_, i) => `<button class="quality-btn" data-quality="${i+1}">${i+1}</button>`).join('')}
                 </div>
-                
-                <div class="shot-location-section">
-                    <h4>Shot Location</h4>
-                    <div class="court-diagram">
-                        <div class="court-container">
-                            ${courtAreasHTML}
-                        </div>
+            </div>
+            
+            <div class="shot-location-section">
+                <h4>Shot Location</h4>
+                <div class="court-diagram">
+                    <div class="court-container">
+                        ${courtAreasHTML}
                     </div>
                 </div>
             </div>
-        `;
-        
-        // Add modal to the DOM
-        document.body.appendChild(modal);
-        
-        // Variables to track selection
-        let selectedQuality = null;
-        let selectedLocation = null;
-        
-        // Function to save shot details
-        const saveShot = () => {
-            if (selectedQuality && selectedLocation) {
-                const shotDetails = {
-                    quality: selectedQuality,
-                    location: selectedLocation,
-                    timestamp: Date.now(),
-                    player: player.id,
-                    team: teamType,
-                    shotType: shotType,
-                    isMake: isMake,
-                    is3pt: is3pt
-                };
-                
-                if (!GameTracker.currentGame.shotData) {
-                    GameTracker.currentGame.shotData = [];
-                }
+        </div>
+    `;
+    
+    // Add modal to the DOM
+    document.body.appendChild(modal);
+    
+    // Variables to track selection
+    let selectedQuality = null;
+    let selectedLocation = null;
+    
+    // First step: Save shot details and then prompt for assist if it's a make
+    const saveShot = () => {
+        if (selectedQuality && selectedLocation) {
+            const shotDetails = {
+                quality: selectedQuality,
+                location: selectedLocation,
+                timestamp: Date.now(),
+                player: player.id,
+                team: teamType,
+                shotType: shotType,
+                isMake: isMake,
+                is3pt: is3pt,
+                assistedBy: null // Will be populated if an assist is selected
+            };
+            
+            if (!GameTracker.currentGame.shotData) {
+                GameTracker.currentGame.shotData = [];
+            }
+            
+            // If it's a made shot, show the assist prompt
+            if (isMake) {
+                document.body.removeChild(modal);
+                this.promptShotAssist(shotDetails, teamType);
+            } else {
+                // If it's a miss, just save the shot without assist prompt
                 GameTracker.currentGame.shotData.push(shotDetails);
                 GameTracker.saveGameState();
                 document.body.removeChild(modal);
             }
-        };
-        
-        // Click outside to cancel
-        modal.addEventListener('click', function(e) {
-            if (e.target === modal) {
-                document.body.removeChild(modal);
+        }
+    };
+    
+    // Click outside to cancel
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            document.body.removeChild(modal);
+        }
+    });
+    
+    // Add event listeners for quality buttons
+    const qualityButtons = modal.querySelectorAll('.quality-btn');
+    qualityButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            qualityButtons.forEach(b => b.classList.remove('active'));
+            this.classList.add('active');
+            selectedQuality = parseInt(this.dataset.quality, 10);
+            
+            // Auto-save if both selections are made
+            if (selectedQuality && selectedLocation) {
+                saveShot();
             }
         });
-        
-        // Add event listeners for quality buttons
-        const qualityButtons = modal.querySelectorAll('.quality-btn');
-        qualityButtons.forEach(btn => {
-            btn.addEventListener('click', function() {
-                qualityButtons.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                selectedQuality = parseInt(this.dataset.quality, 10);
-                
-                // Auto-save if both selections are made
-                if (selectedQuality && selectedLocation) {
-                    saveShot();
-                }
-            });
+    });
+    
+    // Add event listeners for location areas
+    const locationAreas = modal.querySelectorAll('.court-area');
+    locationAreas.forEach(area => {
+        area.addEventListener('click', function() {
+            locationAreas.forEach(a => a.classList.remove('active'));
+            this.classList.add('active');
+            selectedLocation = this.dataset.location;
+            
+            // Auto-save if both selections are made
+            if (selectedQuality && selectedLocation) {
+                saveShot();
+            }
         });
-        
-        // Add event listeners for location areas
-        const locationAreas = modal.querySelectorAll('.court-area');
-        locationAreas.forEach(area => {
-            area.addEventListener('click', function() {
-                locationAreas.forEach(a => a.classList.remove('active'));
-                this.classList.add('active');
-                selectedLocation = this.dataset.location;
+    });
+},
+
+/**
+ * Prompt for shot assist selection
+ * @param {Object} shotDetails - Details of the shot already collected
+ * @param {String} teamType - 'home' or 'away'
+ */
+promptShotAssist: function(shotDetails, teamType) {
+    // Create the assist selection modal
+    const assistModal = document.createElement('div');
+    assistModal.className = 'shot-modal assist-modal';
+    
+    // Get players from the same team
+    const teamPlayers = teamType === 'home' 
+        ? this.currentGame.homeTeam.players 
+        : this.currentGame.awayTeam.players;
+    
+    // Find the shooter's info to exclude them from assist options
+    const shooter = teamPlayers.find(p => p.id === shotDetails.player);
+    
+    // Create the buttons for each teammate (excluding the shooter)
+    const playerButtons = teamPlayers
+        .filter(p => p.id !== shotDetails.player)
+        .map(p => `
+            <button class="player-assist-btn" data-player-id="${p.id}">
+                ${p.number} 
+            </button>
+        `)
+        .join('');
+    
+    // Create modal content
+    assistModal.innerHTML = `
+        <div class="shot-modal-content">
+            <h3>#${shooter.number} Made Shot</h3>
+            <p>Assisted by:</p>
+            <div class="assist-selection">
+                <div class="player-assist-buttons">
+                    ${playerButtons}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // Add modal to the DOM
+    document.body.appendChild(assistModal);
+    
+    // Handle assist selection
+    const handleAssistSelection = (assistPlayerId) => {
+        // Update shot details with the assist info
+        if (assistPlayerId !== 'none') {
+            shotDetails.assistedBy = assistPlayerId;
+            
+            // If a player assisted, also record it as an assist in their stats
+            const assistPlayer = teamPlayers.find(p => p.id === assistPlayerId);
+            if (assistPlayer) {
+                assistPlayer.ast++;
                 
-                // Auto-save if both selections are made
-                if (selectedQuality && selectedLocation) {
-                    saveShot();
-                }
-            });
+                // Log the assist
+                this.actionLog.push({
+                    timestamp: Date.now(),
+                    period: this.period,
+                    team: teamType,
+                    player: assistPlayer.name,
+                    playerNumber: assistPlayer.number,
+                    statType: 'ast',
+                    description: `#${assistPlayer.number} ${assistPlayer.name} assist to #${shooter.number} ${shooter.name}`
+                });
+            }
+        }
+        
+        // Save the shot data
+        GameTracker.currentGame.shotData.push(shotDetails);
+        GameTracker.saveGameState();
+        
+        // Remove the modal
+        document.body.removeChild(assistModal);
+    };
+    
+    // Click outside to select "No Assist"
+    assistModal.addEventListener('click', function(e) {
+        if (e.target === assistModal) {
+            handleAssistSelection('none');
+        }
+    });
+    
+    // Add event listeners for player assist buttons
+    const assistButtons = assistModal.querySelectorAll('.player-assist-btn');
+    assistButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const playerId = this.dataset.playerId;
+            handleAssistSelection(playerId);
         });
-    },
+    });
+},
     
     /**
      * End the current period
