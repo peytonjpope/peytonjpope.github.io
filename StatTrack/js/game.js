@@ -69,7 +69,7 @@ const GameTracker = {
      * @returns {Array} Players with initialized stats
      */
     initPlayers: function(players) {
-        return players.map(player => {
+        const playersList = players.map(player => {
             return {
                 id: player.id || 'player_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
                 name: player.name,
@@ -82,9 +82,25 @@ const GameTracker = {
                 ast: 0, stl: 0, blk: 0,
                 to: 0, pf: 0,
                 paintTouch: 0
-                // Removed: minutes, plusMinus
             };
         });
+        
+        // Add TEAM as a special player
+        playersList.push({
+            id: 'team_' + Date.now(),
+            name: 'TEAM',
+            number: 'TM',
+            isTeam: true,
+            fgm: 0, fga: 0,
+            tpm: 0, tpa: 0,
+            ftm: 0, fta: 0,
+            oreb: 0, dreb: 0,
+            ast: 0, stl: 0, blk: 0,
+            to: 0, pf: 0,
+            paintTouch: 0
+        });
+        
+        return playersList;
     },
     
     /**
@@ -187,7 +203,7 @@ const GameTracker = {
             statType: statType
         };
         
-        // Process stat based on type
+        // Updated switch case without special log formatting for TEAM
         switch (statType) {
             case 'fga':
                 player.fga++;
@@ -262,7 +278,8 @@ const GameTracker = {
             case 'stl':
                 player.stl++;
                 logEntry.description = `#${player.number} ${player.name} steal`;
-                endPossession = true;
+                // CHANGE 4: Steals no longer end possession
+                endPossession = false;
                 break;
                 
             case 'blk':
@@ -548,6 +565,7 @@ promptShotAssist: function(shotDetails, teamType) {
             <div class="assist-selection">
                 <div class="player-assist-buttons">
                     ${playerButtons}
+                    <button class="player-assist-btn no-assist-btn" data-player-id="none">Unassisted</button>
                 </div>
             </div>
         </div>
@@ -736,7 +754,14 @@ promptShotAssist: function(shotDetails, teamType) {
             const playerBtn = document.createElement('button');
             playerBtn.className = 'player-btn';
             playerBtn.dataset.playerId = player.id;
-            playerBtn.textContent = `${player.number}`;
+            
+            // Style TEAM button differently
+            if (player.isTeam) {
+                playerBtn.textContent = 'TEAM';
+                playerBtn.classList.add('team-btn');
+            } else {
+                playerBtn.textContent = `${player.number}`;
+            }
             
             if (this.homeSelectedPlayer && this.homeSelectedPlayer.id === player.id) {
                 playerBtn.classList.add('active');
@@ -765,7 +790,14 @@ promptShotAssist: function(shotDetails, teamType) {
             const playerBtn = document.createElement('button');
             playerBtn.className = 'player-btn';
             playerBtn.dataset.playerId = player.id;
-            playerBtn.textContent = `${player.number}`;
+            
+            // Style TEAM button differently
+            if (player.isTeam) {
+                playerBtn.textContent = 'TEAM';
+                playerBtn.classList.add('team-btn');
+            } else {
+                playerBtn.textContent = `${player.number}`;
+            }
             
             if (this.awaySelectedPlayer && this.awaySelectedPlayer.id === player.id) {
                 playerBtn.classList.add('active');
@@ -809,10 +841,16 @@ promptShotAssist: function(shotDetails, teamType) {
                     playerBtn.classList.add('active');
                 }
                 
-                // Update player selected indicator
+                // Update player selected indicator - handle TEAM specially
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
                 if (playerSelectedIndicator) {
-                    playerSelectedIndicator.textContent = `#${this.homeSelectedPlayer.number} ${this.homeSelectedPlayer.name}`;
+                    if (this.homeSelectedPlayer.isTeam) {
+                        // For TEAM, don't show number
+                        playerSelectedIndicator.textContent = `TEAM - ${this.currentGame.homeTeam.name}`;
+                    } else {
+                        // For players, show number as string
+                        playerSelectedIndicator.textContent = `#${this.homeSelectedPlayer.number} ${this.homeSelectedPlayer.name}`;
+                    }
                     playerSelectedIndicator.classList.add('visible');
                     playerSelectedIndicator.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--home-color');
                     playerSelectedIndicator.style.color = 'white';
@@ -821,7 +859,11 @@ promptShotAssist: function(shotDetails, teamType) {
                 // Update hidden span for JS references
                 const selectedPlayerDisplay = document.getElementById('home-selected-player');
                 if (selectedPlayerDisplay) {
-                    selectedPlayerDisplay.textContent = `#${this.homeSelectedPlayer.number} ${this.homeSelectedPlayer.name}`;
+                    if (this.homeSelectedPlayer.isTeam) {
+                        selectedPlayerDisplay.textContent = `TEAM - ${this.currentGame.homeTeam.name}`;
+                    } else {
+                        selectedPlayerDisplay.textContent = `#${this.homeSelectedPlayer.number} ${this.homeSelectedPlayer.name}`;
+                    }
                 }
             } else {
                 statButtonsContainer.classList.remove('home-active');
@@ -843,10 +885,7 @@ promptShotAssist: function(shotDetails, teamType) {
         }
     },
     
-    /**
-     * Update away team selected player display and border style
-     * Now includes player selected indicator
-     */
+    // 3. Update the updateAwayPlayerSelection function to properly handle TEAM
     updateAwayPlayerSelection: function() {
         // Clear any existing active player in home team
         const homePlayerBtns = document.querySelectorAll('#home-active-players .player-btn');
@@ -873,10 +912,16 @@ promptShotAssist: function(shotDetails, teamType) {
                     playerBtn.classList.add('active');
                 }
                 
-                // Update player selected indicator
+                // Update player selected indicator - handle TEAM specially
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
                 if (playerSelectedIndicator) {
-                    playerSelectedIndicator.textContent = `#${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
+                    if (this.awaySelectedPlayer.isTeam) {
+                        // For TEAM, don't show number
+                        playerSelectedIndicator.textContent = `TEAM - ${this.currentGame.awayTeam.name}`;
+                    } else {
+                        // For players, show number as string
+                        playerSelectedIndicator.textContent = `#${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
+                    }
                     playerSelectedIndicator.classList.add('visible');
                     playerSelectedIndicator.style.backgroundColor = getComputedStyle(document.documentElement).getPropertyValue('--away-color');
                     playerSelectedIndicator.style.color = 'white';
@@ -885,10 +930,14 @@ promptShotAssist: function(shotDetails, teamType) {
                 // Update hidden span for JS references
                 const selectedPlayerDisplay = document.getElementById('away-selected-player');
                 if (selectedPlayerDisplay) {
-                    selectedPlayerDisplay.textContent = `#${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
+                    if (this.awaySelectedPlayer.isTeam) {
+                        selectedPlayerDisplay.textContent = `TEAM - ${this.currentGame.awayTeam.name}`;
+                    } else {
+                        selectedPlayerDisplay.textContent = `#${this.awaySelectedPlayer.number} ${this.awaySelectedPlayer.name}`;
+                    }
                 }
             } else {
-                statButtonsContainer.classList.remove('home-active');
+                statButtonsContainer.classList.remove('away-active');
                 
                 // Update player selected indicator
                 const playerSelectedIndicator = document.getElementById('player-selected-indicator');
@@ -899,13 +948,14 @@ promptShotAssist: function(shotDetails, teamType) {
                 }
                 
                 // Update hidden span for JS references
-                const selectedPlayerDisplay = document.getElementById('home-selected-player');
+                const selectedPlayerDisplay = document.getElementById('away-selected-player');
                 if (selectedPlayerDisplay) {
                     selectedPlayerDisplay.textContent = 'None';
                 }
             }
         }
     },
+    
     
     /**
      * Update the action log with a new entry
@@ -936,8 +986,11 @@ promptShotAssist: function(shotDetails, teamType) {
         
         entryElement.textContent = logText;
         
-        // Add to the top of the log
-        logContainer.insertBefore(entryElement, logContainer.firstChild);
+        // CHANGE 5: Add to the bottom of the log instead of the top
+        logContainer.appendChild(entryElement);
+        
+        // Auto-scroll to bottom
+        logContainer.scrollTop = logContainer.scrollHeight;
     },
     
     /**
@@ -1235,14 +1288,14 @@ processShotDataForDashboard: function() {
     // Initialize result structure
     const result = {
         home: { 
-            makes: { rim: 0, paint: 0 },
-            misses: { rim: 0, paint: 0 },
-            total: { rim: 0, paint: 0 }
+            makes: { rim: 0, paint: 0, midrange: 0, '3pt': 0 },
+            misses: { rim: 0, paint: 0, midrange: 0, '3pt': 0 },
+            total: { rim: 0, paint: 0, midrange: 0, '3pt': 0 }
         },
         away: { 
-            makes: { rim: 0, paint: 0 },
-            misses: { rim: 0, paint: 0 },
-            total: { rim: 0, paint: 0 }
+            makes: { rim: 0, paint: 0, midrange: 0, '3pt': 0 },
+            misses: { rim: 0, paint: 0, midrange: 0, '3pt': 0 },
+            total: { rim: 0, paint: 0, midrange: 0, '3pt': 0 }
         }
     };
     
@@ -1264,20 +1317,13 @@ processShotDataForDashboard: function() {
             category = 'rim';
         } else if (location === 'paint-far' || location === 'paint') {
             category = 'paint';
-        } else if (location.includes('3pt')) {
+        } else if (location.includes('3pt') || is3pt) {
             category = '3pt';
         } else {
             category = 'midrange';
         }
         
-        // Create the category if it doesn't exist
-        if (!result[team].makes[category]) {
-            result[team].makes[category] = 0;
-            result[team].misses[category] = 0;
-            result[team].total[category] = 0;
-        }
-        
-        // Update the counts
+        // Update the counts - each shot counts as exactly one
         if (isMake) {
             result[team].makes[category]++;
         } else {
@@ -1298,31 +1344,6 @@ processShotDataForDashboard: function() {
             result[team].misses[location]++;
         }
         result[team].total[location]++;
-    });
-    
-    // Calculate aggregated 3-point and midrange totals
-    ['home', 'away'].forEach(team => {
-        // Calculate 3-point totals
-        result[team].makes['3pts_total'] = 0;
-        result[team].misses['3pts_total'] = 0;
-        result[team].total['3pts_total'] = 0;
-        
-        // Calculate midrange totals for 'OTHER' category
-        result[team].makes['other_total'] = 0;
-        result[team].misses['other_total'] = 0;
-        result[team].total['other_total'] = 0;
-        
-        Object.keys(result[team].total).forEach(key => {
-            if (key.includes('3pt')) {
-                result[team].makes['3pts_total'] += result[team].makes[key];
-                result[team].misses['3pts_total'] += result[team].misses[key];
-                result[team].total['3pts_total'] += result[team].total[key];
-            } else if (key.includes('midrange') || key === 'paint') {
-                result[team].makes['other_total'] += result[team].makes[key];
-                result[team].misses['other_total'] += result[team].misses[key];
-                result[team].total['other_total'] += result[team].total[key];
-            }
-        });
     });
     
     console.log("Processed shot data:", result);
@@ -1392,33 +1413,39 @@ function renderDashboard() {
     const awayRimTotal = dashboardData.teams.away.shotStats.total.rim || 0;
     
     // Get 3pt shot data
-    const home3ptMakes = dashboardData.teams.home.shotStats.makes['3pts_total'] || 0;
-    const home3ptTotal = dashboardData.teams.home.shotStats.total['3pts_total'] || 0;
-    const away3ptMakes = dashboardData.teams.away.shotStats.makes['3pts_total'] || 0;
-    const away3ptTotal = dashboardData.teams.away.shotStats.total['3pts_total'] || 0;
+    const home3ptMakes = dashboardData.teams.home.shotStats.makes['3pt'] || 0;
+    const home3ptTotal = dashboardData.teams.home.shotStats.total['3pt'] || 0;
+    const away3ptMakes = dashboardData.teams.away.shotStats.makes['3pt'] || 0;
+    const away3ptTotal = dashboardData.teams.away.shotStats.total['3pt'] || 0;
+    
+    // Get high quality 3pt shot data (ESQ >= 7)
+    const homeHQ3Makes = calculateHighQualityThrees('home', true);
+    const homeHQ3Total = calculateHighQualityThrees('home', false);
+    const awayHQ3Makes = calculateHighQualityThrees('away', true);
+    const awayHQ3Total = calculateHighQualityThrees('away', false);
     
     // Get other shot data
-    const homeOtherMakes = dashboardData.teams.home.shotStats.makes['other_total'] || 0;
-    const homeOtherTotal = dashboardData.teams.home.shotStats.total['other_total'] || 0;
-    const awayOtherMakes = dashboardData.teams.away.shotStats.makes['other_total'] || 0;
-    const awayOtherTotal = dashboardData.teams.away.shotStats.total['other_total'] || 0;
+    const homeOtherMakes = dashboardData.teams.home.shotStats.makes['midrange'] || 0;
+    const homeOtherTotal = dashboardData.teams.home.shotStats.total['midrange'] || 0;
+    const awayOtherMakes = dashboardData.teams.away.shotStats.makes['midrange'] || 0;
+    const awayOtherTotal = dashboardData.teams.away.shotStats.total['midrange'] || 0;
+    
+    // Calculate total shots for frequency
+    const homeTotalShots = (homeRimTotal + home3ptTotal + homeOtherTotal) || 0; // Avoid division by zero
+    const awayTotalShots = (awayRimTotal + away3ptTotal + awayOtherTotal) || 0; // Avoid division by zero
     
     // Format shooting stats
     function formatStat(makes, total) {
-        if (total === 0) return "0/0 (0.0%)";
+        if (total === 0) return "0 (0.0%)";
         const percentage = (makes / total * 100).toFixed(1);
         return `${makes}/${total} (${percentage}%)`;
     }
     
-    // Calculate total shots for frequency
-    const homeTotalShots = homeRimTotal + home3ptTotal + homeOtherTotal || 1; // Avoid division by zero
-    const awayTotalShots = awayRimTotal + away3ptTotal + awayOtherTotal || 1; // Avoid division by zero
-    
     // Format frequency stats
     function formatFrequency(count, total) {
-        if (total === 0) return "0/0 (0.0%)";
+        if (total === 0) return "0 (0.0%)";
         const percentage = (count / total * 100).toFixed(1);
-        return `${count}/${total} (${percentage}%)`;
+        return `${count} (${percentage}%)`;
     }
     
     // Calculate ESQ (Effective Shot Quality)
@@ -1429,12 +1456,25 @@ function renderDashboard() {
         if (teamShots.length === 0) return "0.0";
         
         const totalQuality = teamShots.reduce((sum, shot) => sum + shot.quality, 0);
-        return (totalQuality / teamShots.length).toFixed(1);
+        return (totalQuality / teamShots.length).toFixed(2);
+    }
+    
+    // Helper function to calculate high quality threes (ESQ >= 7)
+    function calculateHighQualityThrees(team, makesOnly) {
+        if (!GameTracker.currentGame || !GameTracker.currentGame.shotData) return 0;
+        
+        const hqThrees = GameTracker.currentGame.shotData.filter(shot => 
+            shot.team === team && 
+            shot.is3pt && 
+            shot.quality >= 7 && 
+            (makesOnly ? shot.isMake : true)
+        );
+        
+        return hqThrees.length;
     }
     
     // Create dashboard HTML
     const dashboardHTML = `
-
     <div class="dashboard-section">
             <div class="stats-table-container">
                 <div class="stats-header yellow-header">
@@ -1484,7 +1524,7 @@ function renderDashboard() {
             </div>
             <div class="stats-table-container">
                 <div class="stats-header yellow-header">
-                    <h3>MARGINS</h3>
+                    <h3>FOUR FACTORS</h3>
                 </div>
                 <table class="stats-table stats-table">
                     <thead>
@@ -1561,6 +1601,11 @@ function renderDashboard() {
                             <td>${formatStat(away3ptMakes, away3ptTotal)}</td>
                         </tr>
                         <tr>
+                            <td class="zone-label">HQ 3'S</td>
+                            <td>${formatStat(homeHQ3Makes, homeHQ3Total)}</td>
+                            <td>${formatStat(awayHQ3Makes, awayHQ3Total)}</td>
+                        </tr>
+                        <tr>
                             <td class="zone-label">OTHER</td>
                             <td>${formatStat(homeOtherMakes, homeOtherTotal)}</td>
                             <td>${formatStat(awayOtherMakes, awayOtherTotal)}</td>
@@ -1593,23 +1638,26 @@ function renderDashboard() {
                         <td>${formatFrequency(away3ptTotal, awayTotalShots)}</td>
                     </tr>
                     <tr>
+                        <td class="zone-label">HQ 3'S</td>
+                        <td>${formatFrequency(homeHQ3Total, homeTotalShots)}</td>
+                        <td>${formatFrequency(awayHQ3Total, awayTotalShots)}</td>
+                    </tr>
+                    <tr>
                         <td class="zone-label">OTHER</td>
                         <td>${formatFrequency(homeOtherTotal, homeTotalShots)}</td>
                         <td>${formatFrequency(awayOtherTotal, awayTotalShots)}</td>
                     </tr>
+                    <tr>
+                        <td class="zone-label">TOTAL</td>
+                        <td>${formatTotalStat(homeTotalShots)}</td>
+                        <td>${formatTotalStat(awayTotalShots)}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-
-
-
         </div>
-        
         <div class="dashboard-section">
-
         </div>
-        
-        
     `;
     
     // Update dashboard container
@@ -1618,7 +1666,7 @@ function renderDashboard() {
         dashboardContainer.innerHTML = dashboardHTML;
     }
     
-    // Update possession stats (keeping this part from the original)
+    // Update possession stats
     document.getElementById('total-possessions').textContent = dashboardData.actualPossessions;
     
     const homePossessions = GameTracker.currentGame.possessions 
@@ -1660,6 +1708,18 @@ function formatShotStat(makes, attempts) {
     
     const percentage = (makes / attempts * 100).toFixed(1);
     return `${makes}/${attempts} (${percentage}%)`;
+}
+
+
+/**
+ * Helper function to format frequency stats in the form "attempts/total (percentage%)"
+ * @param {Number} total - Total shot attempts
+ */
+function formatTotalStat(total) {
+    if (total === null || total === 0) 
+        return `0`;
+    else 
+        return `${total}`;
 }
 
 /**
@@ -1762,6 +1822,7 @@ function calculateAverageESQ(shotData) {
     // First try using the current game's shotData array if it exists
     if (GameTracker.currentGame && GameTracker.currentGame.shotData && Array.isArray(GameTracker.currentGame.shotData)) {
         console.log("Using current game shotData array");
+
         let totalQuality = 0;
         let totalShots = 0;
         
@@ -1860,21 +1921,41 @@ function renderBoxScore(teamType) {
     boxScore.players.forEach(player => {
         const row = document.createElement('tr');
         
-        row.innerHTML = `
-            <td class="player-col">#${player.number} ${player.name}</td>
-            <td>${player.points}</td>
-            <td>${player.fgm}/${player.fga} (${player.fgPercent}%)</td>
-            <td>${player.tpm}/${player.tpa} (${player.tpPercent}%)</td>
-            <td>${player.ftm}/${player.fta} (${player.ftPercent}%)</td>
-            <td>${player.oreb}</td>
-            <td>${player.dreb}</td>
-            <td>${player.rebounds}</td>
-            <td>${player.ast}</td>
-            <td>${player.stl}</td>
-            <td>${player.blk}</td>
-            <td>${player.to}</td>
-            <td>${player.pf}</td>
-        `;
+        // Handle TEAM row differently
+        if (player.isTeam) {
+            row.innerHTML = `
+                <td class="player-col">TEAM</td>
+                <td>${player.points}</td>
+                <td>${player.fgm}/${player.fga} (${player.fgPercent}%)</td>
+                <td>${player.tpm}/${player.tpa} (${player.tpPercent}%)</td>
+                <td>${player.ftm}/${player.fta} (${player.ftPercent}%)</td>
+                <td>${player.oreb}</td>
+                <td>${player.dreb}</td>
+                <td>${player.rebounds}</td>
+                <td>${player.ast}</td>
+                <td>${player.stl}</td>
+                <td>${player.blk}</td>
+                <td>${player.to}</td>
+                <td>${player.pf}</td>
+            `;
+        } else {
+            // For regular players, use string concatenation for the number
+            row.innerHTML = `
+                <td class="player-col">#${player.number} ${player.name}</td>
+                <td>${player.points}</td>
+                <td>${player.fgm}/${player.fga} (${player.fgPercent}%)</td>
+                <td>${player.tpm}/${player.tpa} (${player.tpPercent}%)</td>
+                <td>${player.ftm}/${player.fta} (${player.ftPercent}%)</td>
+                <td>${player.oreb}</td>
+                <td>${player.dreb}</td>
+                <td>${player.rebounds}</td>
+                <td>${player.ast}</td>
+                <td>${player.stl}</td>
+                <td>${player.blk}</td>
+                <td>${player.to}</td>
+                <td>${player.pf}</td>
+            `;
+        }
         
         tbody.appendChild(row);
     });
@@ -1910,6 +1991,7 @@ function renderBoxScore(teamType) {
         boxScoreTotals.appendChild(totalsRow);
     }
 }
+
 
 // Function to load team colors from localStorage
 function loadTeamColors() {
