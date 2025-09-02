@@ -1,0 +1,473 @@
+{% extends "main.html" %}
+
+{% block content %}
+<style>
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+/* FORCE full screen hero - override ALL Material spacing */
+.md-main {
+  flex-grow: 0 !important;
+}
+
+.md-main__inner {
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+.md-content {
+  padding: 0 !important;
+}
+
+.md-content__inner {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.md-container {
+  padding-top: 0 !important;
+  margin-top: 0 !important;  /* Ensure no top margin */
+}
+
+/* Full-screen hero that leaves space for footer */
+.hero-banner {
+  position: relative;
+  height: calc(100vh - var(--md-header-height, 2.8rem) - var(--md-footer-height, 2.9rem)) !important;  /* Full height minus header and footer */
+  width: 100vw !important;
+  margin: 0 !important;
+  margin-left: calc(-50vw + 50%) !important;
+  margin-top: -8px !important;  /* Remove any top margin that might cause gap */
+  background-image: url('../assets/hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  align-items: flex-end;  /* Align to bottom for fixed bottom margin */
+  justify-content: flex-start;  /* Left align */
+  color: white;
+  overflow: hidden;
+}
+
+/* Dark overlay for better text contrast */
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 50%, rgba(0, 0, 0, 0.1) 100%);
+  z-index: 1;
+}
+
+/* Hero content with fixed bottom margin */
+.hero-content {
+  max-width: none;  /* Remove width constraint */
+  padding-bottom: 3rem;
+  margin-left: var(--md-nav-width, 12.1rem);  /* Use Material's nav width variable */
+  margin-right: 2rem;  /* Add right margin for text wrapping */
+  margin-bottom: 2rem;  /* Fixed small margin from bottom */
+  text-align: left;
+  z-index: 2;
+  position: relative;
+}
+
+/* Down arrow centered at bottom */
+.arrow {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  color: white;
+  opacity: 0.8;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.arrow:hover {
+  opacity: 1;
+}
+
+.arrow .md-icon {
+  font-size: 2rem;
+}
+
+
+/* For when nav is expanded */
+@media screen and (min-width: 76.25em) {
+  .hero-content {
+    margin-left: var(--md-nav-width, 12.1rem);
+  }
+}
+
+/* For when nav is collapsed */
+@media screen and (max-width: 76.1875em) {
+  .hero-content {
+    margin-left: 1.2rem;  /* Align with hamburger menu */
+    margin-right: 1.2rem;
+  }
+}
+
+/* Large heading with full white opacity */
+.hero-banner h1 {
+  font-size: 3.5rem;
+  font-weight: 700;
+  margin: 0 0 1.5rem 0;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  color: white;  /* Full white opacity */
+  opacity: 1;    /* Ensure full opacity */
+}
+
+
+/* Button styling exactly like Material docs */
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.hero-buttons .md-button {
+  padding: 0.75rem 2rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-transform: none;
+  border-radius: 0.25rem;  /* Square corners like Material */
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Primary button (red like "Get started") */
+.hero-buttons .md-button--primary {
+  background-color: #587383;  /* Material pink/red */
+  color: white;
+  border: none;
+}
+
+.hero-buttons .md-button--primary:hover {
+  background-color: #587383d8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+
+}
+
+/* Secondary button (transparent like "Learn more") */
+.hero-buttons .md-button:not(.md-button--primary) {
+  background-color: transparent;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.hero-buttons .md-button:not(.md-button--primary):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Home projects section */
+.home-projects {
+  margin: 5rem auto;
+  max-width: 1200px;
+  padding: 0 2rem;
+  text-align: center;
+}
+
+/* Project grid layout - 2x2 grid */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin: 2rem auto 3rem auto;
+  max-width: 1200px;
+}
+
+/* Individual project cards - rounded rectangles like the image */
+.project {
+  background-color: #f5f5f500;
+  border: 1px solid #4d4d4d;
+  border-radius: .5rem;
+  padding: 2rem 1.5rem;
+  text-align: left;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 120px;
+  min-width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.project:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  background-color: #58738307;
+  border: 1px solid #587383;
+}
+
+/* Project titles - bold and prominent */
+.project h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+
+.project-header {
+  display: flex;
+  align-items: center; /* vertically align icons with h2 */
+  gap: 1rem; /* space between h2 and icons */
+}
+
+.project-header .icons {
+  display: flex;
+  gap: 0.4rem; /* space between icons */
+  color: #ffffff6d;
+}
+
+
+/* Project descriptions */
+.project p {
+  margin: 0;
+  font-style: italic;
+}
+
+/* Remove link styling - no colors, no underlines */
+.project-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.project-link:hover:visited {
+  color: inherit;
+  text-decoration: none;
+}
+
+.project-link:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Mobile responsive adjustments */
+@media screen and (max-width: 59.9375em) {
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    max-width: none;
+  }
+  
+  .project {
+    padding: 1.5rem 1.25rem;
+    min-height: 100px;
+  }
+  
+  .project h2 {
+    font-size: 1.25rem;
+  }
+  
+  .project p {
+    font-size: 0.9rem;
+  }
+  
+  .home-projects {
+    margin: 3rem auto;
+    padding: 0 1rem;
+  }
+  
+  .home-projects h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+}
+
+/* Medium screens - still 2 columns but smaller */
+@media screen and (max-width: 76.25em) and (min-width: 60em) {
+  .project-grid {
+    max-width: 700px;
+    gap: 1.5rem;
+  }
+  
+  .project {
+    padding: 1.75rem 1.25rem;
+  }
+}
+
+/* Responsive design with proper alignment */
+@media screen and (max-width: 59.9375em) {
+  .hero-banner {
+    background-attachment: scroll;
+  }
+  
+  .hero-content {
+    margin-left: 1.2rem;  /* Align with mobile nav */
+    margin-right: 1.2rem;
+    margin-bottom: 1.5rem;  /* Fixed small margin from bottom on mobile */
+  }
+  
+  .hero-banner h1 {
+    font-size: 2.5rem;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.1rem;
+    max-width: none;  /* Full width on mobile */
+  }
+  
+  .hero-buttons {
+    flex-direction: row;  /* Keep buttons horizontal on mobile */
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;  /* Allow wrapping if needed */
+  }
+  
+  .hero-buttons .md-button {
+    width: auto;
+    min-width: 120px;  /* Smaller min-width for mobile */
+    flex-shrink: 0;    /* Prevent buttons from shrinking */
+  }
+
+  .home-projects {
+    margin: 3rem auto;
+    padding: 0 1rem;
+  }
+  
+  .home-projects h1 {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .project-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  
+  .project {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+/* Animation on load */
+@keyframes heroSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes arrowSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-content > * {
+  animation: heroSlideIn 0.8s ease-out forwards;
+}
+
+.arrow > * {
+  animation: arrowSlideIn 0.8s ease-out forwards;
+}
+
+.hero-banner h1 { animation-delay: 0.1s; }
+.hero-buttons { animation-delay: 0.2s; }
+.arrow { animation-delay: 0.5s; }
+</style>
+
+<section class="hero-banner">
+  <div class="hero-content">
+    <h1>Hello, I'm Peyton</h1>
+    <div class="hero-buttons">
+      <a href="#projects" class="md-button md-button--primary">My Work</a>
+      <a href="/about" class="md-button">My Info</a>
+    </div>
+  </div>
+  <a href="#projects">
+    <div class="arrow">
+      <span class="md-icon">{% include ".icons/material/arrow-down.svg" %}</span>
+    </div>
+  </a>
+</section>
+
+<section class="home-projects" id="projects">
+  <h1>Projects at a glance...</h1>
+  <div class="project-grid">
+    
+    <a href="/projects/SignCraft" class="project-link">
+      <div class="project">
+        <div class="project-header">
+          <h2>SignCraft</h2>
+          <div class="icons">
+            <span class="md-icon">{% include ".icons/simple/phoenixframework.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/postgresql.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/flydotio.svg" %}</span>
+          </div>
+        </div>
+        <p>Phoenix Web-App with Database</p>
+      </div>
+    </a>
+
+    <a href="/projects/churchds" class="project-link">
+      <div class="project">
+        <div class="project-header">
+          <h2>Church Data Science</h2>
+          <div class="icons">
+            <span class="md-icon">{% include ".icons/simple/python.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/pandas.svg" %}</span>
+            <span class="md-icon">{% include ".icons/material/scatter-plot.svg" %}</span>
+          </div>
+        </div>
+        <p>Web-scraping, data manipulation and visualization (Python)</p>
+      </div>
+    </a>
+    
+    <a href="/projects/cfpbracket" class="project-link">
+      <div class="project">
+        <div class="project-header">
+          <h2>Bracket Generator</h2>
+          <div class="icons">
+            <span class="md-icon">{% include ".icons/simple/html5.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/css.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/javascript.svg" %}</span>
+          </div>
+        </div>
+        <p>Front-End Web Development</p>
+      </div>
+    </a>
+    
+    <a href="/projects/portfolio" class="project-link">
+      <div class="project">
+        <div class="project-header">
+          <h2>Portfolio Website</h2>
+          <div class="icons">
+            <span class="md-icon">{% include ".icons/simple/materialformkdocs.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/markdown.svg" %}</span>
+            <span class="md-icon">{% include ".icons/simple/github.svg" %}</span>
+          </div>
+        </div>
+        <p>Material for MkDocs</p>
+      </div>
+    </a>
+    
+  </div>
+</section>
+
+
+{% endblock %}
