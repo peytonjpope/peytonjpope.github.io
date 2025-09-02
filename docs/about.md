@@ -3,7 +3,7 @@ icon: material/account
 ---
 
 # About Me
-
+> [🌐 View My Resume](https://peytonjpope.com/media/PeytonPopeResume.pdf)
 ## I am...
 - a student at: **Liberty University**
 - currently studying: **Computer Science: Data Science**
@@ -15,10 +15,10 @@ icon: material/account
 ## Let's Connect  
 
 - [LinkedIn](https://www.linkedin.com/in/peytonpope)  
-- 📧 [peytonpope24@gmail.com](mailto:peytonpope24@gmail.com)  
 - [GitHub](https://github.com/peytonjpope)  
+- peytonpope24@gmail.com
 
-> [🌐 View My Resume](https://peytonjpope.com/media/PeytonPopeResume.pdf)
+
 
 ---
 
