@@ -3,11 +3,11 @@ icon: material/hand-front-right
 ---
 
 # SignCraft
-> [🌐 View Website](https://signcraft.peytonjpope.com)
+> [🌐 Live App](https://signcraft.peytonjpope.com)
 
 *A resource for ASL learners to maintain vocabulary and practice grammar, with the intention of promoting Deaf community engagement*
 
-![App Preview](../assets/signcraft1.jpg)
+![App Preview](../assets/signcraftdemo.gif)
 
 ## Objectives
 

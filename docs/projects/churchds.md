@@ -7,7 +7,7 @@ icon: material/database-marker
 
 *A data science project mapping 200,000+ US churches by denomination, scraped and visualized to show geographical distributions across the United States.*
 
-![Map Preview](../assets/churchmapss.png)
+![Map Preview](../assets/churchdsdemo.gif)
 
 ## Objectives
 
