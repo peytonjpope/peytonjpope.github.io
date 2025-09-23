@@ -3,7 +3,7 @@ icon: material/hand-front-right
 ---
 
 # SignCraft
-> [🌐 Live App](https://signcraft.peytonjpope.com)
+> [🌐 Live Application](https://signcraft.peytonjpope.com)
 
 *A resource for ASL learners to maintain vocabulary and practice grammar, with the intention of promoting Deaf community engagement*
 
