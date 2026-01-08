@@ -51,6 +51,7 @@ nav:
   - Home: index.md
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
+    - Playoff Predictor: projects/cfp-predictor.md
     - Church Data Science: projects/churchds.md
     - Bracket Generator: projects/cfpbracket.md
     - Portfolio Website: projects/portfolio.md
