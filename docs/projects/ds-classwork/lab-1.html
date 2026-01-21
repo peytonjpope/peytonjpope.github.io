@@ -1,0 +1,1335 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Peyton Pope">
+<meta name="dcterms.date" content="2025-09-19">
+
+<title>Lab 1 - EDA &amp; Visualization Assignment</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="lab-1_files/libs/clipboard/clipboard.min.js"></script>
+<script src="lab-1_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="lab-1_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="lab-1_files/libs/quarto-html/popper.min.js"></script>
+<script src="lab-1_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="lab-1_files/libs/quarto-html/anchor.min.js"></script>
+<link href="lab-1_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="lab-1_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="lab-1_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="lab-1_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="lab-1_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#libraries-paths" id="toc-libraries-paths" class="nav-link" data-scroll-target="#libraries-paths">Libraries &amp; Paths</a>
+  <ul class="collapse">
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r">R</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#data-loading-and-dictionary-alignment" id="toc-data-loading-and-dictionary-alignment" class="nav-link" data-scroll-target="#data-loading-and-dictionary-alignment">Data Loading and Dictionary Alignment</a>
+  <ul class="collapse">
+  <li><a href="#reading-in-file-and-reviewing-data" id="toc-reading-in-file-and-reviewing-data" class="nav-link" data-scroll-target="#reading-in-file-and-reviewing-data">Reading in file and reviewing data</a>
+  <ul class="collapse">
+  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
+  <li><a href="#r-1" id="toc-r-1" class="nav-link" data-scroll-target="#r-1">R</a></li>
+  <li><a href="#questionable-encodings" id="toc-questionable-encodings" class="nav-link" data-scroll-target="#questionable-encodings">Questionable encodings</a></li>
+  </ul></li>
+  <li><a href="#performing-coercions" id="toc-performing-coercions" class="nav-link" data-scroll-target="#performing-coercions">Performing Coercions</a>
+  <ul class="collapse">
+  <li><a href="#python-2" id="toc-python-2" class="nav-link" data-scroll-target="#python-2">Python</a></li>
+  <li><a href="#r-2" id="toc-r-2" class="nav-link" data-scroll-target="#r-2">R</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#data-completeness" id="toc-data-completeness" class="nav-link" data-scroll-target="#data-completeness">Data Completeness</a>
+  <ul class="collapse">
+  <li><a href="#dimensions-of-the-dataset" id="toc-dimensions-of-the-dataset" class="nav-link" data-scroll-target="#dimensions-of-the-dataset">Dimensions of the dataset</a>
+  <ul class="collapse">
+  <li><a href="#python-3" id="toc-python-3" class="nav-link" data-scroll-target="#python-3">Python</a></li>
+  <li><a href="#r-3" id="toc-r-3" class="nav-link" data-scroll-target="#r-3">R</a></li>
+  </ul></li>
+  <li><a href="#missing-values-check" id="toc-missing-values-check" class="nav-link" data-scroll-target="#missing-values-check">Missing values check</a>
+  <ul class="collapse">
+  <li><a href="#python-4" id="toc-python-4" class="nav-link" data-scroll-target="#python-4">Python</a></li>
+  <li><a href="#r-4" id="toc-r-4" class="nav-link" data-scroll-target="#r-4">R</a></li>
+  </ul></li>
+  <li><a href="#confirming-data-completion" id="toc-confirming-data-completion" class="nav-link" data-scroll-target="#confirming-data-completion">Confirming data completion</a></li>
+  </ul></li>
+  <li><a href="#descriptive-statistics" id="toc-descriptive-statistics" class="nav-link" data-scroll-target="#descriptive-statistics">Descriptive Statistics</a>
+  <ul class="collapse">
+  <li><a href="#summary-of-features" id="toc-summary-of-features" class="nav-link" data-scroll-target="#summary-of-features">Summary of features</a>
+  <ul class="collapse">
+  <li><a href="#python-5" id="toc-python-5" class="nav-link" data-scroll-target="#python-5">Python</a></li>
+  <li><a href="#r-5" id="toc-r-5" class="nav-link" data-scroll-target="#r-5">R</a></li>
+  <li><a href="#key-insights" id="toc-key-insights" class="nav-link" data-scroll-target="#key-insights">Key insights</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#histograms" id="toc-histograms" class="nav-link" data-scroll-target="#histograms">Histograms</a>
+  <ul class="collapse">
+  <li><a href="#histogram-and-density-of-age" id="toc-histogram-and-density-of-age" class="nav-link" data-scroll-target="#histogram-and-density-of-age">Histogram and density of age</a>
+  <ul class="collapse">
+  <li><a href="#python-histogram" id="toc-python-histogram" class="nav-link" data-scroll-target="#python-histogram">Python Histogram</a></li>
+  <li><a href="#r-histogram" id="toc-r-histogram" class="nav-link" data-scroll-target="#r-histogram">R Histogram</a></li>
+  <li><a href="#python-density" id="toc-python-density" class="nav-link" data-scroll-target="#python-density">Python Density</a></li>
+  <li><a href="#r-density" id="toc-r-density" class="nav-link" data-scroll-target="#r-density">R Density</a></li>
+  <li><a href="#bin-width-effect" id="toc-bin-width-effect" class="nav-link" data-scroll-target="#bin-width-effect">Bin-width effect</a></li>
+  </ul></li>
+  <li><a href="#histogram-and-density-of-debt-with-mean-line" id="toc-histogram-and-density-of-debt-with-mean-line" class="nav-link" data-scroll-target="#histogram-and-density-of-debt-with-mean-line">Histogram and density of debt, with mean line</a>
+  <ul class="collapse">
+  <li><a href="#python-6" id="toc-python-6" class="nav-link" data-scroll-target="#python-6">Python</a></li>
+  <li><a href="#r-6" id="toc-r-6" class="nav-link" data-scroll-target="#r-6">R</a></li>
+  <li><a href="#use-of-descriptive-statistics" id="toc-use-of-descriptive-statistics" class="nav-link" data-scroll-target="#use-of-descriptive-statistics">Use of descriptive Statistics</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#scatterplot" id="toc-scatterplot" class="nav-link" data-scroll-target="#scatterplot">Scatterplot</a>
+  <ul class="collapse">
+  <li><a href="#create-a-scatterplot-debt-x-axis-and-income-y-axis-trend-line" id="toc-create-a-scatterplot-debt-x-axis-and-income-y-axis-trend-line" class="nav-link" data-scroll-target="#create-a-scatterplot-debt-x-axis-and-income-y-axis-trend-line">Create a scatterplot, debt (x-axis) and income (y-axis), trend line</a>
+  <ul class="collapse">
+  <li><a href="#python-7" id="toc-python-7" class="nav-link" data-scroll-target="#python-7">Python</a></li>
+  <li><a href="#r-7" id="toc-r-7" class="nav-link" data-scroll-target="#r-7">R</a></li>
+  <li><a href="#interpreting-outliers" id="toc-interpreting-outliers" class="nav-link" data-scroll-target="#interpreting-outliers">Interpreting outliers</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#horizontal-bar-plot" id="toc-horizontal-bar-plot" class="nav-link" data-scroll-target="#horizontal-bar-plot">Horizontal Bar Plot</a>
+  <ul class="collapse">
+  <li><a href="#visualizing-industry-by-ethnicity" id="toc-visualizing-industry-by-ethnicity" class="nav-link" data-scroll-target="#visualizing-industry-by-ethnicity">Visualizing industry by ethnicity</a>
+  <ul class="collapse">
+  <li><a href="#python-8" id="toc-python-8" class="nav-link" data-scroll-target="#python-8">Python</a></li>
+  <li><a href="#r-8" id="toc-r-8" class="nav-link" data-scroll-target="#r-8">R</a></li>
+  <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection">Reflection</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#approval-bar-plots" id="toc-approval-bar-plots" class="nav-link" data-scroll-target="#approval-bar-plots">Approval Bar Plots</a>
+  <ul class="collapse">
+  <li><a href="#stacked-bar-plot-number-of-approvalsdisapprovals-y-axis-by-ethnicity-x-axis" id="toc-stacked-bar-plot-number-of-approvalsdisapprovals-y-axis-by-ethnicity-x-axis" class="nav-link" data-scroll-target="#stacked-bar-plot-number-of-approvalsdisapprovals-y-axis-by-ethnicity-x-axis">Stacked bar plot, number of approvals/disapprovals (y-axis) by ethnicity (x-axis)</a>
+  <ul class="collapse">
+  <li><a href="#python-9" id="toc-python-9" class="nav-link" data-scroll-target="#python-9">Python</a></li>
+  <li><a href="#r-9" id="toc-r-9" class="nav-link" data-scroll-target="#r-9">R</a></li>
+  </ul></li>
+  <li><a href="#bar-plot-same-orientation-and-axes-but-unstacked" id="toc-bar-plot-same-orientation-and-axes-but-unstacked" class="nav-link" data-scroll-target="#bar-plot-same-orientation-and-axes-but-unstacked">Bar plot same orientation and axes but unstacked</a>
+  <ul class="collapse">
+  <li><a href="#python-10" id="toc-python-10" class="nav-link" data-scroll-target="#python-10">Python</a></li>
+  <li><a href="#r-10" id="toc-r-10" class="nav-link" data-scroll-target="#r-10">R</a></li>
+  <li><a href="#insights" id="toc-insights" class="nav-link" data-scroll-target="#insights">Insights</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#box-plots" id="toc-box-plots" class="nav-link" data-scroll-target="#box-plots">Box Plots</a>
+  <ul class="collapse">
+  <li><a href="#box-plot-of-debt-y-axis-against-industry-x-axis-and-save-the-graph" id="toc-box-plot-of-debt-y-axis-against-industry-x-axis-and-save-the-graph" class="nav-link" data-scroll-target="#box-plot-of-debt-y-axis-against-industry-x-axis-and-save-the-graph">Box plot of debt (y-axis) against industry (x-axis) and save the graph</a>
+  <ul class="collapse">
+  <li><a href="#python-11" id="toc-python-11" class="nav-link" data-scroll-target="#python-11">Python</a></li>
+  <li><a href="#r-11" id="toc-r-11" class="nav-link" data-scroll-target="#r-11">R</a></li>
+  </ul></li>
+  <li><a href="#box-plot-of-debt-y-axis-against-industry-x-axis-save-file" id="toc-box-plot-of-debt-y-axis-against-industry-x-axis-save-file" class="nav-link" data-scroll-target="#box-plot-of-debt-y-axis-against-industry-x-axis-save-file">Box plot of debt (y-axis) against industry (x-axis), save file</a>
+  <ul class="collapse">
+  <li><a href="#python-12" id="toc-python-12" class="nav-link" data-scroll-target="#python-12">Python</a></li>
+  <li><a href="#r-12" id="toc-r-12" class="nav-link" data-scroll-target="#r-12">R</a></li>
+  <li><a href="#variability-comments" id="toc-variability-comments" class="nav-link" data-scroll-target="#variability-comments">Variability comments</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#additional-plots" id="toc-additional-plots" class="nav-link" data-scroll-target="#additional-plots">Additional Plots</a>
+  <ul class="collapse">
+  <li><a href="#correlation-matrix-numeric" id="toc-correlation-matrix-numeric" class="nav-link" data-scroll-target="#correlation-matrix-numeric">Correlation Matrix (numeric)</a>
+  <ul class="collapse">
+  <li><a href="#insight" id="toc-insight" class="nav-link" data-scroll-target="#insight">Insight</a></li>
+  </ul></li>
+  <li><a href="#gender-affecting-income-violin-plot-non-numeric" id="toc-gender-affecting-income-violin-plot-non-numeric" class="nav-link" data-scroll-target="#gender-affecting-income-violin-plot-non-numeric">Gender affecting income violin plot (non-numeric)</a>
+  <ul class="collapse">
+  <li><a href="#python-13" id="toc-python-13" class="nav-link" data-scroll-target="#python-13">Python</a></li>
+  <li><a href="#r-13" id="toc-r-13" class="nav-link" data-scroll-target="#r-13">R</a></li>
+  <li><a href="#insight-1" id="toc-insight-1" class="nav-link" data-scroll-target="#insight-1">Insight</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#final-summary-reflection" id="toc-final-summary-reflection" class="nav-link" data-scroll-target="#final-summary-reflection">Final Summary &amp; Reflection</a>
+  <ul class="collapse">
+  <li><a href="#assumptions" id="toc-assumptions" class="nav-link" data-scroll-target="#assumptions">Assumptions</a></li>
+  <li><a href="#fairness" id="toc-fairness" class="nav-link" data-scroll-target="#fairness">Fairness</a></li>
+  <li><a href="#biblical-principles" id="toc-biblical-principles" class="nav-link" data-scroll-target="#biblical-principles">Biblical Principles</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lab 1 - EDA &amp; Visualization Assignment</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Peyton Pope </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 19, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<section id="libraries-paths" class="level2">
+<h2 class="anchored" data-anchor-id="libraries-paths">Libraries &amp; Paths</h2>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Path</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">"~/Downloads/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="r" class="level3">
+<h3 class="anchored" data-anchor-id="r">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Path</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="st">"~/Downloads/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="data-loading-and-dictionary-alignment" class="level1">
+<h1>Data Loading and Dictionary Alignment</h1>
+<section id="reading-in-file-and-reviewing-data" class="level2">
+<h2 class="anchored" data-anchor-id="reading-in-file-and-reviewing-data">Reading in file and reviewing data</h2>
+<section id="python-1" class="level3">
+<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>approval_data <span class="op">=</span> pd.read_csv(path <span class="op">+</span> <span class="st">"credit_card_approvals_2025.csv"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Display feature types</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>approval_data.info() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'pandas.core.frame.DataFrame'&gt;
+RangeIndex: 690 entries, 0 to 689
+Data columns (total 16 columns):
+ #   Column          Non-Null Count  Dtype  
+---  ------          --------------  -----  
+ 0   Gender          690 non-null    object 
+ 1   Age             690 non-null    int64  
+ 2   Debt            690 non-null    int64  
+ 3   Married         690 non-null    int64  
+ 4   BankAccount     690 non-null    int64  
+ 5   Industry        690 non-null    object 
+ 6   Ethnicity       690 non-null    object 
+ 7   YearsEmployed   690 non-null    float64
+ 8   PriorDefault    690 non-null    int64  
+ 9   Employed        690 non-null    int64  
+ 10  CreditScore     690 non-null    int64  
+ 11  DriversLicense  690 non-null    int64  
+ 12  Citizen         690 non-null    object 
+ 13  ZipCode         690 non-null    int64  
+ 14  Income          690 non-null    int64  
+ 15  Approved        690 non-null    int64  
+dtypes: float64(1), int64(11), object(4)
+memory usage: 86.4+ KB</code></pre>
+</div>
+</div>
+</section>
+<section id="r-1" class="level3">
+<h3 class="anchored" data-anchor-id="r-1">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read in</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>approval_data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">paste0</span>(path, <span class="st">"credit_card_approvals_2025.csv"</span>))</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Display feature types</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(approval_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   690 obs. of  16 variables:
+ $ Gender        : chr  "Male" "Female" "Female" "Male" ...
+ $ Age           : int  31 59 25 28 20 32 33 23 54 43 ...
+ $ Debt          : int  0 29705 3230 10267 34416 24933 6540 76125 3185 29829 ...
+ $ Married       : int  1 1 1 1 1 1 1 1 0 0 ...
+ $ BankAccount   : int  1 1 1 1 1 1 1 1 0 0 ...
+ $ Industry      : chr  "Industrials" "Materials" "Materials" "Industrials" ...
+ $ Ethnicity     : chr  "White" "Black" "Black" "White" ...
+ $ YearsEmployed : num  1.25 3.04 1.5 3.75 1.71 ...
+ $ PriorDefault  : int  1 1 1 1 1 1 1 1 1 1 ...
+ $ Employed      : int  1 1 0 1 0 0 0 0 0 0 ...
+ $ CreditScore   : int  1 6 0 5 0 0 0 0 0 0 ...
+ $ DriversLicense: int  0 0 0 1 0 1 1 0 0 1 ...
+ $ Citizen       : chr  "ByBirth" "ByBirth" "ByBirth" "ByBirth" ...
+ $ ZipCode       : int  98370 60988 10239 69803 87131 11935 14942 27156 31725 50682 ...
+ $ Income        : int  55473 74651 61949 63459 64622 74491 64507 80960 72688 65933 ...
+ $ Approved      : int  1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+</section>
+<section id="questionable-encodings" class="level3">
+<h3 class="anchored" data-anchor-id="questionable-encodings">Questionable encodings</h3>
+<p>Looking at the dataset, I can compare it to the list given in the instructions. An initial thought was that the binary variables, such as approved, should be stored as Boolean values. However, I determined that it does not make a significant difference if the instructions specify they are stored as numbers. I was also initially confused by the credit score scaling, but I have found that to be typical. The one problem I noticed was with ZIP code. ZIP codes have the possibility of starting with a zero and also potentially having dashes and extra numbers. These integer values will never be used with arithmetic. For these two reasons, I have decided to make ZIP code a string type.</p>
+</section>
+</section>
+<section id="performing-coercions" class="level2">
+<h2 class="anchored" data-anchor-id="performing-coercions">Performing Coercions</h2>
+<section id="python-2" class="level3">
+<h3 class="anchored" data-anchor-id="python-2">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace with string conversion</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>approval_data[<span class="st">'ZipCode'</span>] <span class="op">=</span> approval_data[<span class="st">'ZipCode'</span>].astype(<span class="st">'string'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="r-2" class="level3">
+<h3 class="anchored" data-anchor-id="r-2">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Replace with char conversion</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>approval_data<span class="sc">$</span>ZipCode <span class="ot">&lt;-</span> <span class="fu">as.character</span>(approval_data<span class="sc">$</span>ZipCode)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="data-completeness" class="level1">
+<h1>Data Completeness</h1>
+<section id="dimensions-of-the-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dimensions-of-the-dataset">Dimensions of the dataset</h2>
+<section id="python-3" class="level3">
+<h3 class="anchored" data-anchor-id="python-3">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>approval_data.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(690, 16)</code></pre>
+</div>
+</div>
+</section>
+<section id="r-3" class="level3">
+<h3 class="anchored" data-anchor-id="r-3">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(approval_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 690  16</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="missing-values-check" class="level2">
+<h2 class="anchored" data-anchor-id="missing-values-check">Missing values check</h2>
+<section id="python-4" class="level3">
+<h3 class="anchored" data-anchor-id="python-4">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Sum of nulls in each feauture</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="bu">int</span>(approval_data.isnull().<span class="bu">sum</span>().<span class="bu">sum</span>())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0</code></pre>
+</div>
+</div>
+</section>
+<section id="r-4" class="level3">
+<h3 class="anchored" data-anchor-id="r-4">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of nulls for each feature</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colSums</span>(<span class="fu">is.na</span>(approval_data))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        Gender            Age           Debt        Married    BankAccount 
+             0              0              0              0              0 
+      Industry      Ethnicity  YearsEmployed   PriorDefault       Employed 
+             0              0              0              0              0 
+   CreditScore DriversLicense        Citizen        ZipCode         Income 
+             0              0              0              0              0 
+      Approved 
+             0 </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="confirming-data-completion" class="level2">
+<h2 class="anchored" data-anchor-id="confirming-data-completion">Confirming data completion</h2>
+<p>Considering data completion is always important. For example, it is highly possible that someone would prefer not to disclose the debt that they are in. This could be because it is private or because that number is somewhat hard to define. Omissions like that could have serious effects on the set, so it is never a good idea to assume data completion.</p>
+</section>
+</section>
+<section id="descriptive-statistics" class="level1">
+<h1>Descriptive Statistics</h1>
+<section id="summary-of-features" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-features">Summary of features</h2>
+<section id="python-5" class="level3">
+<h3 class="anchored" data-anchor-id="python-5">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>approval_data.describe(include<span class="op">=</span><span class="st">'all'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       Gender         Age           Debt  ...  ZipCode         Income    Approved
+count     690  690.000000     690.000000  ...      690     690.000000  690.000000
+unique      2         NaN            NaN  ...      170            NaN         NaN
+top      Male         NaN            NaN  ...    36129            NaN         NaN
+freq      480         NaN            NaN  ...      145            NaN         NaN
+mean      NaN   31.555072   30794.589855  ...      NaN   62661.528986    0.444928
+std       NaN   11.858650   32486.712519  ...      NaN   12637.798876    0.497318
+min       NaN   14.000000       0.000000  ...      NaN   30427.000000    0.000000
+25%       NaN   23.000000    6367.000000  ...      NaN   53594.250000    0.000000
+50%       NaN   28.000000   18067.500000  ...      NaN   60935.500000    0.000000
+75%       NaN   38.000000   46882.250000  ...      NaN   70002.750000    1.000000
+max       NaN   80.000000  191230.000000  ...      NaN  109589.000000    1.000000
+
+[11 rows x 16 columns]</code></pre>
+</div>
+</div>
+</section>
+<section id="r-5" class="level3">
+<h3 class="anchored" data-anchor-id="r-5">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(approval_data) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Gender               Age             Debt           Married      
+ Length:690         Min.   :14.00   Min.   :     0   Min.   :0.0000  
+ Class :character   1st Qu.:23.00   1st Qu.:  6367   1st Qu.:1.0000  
+ Mode  :character   Median :28.00   Median : 18068   Median :1.0000  
+                    Mean   :31.56   Mean   : 30795   Mean   :0.7609  
+                    3rd Qu.:38.00   3rd Qu.: 46882   3rd Qu.:1.0000  
+                    Max.   :80.00   Max.   :191230   Max.   :1.0000  
+  BankAccount       Industry          Ethnicity         YearsEmployed   
+ Min.   :0.0000   Length:690         Length:690         Min.   : 0.000  
+ 1st Qu.:1.0000   Class :character   Class :character   1st Qu.: 0.165  
+ Median :1.0000   Mode  :character   Mode  :character   Median : 1.000  
+ Mean   :0.7638                                         Mean   : 2.223  
+ 3rd Qu.:1.0000                                         3rd Qu.: 2.625  
+ Max.   :1.0000                                         Max.   :28.500  
+  PriorDefault       Employed       CreditScore   DriversLicense 
+ Min.   :0.0000   Min.   :0.0000   Min.   : 0.0   Min.   :0.000  
+ 1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.: 0.0   1st Qu.:0.000  
+ Median :1.0000   Median :0.0000   Median : 0.0   Median :0.000  
+ Mean   :0.5232   Mean   :0.4275   Mean   : 2.4   Mean   :0.458  
+ 3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.: 3.0   3rd Qu.:1.000  
+ Max.   :1.0000   Max.   :1.0000   Max.   :67.0   Max.   :1.000  
+   Citizen            ZipCode              Income          Approved     
+ Length:690         Length:690         Min.   : 30427   Min.   :0.0000  
+ Class :character   Class :character   1st Qu.: 53594   1st Qu.:0.0000  
+ Mode  :character   Mode  :character   Median : 60936   Median :0.0000  
+                                       Mean   : 62662   Mean   :0.4449  
+                                       3rd Qu.: 70003   3rd Qu.:1.0000  
+                                       Max.   :109589   Max.   :1.0000  </code></pre>
+</div>
+</div>
+</section>
+<section id="key-insights" class="level3">
+<h3 class="anchored" data-anchor-id="key-insights">Key insights</h3>
+<p>After analyzing these data summaries, two in particular are notable to me. Age has a high maximum (80), and the third quarter is less than half of the maximum. This makes sense because the mean is likely very dense around 30 (typical first big purchase age). The Years Employed distribution is initially surprising, but it confirms the reality of temporary jobs. The third quarter being less than three is certainly lower than my expectation, which might be the result of certain industries.</p>
+</section>
+</section>
+</section>
+<section id="histograms" class="level1">
+<h1>Histograms</h1>
+<section id="histogram-and-density-of-age" class="level2">
+<h2 class="anchored" data-anchor-id="histogram-and-density-of-age">Histogram and density of age</h2>
+<section id="python-histogram" class="level3">
+<h3 class="anchored" data-anchor-id="python-histogram">Python Histogram</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>plt.hist(approval_data[<span class="st">'Age'</span>])</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'Age'</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-histogram" class="level3">
+<h3 class="anchored" data-anchor-id="r-histogram">R Histogram</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data=</span>approval_data) <span class="sc">+</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="fu">aes</span>(<span class="at">x=</span>Age), <span class="at">binwidth =</span> <span class="dv">8</span>) <span class="sc">+</span>  </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="python-density" class="level3">
+<h3 class="anchored" data-anchor-id="python-density">Python Density</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sns.kdeplot(data<span class="op">=</span>approval_data, x<span class="op">=</span><span class="st">'Age'</span>, fill<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-density" class="level3">
+<h3 class="anchored" data-anchor-id="r-density">R Density</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Age, <span class="at">y=</span><span class="fu">after_stat</span>(density))) <span class="sc">+</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>()  <span class="sc">+</span>  </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-16-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="bin-width-effect" class="level3">
+<h3 class="anchored" data-anchor-id="bin-width-effect">Bin-width effect</h3>
+<p>The argument binwidth has a large potential to impact the final visual. Simply adjusting the binwidth by one or two can overinflate or underinflate the visual representation of a certain subgroup. So it is important to keep the binwidth high. However, in this example, people tend to be familiar with grouping by tens (“twenties” and “thirties”), so just under 10 is the most appropriate.</p>
+</section>
+</section>
+<section id="histogram-and-density-of-debt-with-mean-line" class="level2">
+<h2 class="anchored" data-anchor-id="histogram-and-density-of-debt-with-mean-line">Histogram and density of debt, with mean line</h2>
+<section id="python-6" class="level3">
+<h3 class="anchored" data-anchor-id="python-6">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>sns.histplot(data<span class="op">=</span>approval_data, x<span class="op">=</span><span class="st">'Debt'</span>, kde<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>plt.axvline(x<span class="op">=</span>np.mean(approval_data[<span class="st">'Debt'</span>]), color<span class="op">=</span><span class="st">'yellow'</span>, linestyle<span class="op">=</span><span class="st">'dotted'</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-6" class="level3">
+<h3 class="anchored" data-anchor-id="r-6">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x =</span> Debt, <span class="at">y=</span><span class="fu">after_stat</span>(density))) <span class="sc">+</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_histogram</span>(<span class="at">binwidth =</span> <span class="dv">10000</span>) <span class="sc">+</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="fu">mean</span>(approval_data<span class="sc">$</span>Debt, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">linetype =</span> <span class="st">"dotted"</span>, <span class="at">linewidth =</span> <span class="dv">1</span>) <span class="sc">+</span>  </span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-18-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="use-of-descriptive-statistics" class="level3">
+<h3 class="anchored" data-anchor-id="use-of-descriptive-statistics">Use of descriptive Statistics</h3>
+<p>It is my belief that the mean is a meaningful addition to these plots. Since there is an atypical distribution, it is helpful to see where the average is. If we considered another descriptive statistic such as mode, this would not be as effective because there is such an intense variety of values. The mean provides a more honest story by representing the average person, not the most common (extremely specific) value.</p>
+</section>
+</section>
+</section>
+<section id="scatterplot" class="level1">
+<h1>Scatterplot</h1>
+<section id="create-a-scatterplot-debt-x-axis-and-income-y-axis-trend-line" class="level2">
+<h2 class="anchored" data-anchor-id="create-a-scatterplot-debt-x-axis-and-income-y-axis-trend-line">Create a scatterplot, debt (x-axis) and income (y-axis), trend line</h2>
+<section id="python-7" class="level3">
+<h3 class="anchored" data-anchor-id="python-7">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>sns.regplot(x<span class="op">=</span><span class="st">"Debt"</span>, y<span class="op">=</span><span class="st">"Income"</span>, data<span class="op">=</span>approval_data, scatter_kws<span class="op">=</span>{<span class="st">"alpha"</span>:<span class="fl">0.6</span>})</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-7" class="level3">
+<h3 class="anchored" data-anchor-id="r-7">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(Debt, Income))<span class="sc">+</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color=</span><span class="st">"orange"</span>) <span class="sc">+</span> <span class="co"># Trend line</span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-20-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="interpreting-outliers" class="level3">
+<h3 class="anchored" data-anchor-id="interpreting-outliers">Interpreting outliers</h3>
+<p>With scatterplots, it is easier to notice outliers in the data. Histograms are not necessarily regular and uniform, so this makes it more difficult to notice outliers. However, I would note that the participant with $110,000 as their income and $120,500 as their debt is a bit of an outlier. Particularly considering that this participant has the highest income of the entire set and also is in the top 25% of debt. However, this does not conflict with financial logic, and I do not believe it to be an error. They might influence the approval process by showing that high income does not necessarily mean the applicant has the highest financial skills.</p>
+</section>
+</section>
+</section>
+<section id="horizontal-bar-plot" class="level1">
+<h1>Horizontal Bar Plot</h1>
+<section id="visualizing-industry-by-ethnicity" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-industry-by-ethnicity">Visualizing industry by ethnicity</h2>
+<section id="python-8" class="level3">
+<h3 class="anchored" data-anchor-id="python-8">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sns.countplot(data<span class="op">=</span>approval_data, y<span class="op">=</span><span class="st">'Industry'</span>, hue<span class="op">=</span><span class="st">'Ethnicity'</span>, dodge<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-8" class="level3">
+<h3 class="anchored" data-anchor-id="r-8">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Industry, <span class="at">fill=</span>Ethnicity)) <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>() <span class="sc">+</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_flip</span>() <span class="sc">+</span>  </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-22-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="reflection" class="level3">
+<h3 class="anchored" data-anchor-id="reflection">Reflection</h3>
+<p>When viewing these plots, there are a few industries that are notable to me. Research, transport, and education are majority proportions of unlisted ethnicity. This could point to a structural bias in the data, seeing that certain ethnicities should have been included in the survey. Healthcare is another industry that could likely be suffering from sampling bias.</p>
+</section>
+</section>
+</section>
+<section id="approval-bar-plots" class="level1">
+<h1>Approval Bar Plots</h1>
+<section id="stacked-bar-plot-number-of-approvalsdisapprovals-y-axis-by-ethnicity-x-axis" class="level2">
+<h2 class="anchored" data-anchor-id="stacked-bar-plot-number-of-approvalsdisapprovals-y-axis-by-ethnicity-x-axis">Stacked bar plot, number of approvals/disapprovals (y-axis) by ethnicity (x-axis)</h2>
+<section id="python-9" class="level3">
+<h3 class="anchored" data-anchor-id="python-9">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>pd.crosstab(approval_data[<span class="st">'Ethnicity'</span>], approval_data[<span class="st">'Approved'</span>]).plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-9" class="level3">
+<h3 class="anchored" data-anchor-id="r-9">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Ethnicity, <span class="at">fill =</span> Approved, <span class="at">group =</span> Approved)) <span class="sc">+</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span>  </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-24-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="bar-plot-same-orientation-and-axes-but-unstacked" class="level2">
+<h2 class="anchored" data-anchor-id="bar-plot-same-orientation-and-axes-but-unstacked">Bar plot same orientation and axes but unstacked</h2>
+<section id="python-10" class="level3">
+<h3 class="anchored" data-anchor-id="python-10">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pd.crosstab(approval_data[<span class="st">'Ethnicity'</span>], approval_data[<span class="st">'Approved'</span>]).plot(kind<span class="op">=</span><span class="st">'bar'</span>, stacked<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-10" class="level3">
+<h3 class="anchored" data-anchor-id="r-10">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Ethnicity, <span class="at">fill =</span> Approved, <span class="at">group =</span> Approved)) <span class="sc">+</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_bar</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span>  </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-26-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="insights" class="level3">
+<h3 class="anchored" data-anchor-id="insights">Insights</h3>
+<p>Each chart provides value and insight in many ways. The stacked effects are helpful for the viewer to recognize the entire population in comparison to an ethnicity rather than approval to approval. It gives the eye an easier time looking at the entire graph. The unstacked graphs help to compare the approval frequency of each ethnicity. This visual decision is helpful for the viewer to understand how far from 50% (equal bars) the approval rating is for each ethnicity. The Latino ethnicity seems to be experiencing the most disparity for approval. As mentioned in the previous section, there may be some sampling bias that surveyed participants in this ethnicity from a very limited number of industries (in this case healthcare). We would need context on how the sampling was done, but without this context I do not believe it would be responsible to build a model based on this data.</p>
+</section>
+</section>
+</section>
+<section id="box-plots" class="level1">
+<h1>Box Plots</h1>
+<section id="box-plot-of-debt-y-axis-against-industry-x-axis-and-save-the-graph" class="level2">
+<h2 class="anchored" data-anchor-id="box-plot-of-debt-y-axis-against-industry-x-axis-and-save-the-graph">Box plot of debt (y-axis) against industry (x-axis) and save the graph</h2>
+<section id="python-11" class="level3">
+<h3 class="anchored" data-anchor-id="python-11">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>approval_data, x<span class="op">=</span><span class="st">'Debt'</span>, y<span class="op">=</span><span class="st">'Industry'</span>)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'debt_industry_py.png'</span>)</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-11" class="level3">
+<h3 class="anchored" data-anchor-id="r-11">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Industry, <span class="at">y=</span>Debt)) <span class="sc">+</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle=</span><span class="sc">-</span><span class="dv">90</span>, <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">vjust=</span><span class="dv">0</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-28-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"debt_industry_r.png"</span>, <span class="at">width=</span><span class="dv">5</span>, <span class="at">height=</span><span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="box-plot-of-debt-y-axis-against-industry-x-axis-save-file" class="level2">
+<h2 class="anchored" data-anchor-id="box-plot-of-debt-y-axis-against-industry-x-axis-save-file">Box plot of debt (y-axis) against industry (x-axis), save file</h2>
+<section id="python-12" class="level3">
+<h3 class="anchored" data-anchor-id="python-12">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>sns.boxplot(data<span class="op">=</span>approval_data, x<span class="op">=</span><span class="st">'YearsEmployed'</span>, y<span class="op">=</span><span class="st">'Industry'</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>plt.savefig(<span class="st">'employed_industry_py.png'</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-12" class="level3">
+<h3 class="anchored" data-anchor-id="r-12">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Industry, <span class="at">y=</span>YearsEmployed)) <span class="sc">+</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle=</span><span class="sc">-</span><span class="dv">90</span>, <span class="at">hjust=</span><span class="dv">0</span>, <span class="at">vjust=</span><span class="dv">0</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-30-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(<span class="st">"employed_industry_r.png"</span>, <span class="at">width=</span><span class="dv">5</span>, <span class="at">height=</span><span class="dv">8</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="variability-comments" class="level3">
+<h3 class="anchored" data-anchor-id="variability-comments">Variability comments</h3>
+<p>From these graphs it is clear to me that there is high enough variability that I would not believe this to be as effective as other categories in making an approval model. From this I can gather that there is a strong reality that even within certain industries there are different sub-industries and jobs that are very different from one another. So I do not believe it would be fair to gauge credit worthiness based on a limited number of industries.</p>
+</section>
+</section>
+</section>
+<section id="additional-plots" class="level1">
+<h1>Additional Plots</h1>
+<section id="correlation-matrix-numeric" class="level2">
+<h2 class="anchored" data-anchor-id="correlation-matrix-numeric">Correlation Matrix (numeric)</h2>
+<p>My goal was to see which numeric values where most affected by one another.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create modidified DF including only numeric features</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>num_approval_data <span class="op">=</span> approval_data.select_dtypes(include<span class="op">=</span>[<span class="st">'number'</span>])</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>corr_approval_data <span class="op">=</span> num_approval_data.corr()</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>sns.heatmap(corr_approval_data, annot<span class="op">=</span><span class="va">False</span>, cmap<span class="op">=</span><span class="st">"magma"</span>)</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create modidified DF excluding non-numeric features</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>num_approval_data <span class="ot">&lt;-</span> approval_data[, <span class="fu">c</span>(<span class="st">"Age"</span>, <span class="st">"Debt"</span>, <span class="st">"Married"</span>,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"BankAccount"</span>, <span class="st">"YearsEmployed"</span>, <span class="st">"PriorDefault"</span>,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"Employed"</span>, <span class="st">"CreditScore"</span>, <span class="st">"DriversLicense"</span>,</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>                            <span class="st">"Income"</span>, <span class="st">"Approved"</span>)]</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>corr_approval_data <span class="ot">&lt;-</span> <span class="fu">cor</span>(num_approval_data)</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="fu">corrplot</span>(corr_approval_data, <span class="at">method=</span><span class="st">'color'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-32-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="insight" class="level3">
+<h3 class="anchored" data-anchor-id="insight">Insight</h3>
+<p>From this, I gathered that age and income are strongly correlated.</p>
+</section>
+</section>
+<section id="gender-affecting-income-violin-plot-non-numeric" class="level2">
+<h2 class="anchored" data-anchor-id="gender-affecting-income-violin-plot-non-numeric">Gender affecting income violin plot (non-numeric)</h2>
+<p>My goal is to use the categorical feauture ‘Gender’ to find disparity in income.</p>
+<section id="python-13" class="level3">
+<h3 class="anchored" data-anchor-id="python-13">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>sns.violinplot(data<span class="op">=</span>approval_data, x<span class="op">=</span><span class="st">'Gender'</span>, y<span class="op">=</span><span class="st">'Income'</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="r-13" class="level3">
+<h3 class="anchored" data-anchor-id="r-13">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(approval_data, <span class="fu">aes</span>(<span class="at">x=</span>Gender, <span class="at">y=</span>Income)) <span class="sc">+</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_violin</span>(<span class="at">fill =</span> <span class="st">"cornflowerblue"</span>) <span class="sc">+</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_summary</span>(<span class="at">geom =</span> <span class="st">"point"</span>, <span class="at">color =</span> <span class="st">"orange"</span>) <span class="sc">+</span> </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="lab-1_files/figure-html/unnamed-chunk-34-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="insight-1" class="level3">
+<h3 class="anchored" data-anchor-id="insight-1">Insight</h3>
+<p>From this, I have gathered that even though males have a higher maximum, both genders appear surpisingly similar.</p>
+</section>
+</section>
+</section>
+<section id="final-summary-reflection" class="level1">
+<h1>Final Summary &amp; Reflection</h1>
+<section id="assumptions" class="level3">
+<h3 class="anchored" data-anchor-id="assumptions">Assumptions</h3>
+<p>I came into this analysis with minimal assumptions and values. However, some did shape what I was looking for. For example, I was most interested in how attributes that people had no control of (gender, ethnicity) play a role. I believe that a model should be trained on people’s decisions. So I was assuming that gender and ethnicity would play less of a role; however, I was proven somewhat wrong.</p>
+</section>
+<section id="fairness" class="level3">
+<h3 class="anchored" data-anchor-id="fairness">Fairness</h3>
+<p>I believe it is clear based on my prior analysis that some aspects of this dataset are too limited and in need of context to be used for modeling. As we could see with the ethnicity participants, there may have been some representational harm. Many applicants of a particular ethnicity might be highly affected by the majority industry of their ethnicity. This could affect fairness in a negative way.</p>
+</section>
+<section id="biblical-principles" class="level3">
+<h3 class="anchored" data-anchor-id="biblical-principles">Biblical Principles</h3>
+<p>Data visualization and presentation are becoming more and more scrutinized for their lack of credibility. There is a strong temptation to fall to the pressure of one’s superiors, investors, or anyone around them. That is why it is important to have biblical principles surrounding oneself to keep from these temptations. The verse in Micah calls us to realize that all are deserving of justice and kindness, so we should fight to stay away from unfairness. The verse in Genesis describes how we are all trusted by God to work and keep a responsibility. We should be thankful for what God has given us and work at it to the best of our ability. The Ephesians verse reminds us that even though there can sometimes be an uncountable number of participants, we must realize that we are all one in Christ and therefore all deserving of truth and fairness.</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

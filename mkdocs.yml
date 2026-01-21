@@ -20,6 +20,7 @@ theme:
     - toc.follow
     - content.code.copy
     - content.code.select
+    - navigation.footer
 
   palette:
     # Dark Mode
@@ -51,9 +52,10 @@ nav:
   - Home: index.md
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
-    - Playoff Predictor: projects/cfp-predictor.md
-    - Church Data Science: projects/churchds.md
-    - Bracket Generator: projects/cfpbracket.md
+    - Playoff Model Predictor: projects/cfp-predictor.md
+    - Church Map Viz: projects/churchds.md
+    - Web Bracket Generator: projects/cfpbracket.md
+    - Data Science Coursework: projects/data-science-class.md
     - Portfolio Website: projects/portfolio.md
   - About Me: about.md
 extra_css:

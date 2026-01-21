@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Peyton Pope">
+<meta name="dcterms.date" content="2025-10-12">
+
+<title>Lab 2 - Data Cleansing &amp; Preparation</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="321-Lab-2_files/libs/clipboard/clipboard.min.js"></script>
+<script src="321-Lab-2_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="321-Lab-2_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="321-Lab-2_files/libs/quarto-html/popper.min.js"></script>
+<script src="321-Lab-2_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="321-Lab-2_files/libs/quarto-html/anchor.min.js"></script>
+<link href="321-Lab-2_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="321-Lab-2_files/libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="321-Lab-2_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="321-Lab-2_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="321-Lab-2_files/libs/bootstrap/bootstrap-81267100e462c21b3d6c0d5bf76a3417.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#libraries-paths" id="toc-libraries-paths" class="nav-link" data-scroll-target="#libraries-paths">Libraries &amp; Paths</a>
+  <ul class="collapse">
+  <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python">Python</a></li>
+  <li><a href="#r" id="toc-r" class="nav-link" data-scroll-target="#r">R</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#load-inspect" id="toc-load-inspect" class="nav-link" data-scroll-target="#load-inspect">1. Load &amp; Inspect</a>
+  <ul class="collapse">
+  <li><a href="#python-1" id="toc-python-1" class="nav-link" data-scroll-target="#python-1">Python</a></li>
+  <li><a href="#r-1" id="toc-r-1" class="nav-link" data-scroll-target="#r-1">R</a></li>
+  <li><a href="#reasoning" id="toc-reasoning" class="nav-link" data-scroll-target="#reasoning">Reasoning</a></li>
+  </ul></li>
+  <li><a href="#merge-join-logic" id="toc-merge-join-logic" class="nav-link" data-scroll-target="#merge-join-logic">2. Merge &amp; Join Logic</a>
+  <ul class="collapse">
+  <li><a href="#python-2" id="toc-python-2" class="nav-link" data-scroll-target="#python-2">Python</a></li>
+  <li><a href="#r-2" id="toc-r-2" class="nav-link" data-scroll-target="#r-2">R</a></li>
+  <li><a href="#reasoning-1" id="toc-reasoning-1" class="nav-link" data-scroll-target="#reasoning-1">Reasoning</a></li>
+  </ul></li>
+  <li><a href="#deduplication" id="toc-deduplication" class="nav-link" data-scroll-target="#deduplication">3. Deduplication</a>
+  <ul class="collapse">
+  <li><a href="#python-3" id="toc-python-3" class="nav-link" data-scroll-target="#python-3">Python</a></li>
+  <li><a href="#r-3" id="toc-r-3" class="nav-link" data-scroll-target="#r-3">R</a></li>
+  <li><a href="#reasoning-2" id="toc-reasoning-2" class="nav-link" data-scroll-target="#reasoning-2">Reasoning</a></li>
+  </ul></li>
+  <li><a href="#missing-value-strategy" id="toc-missing-value-strategy" class="nav-link" data-scroll-target="#missing-value-strategy">4. Missing Value Strategy</a>
+  <ul class="collapse">
+  <li><a href="#approach" id="toc-approach" class="nav-link" data-scroll-target="#approach">Approach</a></li>
+  <li><a href="#python-4" id="toc-python-4" class="nav-link" data-scroll-target="#python-4">Python</a></li>
+  <li><a href="#r-4" id="toc-r-4" class="nav-link" data-scroll-target="#r-4">R</a></li>
+  <li><a href="#reasoning-3" id="toc-reasoning-3" class="nav-link" data-scroll-target="#reasoning-3">Reasoning</a></li>
+  </ul></li>
+  <li><a href="#dates-recency-feature" id="toc-dates-recency-feature" class="nav-link" data-scroll-target="#dates-recency-feature">5. Dates &amp; Recency Feature</a>
+  <ul class="collapse">
+  <li><a href="#python-5" id="toc-python-5" class="nav-link" data-scroll-target="#python-5">Python</a></li>
+  <li><a href="#r-5" id="toc-r-5" class="nav-link" data-scroll-target="#r-5">R</a></li>
+  <li><a href="#insights" id="toc-insights" class="nav-link" data-scroll-target="#insights">Insights</a></li>
+  </ul></li>
+  <li><a href="#text-cleaning" id="toc-text-cleaning" class="nav-link" data-scroll-target="#text-cleaning">6. Text Cleaning</a>
+  <ul class="collapse">
+  <li><a href="#python-6" id="toc-python-6" class="nav-link" data-scroll-target="#python-6">Python</a></li>
+  <li><a href="#r-6" id="toc-r-6" class="nav-link" data-scroll-target="#r-6">R</a></li>
+  <li><a href="#insight" id="toc-insight" class="nav-link" data-scroll-target="#insight">Insight</a></li>
+  </ul></li>
+  <li><a href="#categorical-encoding" id="toc-categorical-encoding" class="nav-link" data-scroll-target="#categorical-encoding">7. Categorical Encoding</a>
+  <ul class="collapse">
+  <li><a href="#room-type" id="toc-room-type" class="nav-link" data-scroll-target="#room-type">Room Type</a>
+  <ul class="collapse">
+  <li><a href="#approach-1" id="toc-approach-1" class="nav-link" data-scroll-target="#approach-1">Approach</a></li>
+  <li><a href="#python-7" id="toc-python-7" class="nav-link" data-scroll-target="#python-7">Python</a></li>
+  <li><a href="#r-7" id="toc-r-7" class="nav-link" data-scroll-target="#r-7">R</a></li>
+  </ul></li>
+  <li><a href="#neighborhood" id="toc-neighborhood" class="nav-link" data-scroll-target="#neighborhood">Neighborhood</a>
+  <ul class="collapse">
+  <li><a href="#python-8" id="toc-python-8" class="nav-link" data-scroll-target="#python-8">Python</a></li>
+  <li><a href="#r-8" id="toc-r-8" class="nav-link" data-scroll-target="#r-8">R</a></li>
+  </ul></li>
+  <li><a href="#reasoning-4" id="toc-reasoning-4" class="nav-link" data-scroll-target="#reasoning-4">Reasoning</a></li>
+  </ul></li>
+  <li><a href="#type-coercion-scaling" id="toc-type-coercion-scaling" class="nav-link" data-scroll-target="#type-coercion-scaling">8. Type Coercion &amp; Scaling</a>
+  <ul class="collapse">
+  <li><a href="#type-coercion" id="toc-type-coercion" class="nav-link" data-scroll-target="#type-coercion">Type Coercion</a>
+  <ul class="collapse">
+  <li><a href="#python-9" id="toc-python-9" class="nav-link" data-scroll-target="#python-9">Python</a></li>
+  <li><a href="#r-9" id="toc-r-9" class="nav-link" data-scroll-target="#r-9">R</a></li>
+  </ul></li>
+  <li><a href="#scaling" id="toc-scaling" class="nav-link" data-scroll-target="#scaling">Scaling</a>
+  <ul class="collapse">
+  <li><a href="#python-10" id="toc-python-10" class="nav-link" data-scroll-target="#python-10">Python</a></li>
+  <li><a href="#r-10" id="toc-r-10" class="nav-link" data-scroll-target="#r-10">R</a></li>
+  <li><a href="#insight-1" id="toc-insight-1" class="nav-link" data-scroll-target="#insight-1">Insight</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#reorder-export" id="toc-reorder-export" class="nav-link" data-scroll-target="#reorder-export">9. Reorder &amp; Export</a>
+  <ul class="collapse">
+  <li><a href="#reorder" id="toc-reorder" class="nav-link" data-scroll-target="#reorder">Reorder</a>
+  <ul class="collapse">
+  <li><a href="#approach-2" id="toc-approach-2" class="nav-link" data-scroll-target="#approach-2">Approach</a></li>
+  <li><a href="#python-11" id="toc-python-11" class="nav-link" data-scroll-target="#python-11">Python</a></li>
+  <li><a href="#r-11" id="toc-r-11" class="nav-link" data-scroll-target="#r-11">R</a></li>
+  </ul></li>
+  <li><a href="#export" id="toc-export" class="nav-link" data-scroll-target="#export">Export</a>
+  <ul class="collapse">
+  <li><a href="#python-12" id="toc-python-12" class="nav-link" data-scroll-target="#python-12">Python</a></li>
+  <li><a href="#r-12" id="toc-r-12" class="nav-link" data-scroll-target="#r-12">R</a></li>
+  <li><a href="#insight-2" id="toc-insight-2" class="nav-link" data-scroll-target="#insight-2">Insight</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#summary-reflection" id="toc-summary-reflection" class="nav-link" data-scroll-target="#summary-reflection">10. Summary &amp; Reflection</a>
+  <ul class="collapse">
+  <li><a href="#language-comparison" id="toc-language-comparison" class="nav-link" data-scroll-target="#language-comparison">Language Comparison</a></li>
+  <li><a href="#biblical-application" id="toc-biblical-application" class="nav-link" data-scroll-target="#biblical-application">Biblical Application</a></li>
+  <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection">Reflection</a></li>
+  </ul></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Lab 2 - Data Cleansing &amp; Preparation</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Peyton Pope </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 12, 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="setup" class="level1">
+<h1>Setup</h1>
+<section id="libraries-paths" class="level2">
+<h2 class="anchored" data-anchor-id="libraries-paths">Libraries &amp; Paths</h2>
+<section id="python" class="level3">
+<h3 class="anchored" data-anchor-id="python">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> datetime <span class="im">as</span> dt</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler <span class="co"># standardization</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Path</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>path <span class="op">=</span> <span class="st">"~/Downloads/AirBNB/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="r" class="level3">
+<h3 class="anchored" data-anchor-id="r">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)      </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) </span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(stringr)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(fastDummies)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Path</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>path <span class="ot">&lt;-</span> <span class="st">"~/Downloads/AirBNB/"</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="load-inspect" class="level1">
+<h1>1. Load &amp; Inspect</h1>
+<section id="python-1" class="level3">
+<h3 class="anchored" data-anchor-id="python-1">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>room <span class="op">=</span> pd.read_excel(path <span class="op">+</span> <span class="st">"airbnb_room_type.xlsx"</span>, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(room.head(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      description  ... review_scores_value
+listing_id                         ...                    
+2595        Skylit Midtown Castle  ...                 9.0
+
+[1 rows x 11 columns]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>price <span class="op">=</span> pd.read_csv(path <span class="op">+</span> <span class="st">"airbnb_price.csv"</span>, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(price.head(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  price         nbhood_full
+listing_id                                 
+2595        225 dollars  Manhattan, Midtown</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>review <span class="op">=</span> pd.read_csv(path <span class="op">+</span> <span class="st">"airbnb_last_review.csv"</span>, index_col<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(review.head(<span class="dv">1</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           host_name  last_review
+listing_id                       
+2595        Jennifer  May 21 2024</code></pre>
+</div>
+</div>
+</section>
+<section id="r-1" class="level3">
+<h3 class="anchored" data-anchor-id="r-1">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>room <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="fu">paste0</span>(path, <span class="st">"airbnb_room_type.xlsx"</span>))</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>price <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">paste0</span>(path, <span class="st">"airbnb_price.csv"</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>review <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">paste0</span>(path, <span class="st">"airbnb_last_review.csv"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="reasoning" class="level3">
+<h3 class="anchored" data-anchor-id="reasoning">Reasoning</h3>
+<p>I chose the three names of ‘room’, ‘price’, and ‘review’ because of the precedent set by the instructions when it said to read airbnb_room_type into ‘room’. I also considered the fact that these would not be my master dataframes, so I prioritized choosing short and distinct names to avoid mixing them up. I used two different strategies for Python and R when reading in the IDs. In Python, I was easily able to assign the ‘listing_id’ column as the primary key. This made it so it did not count as one of the data columns. Unfortunately, the process was not as straightforward in R, and I left ‘listing_id’ as one of the data columns. So, the shapes for Python and R are off by one in the column count for this project.</p>
+</section>
+</section>
+<section id="merge-join-logic" class="level1">
+<h1>2. Merge &amp; Join Logic</h1>
+<section id="python-2" class="level3">
+<h3 class="anchored" data-anchor-id="python-2">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> pd.merge(room, price, on<span class="op">=</span><span class="st">"listing_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> pd.merge(listings, review, on<span class="op">=</span><span class="st">"listing_id"</span>, how<span class="op">=</span><span class="st">"left"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>listings.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(25209, 15)</code></pre>
+</div>
+</div>
+</section>
+<section id="r-2" class="level3">
+<h3 class="anchored" data-anchor-id="r-2">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">left_join</span>(room, price, <span class="at">by =</span> <span class="st">"listing_id"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">left_join</span>(listings, review, <span class="at">by =</span> <span class="st">"listing_id"</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 25209    16</code></pre>
+</div>
+</div>
+</section>
+<section id="reasoning-1" class="level3">
+<h3 class="anchored" data-anchor-id="reasoning-1">Reasoning</h3>
+<p>Using a left join was the clear choice in this situation. A left join prioritizes the primary table, in this case room, so that none of its rows are lost regardless of what matches on the right. The left join was used so that even if a review or price was missing, the room data would not be dropped. If we were to use an alternative, such as an inner join, we would lose significant data. For example, if a room did not have any reviews yet, then the room would be completely omitted. Missing keys have the potential to create bias in the data. For example, newer listings may not have a ‘last_review’ date or ratings. This could potentially create a bias where only listings with activity are considered.</p>
+</section>
+</section>
+<section id="deduplication" class="level1">
+<h1>3. Deduplication</h1>
+<section id="python-3" class="level3">
+<h3 class="anchored" data-anchor-id="python-3">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>listings.duplicated().<span class="bu">sum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>np.int64(0)</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Before: "</span>, listings.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Before:  (25209, 15)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> listings.drop_duplicates(keep<span class="op">=</span><span class="st">'last'</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"After: "</span>, listings.shape)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>After:  (25209, 15)</code></pre>
+</div>
+</div>
+</section>
+<section id="r-3" class="level3">
+<h3 class="anchored" data-anchor-id="r-3">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">duplicated</span>(listings))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0</code></pre>
+</div>
+</div>
+</section>
+<section id="reasoning-2" class="level3">
+<h3 class="anchored" data-anchor-id="reasoning-2">Reasoning</h3>
+<p>To identify duplicate rows in both listings data frames, I used the function duplicated() for both Python and R. I determined that the ‘listing_id’ cannot be duplicated. Since these are the primary keys, there cannot exist two of the same. Choosing last over first as our keep parameter prioritizes keeping the most recent/updated occurrence. This is preferred in this scenario because the later the row is added, the more updated its data is likely to be. First can be used in a situation where you want the original to be prioritized. If it is assumed that added duplicates are incorrect, then you would use first.</p>
+</section>
+</section>
+<section id="missing-value-strategy" class="level1">
+<h1>4. Missing Value Strategy</h1>
+<section id="approach" class="level3">
+<h3 class="anchored" data-anchor-id="approach">Approach</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>listings.isnull().<span class="bu">sum</span>() <span class="op">/</span> <span class="bu">len</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>description                    0.000397
+room_type                      0.000000
+minimum_nights                 0.000000
+maximum_nights                 0.000000
+review_scores_rating           0.217145
+review_scores_accuracy         0.218890
+review_scores_cleanliness      0.218533
+review_scores_checkin          0.219049
+review_scores_communication    0.218652
+review_scores_location         0.218930
+review_scores_value            0.218969
+price                          0.000000
+nbhood_full                    0.000000
+host_name                      0.001388
+last_review                    0.001071
+dtype: float64</code></pre>
+</div>
+</div>
+<p>I identified the 10 features that have missing data. For the categorical features, ‘description’ and ‘host_name’, I decided to input filler values such as “none”. For ‘last_review’, I considered it negligible and dropped the column. For the ratings, I chose the MICE imputer so that the other rating features could help impute missing ratings. However, I realized that in nearly all cases, when there was one missing rating, all ratings were missing. So, I chose to drop these rows.</p>
+</section>
+<section id="python-4" class="level3">
+<h3 class="anchored" data-anchor-id="python-4">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'description'</span>] <span class="op">=</span> listings[<span class="st">'description'</span>].fillna(<span class="st">"None"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'host_name'</span>] <span class="op">=</span> listings[<span class="st">'host_name'</span>].fillna(<span class="st">"None"</span>)</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>listings.dropna(subset<span class="op">=</span>[<span class="st">'last_review'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="co"># drop all rows with na review scores</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>listings.dropna(subset<span class="op">=</span>[<span class="st">'review_scores_rating'</span>, <span class="st">'review_scores_accuracy'</span>, <span class="st">'review_scores_cleanliness'</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'review_scores_checkin'</span>, <span class="st">'review_scores_communication'</span>, <span class="st">'review_scores_location'</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                        <span class="st">'review_scores_value'</span>], inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>listings.isnull().<span class="bu">sum</span>() <span class="op">/</span> <span class="bu">len</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>description                    0.0
+room_type                      0.0
+minimum_nights                 0.0
+maximum_nights                 0.0
+review_scores_rating           0.0
+review_scores_accuracy         0.0
+review_scores_cleanliness      0.0
+review_scores_checkin          0.0
+review_scores_communication    0.0
+review_scores_location         0.0
+review_scores_value            0.0
+price                          0.0
+nbhood_full                    0.0
+host_name                      0.0
+last_review                    0.0
+dtype: float64</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>listings.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(19648, 15)</code></pre>
+</div>
+</div>
+</section>
+<section id="r-4" class="level3">
+<h3 class="anchored" data-anchor-id="r-4">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>description[<span class="fu">is.na</span>(listings<span class="sc">$</span>description)] <span class="ot">&lt;-</span> <span class="st">"None"</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>host_name[<span class="fu">is.na</span>(listings<span class="sc">$</span>host_name)] <span class="ot">&lt;-</span> <span class="st">"None"</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> listings <span class="sc">|&gt;</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(last_review)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> listings <span class="sc">|&gt;</span></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">drop_na</span>(review_scores_rating, review_scores_accuracy, </span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>          review_scores_cleanliness, review_scores_checkin,</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>          review_scores_communication, review_scores_location,</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>          review_scores_value)</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19648    16</code></pre>
+</div>
+</div>
+</section>
+<section id="reasoning-3" class="level3">
+<h3 class="anchored" data-anchor-id="reasoning-3">Reasoning</h3>
+<p>The first two decisions were simpe, since their missing percentages were 0.1% or less. The review score features, however, forced me to consider integrity, bias, and utility. My main consideration was the target variable: ‘review_scores_rating’. Imputing 20% of the target variable values seemed like it would challenge integrity, especially when those imputations would very likely not involve using the other six rating features. This decision did potentially create some bias against new, less-used listings. However, imputing with values likely would have created a different form of bias for/against these same listings. 21% is a relatively high percentage; however, after dropping these rows there are still nearly 20,000, which I considered to be a usable count.</p>
+</section>
+</section>
+<section id="dates-recency-feature" class="level1">
+<h1>5. Dates &amp; Recency Feature</h1>
+<section id="python-5" class="level3">
+<h3 class="anchored" data-anchor-id="python-5">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'last_review'</span>] <span class="op">=</span> pd.to_datetime(listings[<span class="st">'last_review'</span>])</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'days_since_review'</span>] <span class="op">=</span> (dt.datetime.today() <span class="op">-</span> listings[<span class="st">'last_review'</span>]).dt.days</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>listings[[<span class="st">'last_review'</span>, <span class="st">'days_since_review'</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>           last_review  days_since_review
+listing_id                               
+2595        2024-05-21                509
+3831        2024-07-05                464
+5099        2024-06-22                477
+5178        2024-06-24                475
+5238        2024-06-09                490</code></pre>
+</div>
+</div>
+</section>
+<section id="r-5" class="level3">
+<h3 class="anchored" data-anchor-id="r-5">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>last_review <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(listings<span class="sc">$</span>last_review, <span class="at">format =</span> <span class="st">"%B %d %Y"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">class</span>(listings<span class="sc">$</span>last_review))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "Date"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>days_since_review <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(<span class="fu">Sys.Date</span>() <span class="sc">-</span> listings<span class="sc">$</span>last_review)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">class</span>(listings<span class="sc">$</span>days_since_review))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+</section>
+<section id="insights" class="level3">
+<h3 class="anchored" data-anchor-id="insights">Insights</h3>
+<p>A lack of proper date formatting and large data sets can create nightmares. It is difficult to efficiently convert improperly formatted dates to usable objects. Creating the feature ‘days_since_review’ is a very useful decision because its data type, integer, can be more freely built upon in later stages of data science. It is very difficult for date types to be used for things such as visualization or training. It also gives a glanceable look at recency. Mixing up formats can lead to issues, and some of them might go unnoticed. When formats are not filed correctly, for example if days and months are swapped, this can lead to a model using incorrect data. The error would not be caught easily.</p>
+</section>
+</section>
+<section id="text-cleaning" class="level1">
+<h1>6. Text Cleaning</h1>
+<section id="python-6" class="level3">
+<h3 class="anchored" data-anchor-id="python-6">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'description'</span>] <span class="op">=</span> listings[<span class="st">'description'</span>].<span class="bu">str</span>.replace(<span class="vs">r"</span><span class="pp">[^A-Za-z0-9</span><span class="dv">\s</span><span class="pp">]</span><span class="op">+</span><span class="vs">"</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'description'</span>] <span class="op">=</span> listings[<span class="st">'description'</span>].<span class="bu">str</span>.lower()</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'description'</span>].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>listing_id
+2595                        skylit midtown castle
+3831              cozy entire floor of brownstone
+5099    large cozy 1 br apartment in midtown east
+5178               large furnished room near bway
+5238            cute  cozy lower east side 1 bdrm
+Name: description, dtype: object</code></pre>
+</div>
+</div>
+</section>
+<section id="r-6" class="level3">
+<h3 class="anchored" data-anchor-id="r-6">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>description <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(listings<span class="sc">$</span>description, <span class="st">"[^A-Za-z0-9</span><span class="sc">\\</span><span class="st">s]+"</span>, <span class="st">""</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>description <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(listings<span class="sc">$</span>description)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(listings<span class="sc">$</span>description)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "skylit midtown castle"                    
+[2] "cozy entire floor of brownstone"          
+[3] "large cozy 1 br apartment in midtown east"
+[4] "large furnished room near bway"           
+[5] "cute  cozy lower east side 1 bdrm"        
+[6] "beautiful 1br on upper west side"         </code></pre>
+</div>
+</div>
+</section>
+<section id="insight" class="level3">
+<h3 class="anchored" data-anchor-id="insight">Insight</h3>
+<p>I chose my pattern based on characters that I wanted to keep. My pattern removes anything that is not a letter, digit, or space. When a feature includes several words, over-cleansing runs the risk of distorting the original meaning. For example, sometimes punctuation is critical. Removing it can alter the author’s intent. This risk brings up an important ethical issue. If an author intentionally included certain aspects of a feature, like punctuation, it could be considered dishonest to use the cleaned, altered version as if that is what they meant.</p>
+</section>
+</section>
+<section id="categorical-encoding" class="level1">
+<h1>7. Categorical Encoding</h1>
+<section id="room-type" class="level2">
+<h2 class="anchored" data-anchor-id="room-type">Room Type</h2>
+<section id="approach-1" class="level3">
+<h3 class="anchored" data-anchor-id="approach-1">Approach</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>listings.select_dtypes(<span class="st">'object'</span>).nunique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>description    19299
+room_type          9
+price            502
+nbhood_full      213
+host_name       6328
+dtype: int64</code></pre>
+</div>
+</div>
+<p>After reviewing the categorical features in their uniqueness, it was clear to me that host_name and description were unusable. This left room_type and nbhood_full as candidates.</p>
+</section>
+<section id="python-7" class="level3">
+<h3 class="anchored" data-anchor-id="python-7">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'room_type'</span>].unique()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>array(['Entire home/apt', 'private room', 'Private room',
+       'entire home/apt', 'PRIVATE ROOM', 'shared room',
+       'ENTIRE HOME/APT', 'Shared room', 'SHARED ROOM'], dtype=object)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Normalize -&gt; 3 Types</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'room_type'</span>] <span class="op">=</span> listings[<span class="st">'room_type'</span>].<span class="bu">str</span>.replace(<span class="vs">r'</span><span class="pp">[ /]</span><span class="vs">'</span>, <span class="st">'_'</span>, regex<span class="op">=</span><span class="va">True</span>).<span class="bu">str</span>.lower()</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> pd.get_dummies(listings, columns<span class="op">=</span>[<span class="st">'room_type'</span>], drop_first<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>listings[[<span class="st">'room_type_entire_home_apt'</span>, <span class="st">'room_type_private_room'</span>, <span class="st">'room_type_shared_room'</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            room_type_entire_home_apt  ...  room_type_shared_room
+listing_id                             ...                       
+2595                             True  ...                  False
+3831                             True  ...                  False
+5099                             True  ...                  False
+5178                            False  ...                  False
+5238                             True  ...                  False
+
+[5 rows x 3 columns]</code></pre>
+</div>
+</div>
+</section>
+<section id="r-7" class="level3">
+<h3 class="anchored" data-anchor-id="r-7">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>room_type <span class="ot">&lt;-</span> <span class="fu">str_replace_all</span>(listings<span class="sc">$</span>room_type, <span class="st">"[ /]"</span>, <span class="st">"_"</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>room_type <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(listings<span class="sc">$</span>room_type)</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">dummy_cols</span>(listings,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>                       <span class="at">select_columns =</span> <span class="st">"room_type"</span>,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>                       <span class="at">remove_first_dummy =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>                       <span class="at">remove_selected_columns =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(listings[, <span class="fu">c</span>(<span class="st">"room_type_entire_home_apt"</span>, <span class="st">"room_type_private_room"</span>, <span class="st">"room_type_shared_room"</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  room_type_entire_home_apt room_type_private_room room_type_shared_room
+                      &lt;int&gt;                  &lt;int&gt;                 &lt;int&gt;
+1                         1                      0                     0
+2                         1                      0                     0
+3                         1                      0                     0
+4                         0                      1                     0
+5                         1                      0                     0
+6                         1                      0                     0</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="neighborhood" class="level2">
+<h2 class="anchored" data-anchor-id="neighborhood">Neighborhood</h2>
+<section id="python-8" class="level3">
+<h3 class="anchored" data-anchor-id="python-8">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'borough'</span>] <span class="op">=</span> listings[<span class="st">'nbhood_full'</span>].<span class="bu">str</span>.lower().<span class="bu">str</span>.split(<span class="st">', '</span>).<span class="bu">str</span>[<span class="dv">0</span>]</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'nbhood'</span>] <span class="op">=</span> listings[<span class="st">'nbhood_full'</span>].<span class="bu">str</span>.lower().<span class="bu">str</span>.split(<span class="st">', '</span>).<span class="bu">str</span>[<span class="dv">1</span>]</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> listings.drop(<span class="st">'nbhood_full'</span>, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> pd.get_dummies(listings, columns<span class="op">=</span>[<span class="st">'borough'</span>])</span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>listings[[<span class="st">"borough_bronx"</span>,</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">"borough_brooklyn"</span>,</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">"borough_manhattan"</span>,</span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">"borough_queens"</span>,</span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">"borough_staten island"</span>,</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">"nbhood"</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            borough_bronx  ...          nbhood
+listing_id                 ...                
+2595                False  ...         midtown
+3831                False  ...    clinton hill
+5099                False  ...     murray hill
+5178                False  ...  hell's kitchen
+5238                False  ...       chinatown
+
+[5 rows x 6 columns]</code></pre>
+</div>
+</div>
+</section>
+<section id="r-8" class="level3">
+<h3 class="anchored" data-anchor-id="r-8">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>nbhood_split <span class="ot">&lt;-</span> <span class="fu">str_split</span>(listings<span class="sc">$</span>nbhood_full, <span class="st">", "</span>, <span class="at">simplify =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>borough <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(nbhood_split[, <span class="dv">1</span>])</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>nbhood <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(nbhood_split[, <span class="dv">2</span>])</span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>nbhood_full <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> <span class="fu">dummy_cols</span>(listings,</span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a>                       <span class="at">select_columns =</span> <span class="st">"borough"</span>,</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>                       <span class="at">remove_first_dummy =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>                       <span class="at">remove_selected_columns =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(listings[, <span class="fu">c</span>(<span class="st">"borough_bronx"</span>,</span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"borough_brooklyn"</span>,</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"borough_manhattan"</span>,</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"borough_queens"</span>,</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"borough_staten island"</span>,</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"nbhood"</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+  borough_bronx borough_brooklyn borough_manhattan borough_queens
+          &lt;int&gt;            &lt;int&gt;             &lt;int&gt;          &lt;int&gt;
+1             0                0                 1              0
+2             0                1                 0              0
+3             0                0                 1              0
+4             0                0                 1              0
+5             0                0                 1              0
+6             0                0                 1              0
+# ℹ 2 more variables: `borough_staten island` &lt;int&gt;, nbhood &lt;chr&gt;</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="reasoning-4" class="level2">
+<h2 class="anchored" data-anchor-id="reasoning-4">Reasoning</h2>
+<p>Room_type I originally determined had nine unique values. I quickly realized this was incorrect due to a lack of normalization. After normalizing, I determined that there were three unique room types, which was a great number for one-hot encoding using dummies.</p>
+<p>Originally, I considered nbhood_full to be unusable; however, after noticing that every value included one of the five New York boroughs, I realized I could work with that. So, after splitting this feature into two columns, boroughs and neighborhood, I determined that I can use one-hot encoding for boroughs since this feature only had five unique values.</p>
+</section>
+</section>
+<section id="type-coercion-scaling" class="level1">
+<h1>8. Type Coercion &amp; Scaling</h1>
+<section id="type-coercion" class="level2">
+<h2 class="anchored" data-anchor-id="type-coercion">Type Coercion</h2>
+<section id="python-9" class="level3">
+<h3 class="anchored" data-anchor-id="python-9">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>listings[<span class="st">'price'</span>] <span class="op">=</span> listings[<span class="st">'price'</span>].replace(<span class="vs">r'</span><span class="dv">\D</span><span class="vs">'</span>, <span class="st">''</span>, regex<span class="op">=</span><span class="va">True</span>).astype(<span class="st">'int64'</span>)</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>listings.dtypes</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>description                            object
+minimum_nights                          int64
+maximum_nights                          int64
+review_scores_rating                  float64
+review_scores_accuracy                float64
+review_scores_cleanliness             float64
+review_scores_checkin                 float64
+review_scores_communication           float64
+review_scores_location                float64
+review_scores_value                   float64
+price                                   int64
+host_name                              object
+last_review                    datetime64[ns]
+days_since_review                       int64
+room_type_entire_home_apt                bool
+room_type_private_room                   bool
+room_type_shared_room                    bool
+nbhood                                 object
+borough_bronx                            bool
+borough_brooklyn                         bool
+borough_manhattan                        bool
+borough_queens                           bool
+borough_staten island                    bool
+dtype: object</code></pre>
+</div>
+</div>
+</section>
+<section id="r-9" class="level3">
+<h3 class="anchored" data-anchor-id="r-9">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>listings<span class="sc">$</span>price <span class="ot">&lt;-</span> <span class="fu">as.double</span>(<span class="fu">str_replace_all</span>(listings<span class="sc">$</span>price, <span class="st">"</span><span class="sc">\\</span><span class="st">D"</span>, <span class="st">""</span>))</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [19,648 × 24] (S3: tbl_df/tbl/data.frame)
+ $ listing_id                 : num [1:19648] 2595 3831 5099 5178 5238 ...
+ $ description                : chr [1:19648] "skylit midtown castle" "cozy entire floor of brownstone" "large cozy 1 br apartment in midtown east" "large furnished room near bway" ...
+ $ minimum_nights             : num [1:19648] 2 15 3 3 7 15 7 7 7 15 ...
+ $ maximum_nights             : num [1:19648] 1125 365 150 180 1110 ...
+ $ review_scores_rating       : num [1:19648] 90 82 88 93 95 96 100 100 100 100 ...
+ $ review_scores_accuracy     : num [1:19648] 9 9 9 9 10 10 10 10 10 10 ...
+ $ review_scores_cleanliness  : num [1:19648] 9 8 9 9 10 10 10 10 9 10 ...
+ $ review_scores_checkin      : num [1:19648] 10 10 9 10 10 10 10 10 10 10 ...
+ $ review_scores_communication: num [1:19648] 10 10 9 10 10 10 10 10 10 10 ...
+ $ review_scores_location     : num [1:19648] 8 9 10 10 10 8 10 10 9 10 ...
+ $ review_scores_value        : num [1:19648] 9 8 9 9 9 9 8 10 9 10 ...
+ $ price                      : num [1:19648] 225 89 200 79 150 135 85 89 85 140 ...
+ $ host_name                  : chr [1:19648] "Jennifer" "LisaRoxanne" "Chris" "Shunichi" ...
+ $ last_review                : Date[1:19648], format: "2024-05-21" "2024-07-05" ...
+ $ days_since_review          : num [1:19648] 509 464 477 475 490 477 476 475 464 470 ...
+ $ room_type_entire_home_apt  : int [1:19648] 1 1 1 0 1 1 0 0 0 1 ...
+ $ room_type_private_room     : int [1:19648] 0 0 0 1 0 0 1 1 1 0 ...
+ $ room_type_shared_room      : int [1:19648] 0 0 0 0 0 0 0 0 0 0 ...
+ $ nbhood                     : chr [1:19648] "midtown" "clinton hill" "murray hill" "hell's kitchen" ...
+ $ borough_bronx              : int [1:19648] 0 0 0 0 0 0 0 0 0 0 ...
+ $ borough_brooklyn           : int [1:19648] 0 1 0 0 0 0 0 1 0 1 ...
+ $ borough_manhattan          : int [1:19648] 1 0 1 1 1 1 1 0 1 0 ...
+ $ borough_queens             : int [1:19648] 0 0 0 0 0 0 0 0 0 0 ...
+ $ borough_staten island      : int [1:19648] 0 0 0 0 0 0 0 0 0 0 ...</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="scaling" class="level2">
+<h2 class="anchored" data-anchor-id="scaling">Scaling</h2>
+<section id="python-10" class="level3">
+<h3 class="anchored" data-anchor-id="python-10">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>scaler <span class="op">=</span> StandardScaler()</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>scaled <span class="op">=</span> scaler.fit_transform(listings.loc[:, [<span class="st">'minimum_nights'</span>, </span>
+<span id="cb56-3"><a href="#cb56-3" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">'maximum_nights'</span>, </span>
+<span id="cb56-4"><a href="#cb56-4" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">'price'</span>, </span>
+<span id="cb56-5"><a href="#cb56-5" aria-hidden="true" tabindex="-1"></a>                                              <span class="st">'days_since_review'</span>]])</span>
+<span id="cb56-6"><a href="#cb56-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-7"><a href="#cb56-7" aria-hidden="true" tabindex="-1"></a>listings[[<span class="st">'minimum_nights'</span>, <span class="st">'maximum_nights'</span>, <span class="st">'price'</span>, <span class="st">'days_since_review'</span>]] <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb56-8"><a href="#cb56-8" aria-hidden="true" tabindex="-1"></a>  data<span class="op">=</span>scaled,</span>
+<span id="cb56-9"><a href="#cb56-9" aria-hidden="true" tabindex="-1"></a>  columns<span class="op">=</span>[<span class="st">'minimum_nights'</span>, <span class="st">'maximum_nights'</span>, <span class="st">'price'</span>, <span class="st">'days_since_review'</span>],</span>
+<span id="cb56-10"><a href="#cb56-10" aria-hidden="true" tabindex="-1"></a>  index<span class="op">=</span>listings.index)</span>
+<span id="cb56-11"><a href="#cb56-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb56-12"><a href="#cb56-12" aria-hidden="true" tabindex="-1"></a>listings[[<span class="st">"minimum_nights"</span>, <span class="st">"maximum_nights"</span>, <span class="st">"price"</span>, <span class="st">"days_since_review"</span>]].describe()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>       minimum_nights  maximum_nights         price  days_since_review
+count    1.964800e+04    1.964800e+04  1.964800e+04       1.964800e+04
+mean    -2.314471e-17   -1.446545e-18  2.025163e-17      -4.339634e-16
+std      1.000025e+00    1.000025e+00  1.000025e+00       1.000025e+00
+min     -3.462369e-01   -9.575426e-03 -1.022618e+00      -8.547763e-01
+25%     -3.096110e-01   -9.571935e-03 -5.234007e-01      -6.394291e-01
+50%     -2.729850e-01   -9.553887e-03 -2.774097e-01      -4.025473e-01
+75%     -1.264813e-01   -9.508917e-03  2.435124e-01       1.573553e-01
+max      4.078467e+01    1.270615e+02  3.515253e+01       3.236820e+00</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>listings[[<span class="st">"minimum_nights"</span>, <span class="st">"maximum_nights"</span>, <span class="st">"price"</span>, <span class="st">"days_since_review"</span>]].head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            minimum_nights  maximum_nights     price  days_since_review
+listing_id                                                             
+2595             -0.309611       -0.009509  0.605264           0.200425
+3831              0.166526       -0.009554 -0.378700          -0.768637
+5099             -0.272985       -0.009567  0.424388          -0.488686
+5178             -0.272985       -0.009565 -0.451050          -0.531756
+5238             -0.126481       -0.009510  0.062637          -0.208735</code></pre>
+</div>
+</div>
+</section>
+<section id="r-10" class="level3">
+<h3 class="anchored" data-anchor-id="r-10">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>listings[, <span class="fu">c</span>(<span class="st">'minimum_nights'</span>, <span class="st">'maximum_nights'</span>, <span class="st">'price'</span>, <span class="st">'days_since_review'</span>)] <span class="ot">&lt;-</span> </span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale</span>(listings[, <span class="fu">c</span>(<span class="st">'minimum_nights'</span>, <span class="st">'maximum_nights'</span>, <span class="st">'price'</span>, <span class="st">'days_since_review'</span>)])</span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb60-4"><a href="#cb60-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(listings[, <span class="fu">c</span>(<span class="st">'minimum_nights'</span>, <span class="st">'maximum_nights'</span>, <span class="st">'price'</span>, <span class="st">'days_since_review'</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> minimum_nights    maximum_nights           price         days_since_review
+ Min.   :-0.3462   Min.   : -0.009575   Min.   :-1.0226   Min.   :-0.8548  
+ 1st Qu.:-0.3096   1st Qu.: -0.009572   1st Qu.:-0.5234   1st Qu.:-0.6394  
+ Median :-0.2730   Median : -0.009554   Median :-0.2774   Median :-0.4025  
+ Mean   : 0.0000   Mean   :  0.000000   Mean   : 0.0000   Mean   : 0.0000  
+ 3rd Qu.:-0.1265   3rd Qu.: -0.009509   3rd Qu.: 0.2435   3rd Qu.: 0.1574  
+ Max.   :40.7836   Max.   :127.058291   Max.   :35.1516   Max.   : 3.2367  </code></pre>
+</div>
+</div>
+</section>
+<section id="insight-1" class="level3">
+<h3 class="anchored" data-anchor-id="insight-1">Insight</h3>
+<p>Type mismatches can undermine future analysis by creating small and potentially hidden errors in math. Combining different types through addition and other operations is highly dependent on having identical types. I faced a debugging issue with my Python DataFrame reassignment after I used my scalar. In my first attempt, the values I got were not even close to what I expected, but nothing had broken, so I was confused. I started to realize that some of the values I expected were one off from each other. So, I added the argument index to match everything correctly. Then I was able to verify the scaling by observing a mean of 0 and a standard deviation of 1 for all four features. Scaling is crucial for later analysis with training models and visualization. Since I was familiar with the dataset, and I observed that there were commonly outliers and unpredictable ranges, I decided not to use MinMaxScaler, and went with StandardScaler.</p>
+</section>
+</section>
+</section>
+<section id="reorder-export" class="level1">
+<h1>9. Reorder &amp; Export</h1>
+<section id="reorder" class="level2">
+<h2 class="anchored" data-anchor-id="reorder">Reorder</h2>
+<section id="approach-2" class="level3">
+<h3 class="anchored" data-anchor-id="approach-2">Approach</h3>
+<p>I used the reordering strategies of simply creating an altered list. I found in my research, “Pandas allows us to change the order of columns in a DataFrame by passing in a reordered list of column names” (David Y., 2023).</p>
+</section>
+<section id="python-11" class="level3">
+<h3 class="anchored" data-anchor-id="python-11">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>categorical <span class="op">=</span> <span class="bu">list</span>(listings.select_dtypes(include<span class="op">=</span>[<span class="st">'object'</span>]).columns)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>boolean <span class="op">=</span> <span class="bu">list</span>(listings.select_dtypes(include<span class="op">=</span>[<span class="st">'bool'</span>]).columns)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>datetime <span class="op">=</span> <span class="bu">list</span>(listings.select_dtypes(include<span class="op">=</span>[<span class="st">'datetime64'</span>]).columns)</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>numeric <span class="op">=</span> <span class="bu">list</span>(listings.select_dtypes(include<span class="op">=</span>[<span class="st">'int64'</span>, <span class="st">'float64'</span>]).columns)</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>numeric.remove(<span class="st">'review_scores_rating'</span>)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>target <span class="op">=</span> [<span class="st">'review_scores_rating'</span>]</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>listings <span class="op">=</span> listings[categorical <span class="op">+</span> boolean <span class="op">+</span> datetime <span class="op">+</span> numeric <span class="op">+</span> target]</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>listings.columns</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Index(['description', 'host_name', 'nbhood', 'room_type_entire_home_apt',
+       'room_type_private_room', 'room_type_shared_room', 'borough_bronx',
+       'borough_brooklyn', 'borough_manhattan', 'borough_queens',
+       'borough_staten island', 'last_review', 'minimum_nights',
+       'maximum_nights', 'review_scores_accuracy', 'review_scores_cleanliness',
+       'review_scores_checkin', 'review_scores_communication',
+       'review_scores_location', 'review_scores_value', 'price',
+       'days_since_review', 'review_scores_rating'],
+      dtype='object')</code></pre>
+</div>
+</div>
+</section>
+<section id="r-11" class="level3">
+<h3 class="anchored" data-anchor-id="r-11">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>id <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"listing_id"</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>categorical <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"description"</span>, <span class="st">"host_name"</span>, <span class="st">"nbhood"</span>)</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>boolean <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">"room_type_entire_home_apt"</span>,</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">"room_type_private_room"</span>,</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">"room_type_shared_room"</span>,</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">"borough_bronx"</span>,</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>  <span class="st">"borough_brooklyn"</span>,</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>  <span class="st">"borough_manhattan"</span>,</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"borough_queens"</span>,</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>  <span class="st">"borough_staten island"</span></span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>datetime <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"last_review"</span>)</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>numeric <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>  <span class="st">"minimum_nights"</span>,</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>  <span class="st">"maximum_nights"</span>,</span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># "review_scores_rating",</span></span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>  <span class="st">"review_scores_accuracy"</span>,</span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>  <span class="st">"review_scores_cleanliness"</span>,</span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>  <span class="st">"review_scores_checkin"</span>,</span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>  <span class="st">"review_scores_communication"</span>,</span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>  <span class="st">"review_scores_location"</span>,</span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>  <span class="st">"review_scores_value"</span>,</span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>  <span class="st">"price"</span>,</span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>  <span class="st">"days_since_review"</span></span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb64-27"><a href="#cb64-27" aria-hidden="true" tabindex="-1"></a>target <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"review_scores_rating"</span>)</span>
+<span id="cb64-28"><a href="#cb64-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-29"><a href="#cb64-29" aria-hidden="true" tabindex="-1"></a>listings <span class="ot">&lt;-</span> listings[, <span class="fu">c</span>(id, categorical, boolean, datetime, numeric, target)]</span>
+<span id="cb64-30"><a href="#cb64-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-31"><a href="#cb64-31" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "listing_id"                  "description"                
+ [3] "host_name"                   "nbhood"                     
+ [5] "room_type_entire_home_apt"   "room_type_private_room"     
+ [7] "room_type_shared_room"       "borough_bronx"              
+ [9] "borough_brooklyn"            "borough_manhattan"          
+[11] "borough_queens"              "borough_staten island"      
+[13] "last_review"                 "minimum_nights"             
+[15] "maximum_nights"              "review_scores_accuracy"     
+[17] "review_scores_cleanliness"   "review_scores_checkin"      
+[19] "review_scores_communication" "review_scores_location"     
+[21] "review_scores_value"         "price"                      
+[23] "days_since_review"           "review_scores_rating"       </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="export" class="level2">
+<h2 class="anchored" data-anchor-id="export">Export</h2>
+<section id="python-12" class="level3">
+<h3 class="anchored" data-anchor-id="python-12">Python</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>listings.to_csv(path <span class="op">+</span> <span class="st">"airbnb_cleaned_py.csv"</span>, index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>listings.shape</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(19648, 23)</code></pre>
+</div>
+</div>
+</section>
+<section id="r-12" class="level3">
+<h3 class="anchored" data-anchor-id="r-12">R</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(listings, <span class="fu">paste0</span>(path, <span class="st">"airbnb_cleaned_r.csv"</span>), <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(listings)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19648    24</code></pre>
+</div>
+</div>
+<p><em>As stated previously, R is counting listing_id as a data column, while python is discluding listing_id as the index, causing a difference</em></p>
+</section>
+<section id="insight-2" class="level3">
+<h3 class="anchored" data-anchor-id="insight-2">Insight</h3>
+<p>Having a logical column order may not seem important initially, but normalizing the order by creating a categorized, predictable pattern helps keep reproducibility and collaboration efficient by decreasing confusion. Categorical data may be irrelevant to some who have more quantitative goals in mind; however, I believe it is still valuable for those interested in natural language analysis.</p>
+</section>
+</section>
+</section>
+<section id="summary-reflection" class="level1">
+<h1>10. Summary &amp; Reflection</h1>
+<section id="language-comparison" class="level3">
+<h3 class="anchored" data-anchor-id="language-comparison">Language Comparison</h3>
+<p>At a high level, the main difference I experienced with these languages can be described as follows: base Python and Pandas is more intuitive than base R data frames, but library integration is smoother in R than in Python. I found that I enjoyed trying things for the first time in Python, and the conversion to R usually came easily. A challenge I experienced with Python was the syntax for the scaling portion. Elements had to be very specific, and there were several steps, whereas R accomplished the same thing with a single line and the built-in scale() function.</p>
+</section>
+<section id="biblical-application" class="level3">
+<h3 class="anchored" data-anchor-id="biblical-application">Biblical Application</h3>
+<p>The verses in Proverbs 27 can be applied as wisdom in many facets of life, including monitoring data. It is crucial to “know the condition” of each feature. If your attention slips and best practices are not used, integrity can be lost. I would consistently use .head() in Python and View() in R to keep an eye on my data. I also used precautions such as creating copies so that I could experiment while maintaining the data I had cleansed so far. I could also compare the copied data with the original data.</p>
+</section>
+<section id="reflection" class="level3">
+<h3 class="anchored" data-anchor-id="reflection">Reflection</h3>
+<p>If I could start over, I would do a couple of things differently. I would try to read and understand all nine instructions before focusing on just the first one. I completed everything sequentially each week, but I realized that understanding the final objectives is very helpful when trying to understand the early instructions. I would also alternate between Python and R more. Oftentimes, once I figured out something in Python, I would realize an easier solution in R, or vice versa. I think I would leverage the strengths of each language instead of always starting with Python.</p>
+</section>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<section id="y-david.-2023-november-15.-change-the-order-of-columns-in-a-python-pandas-dataframe.-sentry-answers.-httpssentry.ioanswerschange-the-order-of-columns-in-a-python-pandas-dataframe" class="level6">
+<h6 class="anchored" data-anchor-id="y-david.-2023-november-15.-change-the-order-of-columns-in-a-python-pandas-dataframe.-sentry-answers.-httpssentry.ioanswerschange-the-order-of-columns-in-a-python-pandas-dataframe">Y, David. (2023, November 15). <em>Change the order of columns in a Python Pandas DataFrame</em>. Sentry Answers. https://sentry.io/answers/change-the-order-of-columns-in-a-python-pandas-dataframe/</h6>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
