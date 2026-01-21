@@ -50,6 +50,7 @@ extra:
 
 nav:
   - Home: index.md
+  - About Me: about.md
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
     - Playoff Model Predictor: projects/cfp-predictor.md
@@ -57,8 +58,7 @@ nav:
     - Web Bracket Generator: projects/cfpbracket.md
     - Data Science Coursework: projects/data-science-class.md
     - Portfolio Website: projects/portfolio.md
-  - About Me: about.md
 extra_css:
   - assets/style.css
 
-copyright: v2.0.1
+copyright: v2.0.2

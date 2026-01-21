@@ -3,10 +3,12 @@ icon: material/account
 ---
 
 # About Me
-> [🌐 Resume](assets/PeytonPopeResume.pdf)
+> [🌐 My Resume](assets/resume.pdf)
+
 ## I am...
+
 - **a student at**: Liberty University
-- **currently studying**: Computer Science: Data Science
+- **currently studying**: Computer Science: Data Science & Software Engineering
 - **interested in**: Data science, web development, digital media, sports
 - **aiming to**: Contribute to the Kingdom of God using problem-solving skills
 
