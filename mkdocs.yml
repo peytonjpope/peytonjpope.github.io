@@ -54,6 +54,7 @@ nav:
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
     - Playoff Model Predictor: projects/cfp-predictor.md
+    - Streamlit TenniSim: projects/tennis-sim.md
     - Church Map Viz: projects/churchds.md
     - Web Bracket Generator: projects/cfpbracket.md
     - Data Science Coursework: projects/data-science-class.md

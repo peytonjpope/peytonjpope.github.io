@@ -23,4 +23,3 @@ icon: material/account
 ---
 
 ![Me](assets/pjp.jpg)
-
