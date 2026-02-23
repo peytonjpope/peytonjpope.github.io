@@ -9,23 +9,16 @@ icon: material/tennis-ball
 
 ![App Preview](../assets/tennis-sim-ss.jpg)
 
-## Objectives
+## Features
 
-- Create a realistic ATP career simulation game
-- Use Python for backend logic
-- Deploy as a front-end web application
+- Simulate ATP career with realistic match engine and 250+ CPU players
+- Weekly decisions: compete in tournaments or train skills 
+- Track rankings, performance stats, and trophy collection over seasons
 
 ## Technologies used
 
-- Streamlit hosting for live web app
+- Streamlit framework and hosting
 - Python for simulation logic
-- Pandas and NumPy for data handling
-
-## Skills developed
-
-- Python logic scripting
-- Web app deployment with Streamlit
-- Data visualization
 
 ---
 

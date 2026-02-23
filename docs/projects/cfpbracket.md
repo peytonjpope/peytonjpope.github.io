@@ -6,12 +6,14 @@ icon: material/tournament
 
 ![Site Preview](../assets/bracket.gif)
 
-## Objective
-As the new College Football Playoff neared, I scoured the internet to try and find a tool that would allow my friends and I to visualize our hypothetical discussions. To my disapointment, nothing of the sort existed. So I made it myself
+## Features
+- 
+
 ## Technology used
 - HTML/CSS/JavaScript
 - GitHub Pages
 - Adobe Photoshop
+
 ## Skills Developed
 - Interactive Front-End Web Development
 - Backend Logic for Structual Design

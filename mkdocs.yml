@@ -54,13 +54,13 @@ nav:
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
     - Playoff Model Predictor: projects/cfp-predictor.md
-    - Streamlit TenniSim: projects/tennis-sim.md
     - Data Science Coursework: projects/data-science-class.md
-    - MyBlocker Extension: projects/myblocker.md
+    - Streamlit TenniSim: projects/tennis-sim.md
     - Church Map Viz: projects/churchds.md
+    - MyBlocker Extension: projects/myblocker.md
     - Web Bracket Generator: projects/cfpbracket.md
     - Portfolio Website: projects/portfolio.md
 extra_css:
   - assets/style.css
 
-copyright: v2.0.2
+copyright: v2.0.3

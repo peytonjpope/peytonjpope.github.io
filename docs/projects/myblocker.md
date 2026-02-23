@@ -1,7 +1,7 @@
 ---
 icon: material/block-helper
 ---
-# 🌐 MyBlocker
+# MyBlocker
 
 *A simple Chrome extension to block distracting websites locally in your browser*
 
