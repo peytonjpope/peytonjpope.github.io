@@ -98,7 +98,7 @@ html {
 
 
 .logo {
-  transform: translateY(-5px); /* Moves the element 20px down */
+  transform: translateY(-5px); 
 }
 
 /* For when nav is expanded */
@@ -193,7 +193,7 @@ html {
   gap: 2rem;
   margin: 2rem auto 3rem auto;
   max-width: 1200px;
-  margin-bottom: 150px;
+  margin-bottom: 100px;
 }
 
 /* Individual project cards - rounded rectangles like the image */
@@ -434,12 +434,25 @@ html {
         <div class="project-header">
           <h2>College Football Playoff Predictor</h2>
           <div class="icons">
+            <span class="md-icon logo">{% include ".icons/simple/kaggle.svg" %}</span>
             <span class="md-icon logo">{% include ".icons/simple/python.svg" %}</span>
             <span class="md-icon logo">{% include ".icons/simple/pandas.svg" %}</span>
-            <span class="md-icon logo">{% include ".icons/material/file-tree-outline.svg" %}</span>
           </div>
         </div>
         <p>Predictive Modeling using RandomForest and XGBoost</p>
+      </div>
+    </a>
+
+    <a href="/projects/tennis-sim" class="project-link">
+      <div class="project">
+        <div class="project-header">
+          <h2>Streamlit Tennis Simulator </h2>
+          <div class="icons">
+            <span class="md-icon logo">{% include ".icons/simple/streamlit.svg" %}</span>
+            <span class="md-icon logo">{% include ".icons/simple/python.svg" %}</span>
+          </div>
+        </div>
+        <p>Career Simulation game using Streamlit Python Framework</p>
       </div>
     </a>
     

@@ -9,7 +9,7 @@ icon: material/hand-front-right
 
 ![App Preview](../assets/signcraftdemo.gif)
 
-## Objectives
+## Features
 
 - **Grow and maintain your ASL vocabulary** with word bank for review and long-term retention.
 

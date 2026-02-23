@@ -15,7 +15,7 @@ icon: material/tennis-ball
 - Use Python for backend logic
 - Deploy as a front-end web application
 
-## Technical used
+## Technologies used
 
 - Streamlit hosting for live web app
 - Python for simulation logic
