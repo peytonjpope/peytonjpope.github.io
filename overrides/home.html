@@ -189,11 +189,11 @@ html {
 /* Project grid layout - 2x2 grid */
 .project-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 2rem;
+  grid-template-columns: 1;
+  gap: 1rem;
   margin: 2rem auto 3rem auto;
-  max-width: 1200px;
-  margin-bottom: 100px;
+  max-width: 700px;
+  margin-bottom: 50;
 }
 
 /* Individual project cards - rounded rectangles like the image */
@@ -439,33 +439,21 @@ html {
             <span class="md-icon logo">{% include ".icons/simple/pandas.svg" %}</span>
           </div>
         </div>
-        <p>Predictive Modeling using RandomForest and XGBoost</p>
+        <p>Predictive Modeling Kaggle notebook using RandomForest and XGBoost</p>
       </div>
     </a>
 
-    <a href="/projects/tennis-sim" class="project-link">
+    <a href="/projects/pmdb" class="project-link">
       <div class="project">
         <div class="project-header">
-          <h2>Streamlit Tennis Simulator </h2>
+          <h2>IMDb & Film Rating Database Visualizer </h2>
           <div class="icons">
+            <span class="md-icon logo">{% include ".icons/simple/snowflake.svg" %}</span>
             <span class="md-icon logo">{% include ".icons/simple/streamlit.svg" %}</span>
-            <span class="md-icon logo">{% include ".icons/simple/python.svg" %}</span>
+            <span class="md-icon logo">{% include ".icons/simple/dbt.svg" %}</span>
           </div>
         </div>
-        <p>Career Simulation game using Streamlit Python Framework</p>
-      </div>
-    </a>
-
-    <a href="/projects/data-science-class" class="project-link">
-      <div class="project">
-        <div class="project-header">
-          <h2>Data Science Coursework</h2>
-          <div class="icons">
-            <span class="md-icon logo">{% include ".icons/simple/python.svg" %}</span>
-            <span class="md-icon logo">{% include ".icons/simple/R.svg" %}</span>
-          </div>
-        </div>
-        <p>University projects demonstrating data science with Python & R</p>
+        <p>ETL Pipeline using Snowflake database of 37,000+ films with interactive Streamlit web app</p>
       </div>
     </a>
     
