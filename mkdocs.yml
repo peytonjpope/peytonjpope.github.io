@@ -54,7 +54,8 @@ nav:
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
     - Playoff Model Predictor: projects/cfp-predictor.md
-    - Data Science Coursework: projects/data-science-class.md
+    - Film Ratings Database: projects/pmdb.md
+    # - Data Science Coursework: projects/data-science-class.md
     - Streamlit TenniSim: projects/tennis-sim.md
     - Church Map Viz: projects/churchds.md
     - MyBlocker Extension: projects/myblocker.md
