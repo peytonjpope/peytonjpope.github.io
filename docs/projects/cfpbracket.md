@@ -6,13 +6,11 @@ icon: material/tournament
 
 ![Site Preview](../assets/bracket.gif)
 
-## Features
-- 
 
 ## Technology used
 - HTML/CSS/JavaScript
 - GitHub Pages
-- Adobe Photoshop
+- Claude Sonnet
 
 ## Skills Developed
 - Interactive Front-End Web Development

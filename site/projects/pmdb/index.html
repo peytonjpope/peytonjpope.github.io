@@ -8,7 +8,7 @@
       
       
       
-        <link rel="canonical" href="https://peytonjpope.com/projects/data-science-class/">
+        <link rel="canonical" href="https://peytonjpope.com/projects/pmdb/">
       
       
         <link rel="prev" href="../cfp-predictor/">
@@ -22,7 +22,7 @@
     
     
       
-        <title>Data Science Coursework - Peyton Pope</title>
+        <title>Film Ratings Database - Peyton Pope</title>
       
     
     
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#python-and-r-for-data-science" class="md-skip">
+        <a href="#pmdb" class="md-skip">
           Skip to content
         </a>
       
@@ -110,7 +110,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Data Science Coursework
+              Film Ratings Database
             
           </span>
         </div>
@@ -465,10 +465,10 @@
           
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3 1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20.84 2.18-3.93.78 2.74 3.54 1.97-.4zm-6.87 1.36L12 3.93l2.75 3.53 1.96-.39zm-4.9.96-1.97.41 2.75 3.53 1.96-.39zm-4.91 1-.98.19a2 2 0 0 0-1.57 2.35L2 10l4.9-.97zM2 10v10a2 2 0 0 0 2 2h16c1.11 0 2-.89 2-2V10z"/></svg>
   
   <span class="md-ellipsis">
-    Data Science Coursework
+    Film Ratings Database
     
   </span>
   
@@ -480,10 +480,10 @@
         
   
   
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 3 1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17z"/></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20.84 2.18-3.93.78 2.74 3.54 1.97-.4zm-6.87 1.36L12 3.93l2.75 3.53 1.96-.39zm-4.9.96-1.97.41 2.75 3.53 1.96-.39zm-4.91 1-.98.19a2 2 0 0 0-1.57 2.35L2 10l4.9-.97zM2 10v10a2 2 0 0 0 2 2h16c1.11 0 2-.89 2-2V10z"/></svg>
   
   <span class="md-ellipsis">
-    Data Science Coursework
+    Film Ratings Database
     
   </span>
   
@@ -506,9 +506,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#course-labs" class="md-nav__link">
+  <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
-      Course Labs
+      Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Pipeline Architecture
     </span>
   </a>
   
@@ -682,9 +691,18 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#course-labs" class="md-nav__link">
+  <a href="#features" class="md-nav__link">
     <span class="md-ellipsis">
-      Course Labs
+      Features
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-pipeline-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data Pipeline Architecture
     </span>
   </a>
   
@@ -706,20 +724,52 @@
 
 
 
-<h1 id="python-and-r-for-data-science">Python and R for Data Science</h1>
-<p><em>A collection of data science labs and projects completed as part of a university-level course on Python and R for Data Science.</em></p>
+<h1 id="pmdb">PMDb</h1>
+<blockquote>
+<p><a href="https://pmoviedb.streamlit.app">🌐 Live Application</a></p>
+</blockquote>
+<p><em>Interactive web app showcasing a Snowflake database of 37,000+ films with IMDb and Letterboxd ratings</em></p>
+<p><img alt="App Preview" src="../../assets/pmdb-ss.jpg" /></p>
 <hr />
-<h2 id="course-labs">Course Labs</h2>
-<ol>
-<li><a href="../ds-classwork/lab-1.html">EDA &amp; Visualization</a></li>
-<li><a href="../ds-classwork/321-Lab-2.html">Data Cleansing &amp; Preparation</a></li>
-<li><a href="../ds-classwork/321-Lab-3.html">Web Scraping &amp; Analysis</a></li>
-<li><a href="../ds-classwork/321-Lab-4.html">Supervised Learning - Classification</a></li>
-<li><a href="../ds-classwork/321-Lab-5.html">Supervised Learning - Regression &amp; Time Series</a></li>
-<li><a href="../ds-classwork/321-Lab-6.html">Unsupervised Learning - Cluster Analysis</a></li>
-<li><a href="../ds-classwork/321-Lab-7.html">Unsupervised Learning – Pattern Mining</a></li>
-<li><a href="../ds-classwork/321-Lab-8.html">Health Claims Fraud Detection and Forecast with Generative AI</a></li>
-</ol>
+<h2 id="features">Features</h2>
+<ul>
+<li>
+<p><strong>Explore film rankings across multiple rating systems</strong> with leaderboards filtering by decade, popularity, and rating</p>
+</li>
+<li>
+<p><strong>Compare IMDb vs Letterboxd lean</strong> using rating differentials to highlight where the platforms disagree most</p>
+</li>
+</ul>
+<hr />
+<h2 id="data-pipeline-architecture">Data Pipeline Architecture</h2>
+<table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Tool</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Ingestion</strong></td>
+<td>Python, Snowflake Connector</td>
+<td>Python script loading raw Kaggle datasets into Snowflake database as <em>bronze</em> tables</td>
+</tr>
+<tr>
+<td><strong>Modeling</strong></td>
+<td>dbt Core</td>
+<td>Standardize types and filter nulls to create <em>silver</em> tables, Join both platforms on title + year then compute composite ratings and differentials into <em>gold</em> table</td>
+</tr>
+<tr>
+<td><strong>Presentation</strong></td>
+<td>Streamlit, Plotly, Snowflake SQLAlchemy</td>
+<td>Query Gold table live from Snowflake and render interactive charts and film lookup</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>View the</em> <a href="https://github.com/peytonjpope/pmdb">Source Code</a></p>
 
 
 
