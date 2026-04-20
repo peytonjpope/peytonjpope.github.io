@@ -5,7 +5,7 @@ icon: material/block-helper
 
 *A simple Chrome extension to block distracting websites locally in your browser*
 
-![Screenshot Preview](/assets/blocker.jpg)
+![Screenshot Preview](../assets/blocker.jpg)
 
 ### Features
 

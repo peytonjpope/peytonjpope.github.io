@@ -7,8 +7,7 @@ theme:
     text: Roboto
   icon:
     logo: material/alpha-p-box
-  favicon:
-    logo: material/alpha-p-box
+  favicon: assets/favicon.png
   features:
     - navigation.tabs
     - navigation.sections
@@ -23,28 +22,31 @@ theme:
     - navigation.footer
 
   palette:
-    # Dark Mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: slate
-      toggle: 
-        icon: material/lightbulb-outline
-        name: Dark mode
-      primary: blue grey
-      accent: deep purple
+    scheme: slate
+    primary: blue grey
+    accent: deep purple
+    # # Dark Mode
+    # - media: "(prefers-color-scheme: dark)"
+    #   scheme: slate
+    #   toggle: 
+    #     icon: material/lightbulb-outline
+    #     name: Dark mode
+    #   primary: blue grey
+    #   accent: deep purple
     
     # Light Mode
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      toggle: 
-        icon: material/lightbulb
-        name: Light mode
-      primary: blue grey
-      accent: deep purple
+    # - media: "(prefers-color-scheme: light)"
+    #   scheme: default
+    #   toggle: 
+    #     icon: material/lightbulb
+    #     name: Light mode
+    #   primary: blue grey
+    #   accent: deep purple
 extra:
   generator: false 
   social:
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/in/peyton-pope-75202b24a/
+      link: https://www.linkedin.com/in/peyton-pope/
     - icon: fontawesome/brands/github
       link: https://github.com/peytonjpope
 
