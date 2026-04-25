@@ -2,7 +2,7 @@
 icon: material/database-marker
 ---
 
-# Church Map: Data Science
+# US Church Scrape & Visualization
 > [🌐 View Project](https://github.com/peytonjpope/ChurchDataScience/blob/main/README.md)
 
 *A data science project mapping 200,000+ US churches by denomination, scraped and visualized to show geographical distributions across the United States.*

@@ -55,10 +55,10 @@ nav:
   - About Me: about.md
   - Projects:
     - SignCraft WebApp: projects/signcraft.md
-    - Playoff Model Predictor: projects/cfp-predictor.md
+    - Playoff ML Model: projects/cfp-predictor.md
     - Film Ratings Database: projects/pmdb.md
-    - Campaign Response Predictor: projects/data-science.md
-    # - Data Science Coursework: projects/data-science-class.md
+    - Campaign Predictor: projects/campaign-ds.md
+    - Spotify Pattern Mining: projects/spotify-ds.md
     - Streamlit TenniSim: projects/tennis-sim.md
     - Church Map Viz: projects/churchds.md
     - MyBlocker Extension: projects/myblocker.md
